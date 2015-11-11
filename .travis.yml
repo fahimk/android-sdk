@@ -17,10 +17,8 @@ android:
     - extra-android-m2repository
 
 before_script:
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - adb wait-for-device
 
-script: 
-  - ./gradlew clean
-  - ./gradlew connectedAndroidTest
+script: ./gradlew connectedAndroidTest
