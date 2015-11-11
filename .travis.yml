@@ -2,16 +2,15 @@ language: android
 cache: false
 env:
   global:
-    - ANDROID_API_LEVEL=22
-    - ANDROID_TARGET=android-22
-    - ANDROID_BUILD_TOOLS_VERSION=22.0.1
+    - ANDROID_API_LEVEL=23
+    - ANDROID_TARGET=android-23
+    - ANDROID_BUILD_TOOLS_VERSION=23.0.1
     - ANDROID_ABI=armeabi-v7a
     - ADB_INSTALL_TIMEOUT=8 
 
 android:
   components:
     - platform-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - tools-$ANDROID_BUILD_TOOLS_VERSION
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
@@ -22,4 +21,4 @@ before_script:
   - emulator -avd test -no-skin -no-audio -no-window &
   - adb wait-for-device
 
-script: ./gradlew test
+script: ./gradlew connectedAndroidTest
