@@ -11,6 +11,7 @@ env:
 android:
   components:
     - platform-tools-$ANDROID_BUILD_TOOLS_VERSION
+    - tools-$ANDROID_BUILD_TOOLS_VERSION
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
     - android-$ANDROID_API_LEVEL
     - sys-img-$ANDROID_ABI-$ANDROID_TARGET
