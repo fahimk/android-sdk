@@ -3,17 +3,36 @@
     <!-- From: file:/Users/marko/Documents/workspace/android/YesGraph-SDK-Android/yesgraph/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorFacebook">#3b5998</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorTwitter">#4099FF</color>
     <!-- From: file:/Users/marko/Documents/workspace/android/YesGraph-SDK-Android/yesgraph/src/main/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="circle_size">70dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="font_size_big">28dp</dimen>
+    <dimen name="font_size_normal">18dp</dimen>
+    <dimen name="font_size_small">14dp</dimen>
+    <dimen name="font_size_superbig">35dp</dimen>
+    <dimen name="rounded_corners">25dp</dimen>
     <!-- From: file:/Users/marko/Documents/workspace/android/YesGraph-SDK-Android/yesgraph/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="action_settings">Settings</string>
+    <string name="alert_send_sms_contacts">contacts</string>
+    <string name="alert_send_sms_message">Are you sure you want to send sms to</string>
+    <string name="alert_send_sms_no">No</string>
+    <string name="alert_send_sms_title">Send sms</string>
+    <string name="alert_send_sms_yes">Yes</string>
     <string name="app_name">YesGraph-SDK-Android</string>
+    <string name="contacts">Contacts</string>
+    <string name="enable_permissions">Please enable the permissions in Settings to proceed.</string>
+    <string name="facebook">Facebook</string>
+    <string name="no_selected_contacts">You have no selected contacts.</string>
+    <string name="share_default_text">Demo our SDK by sharing YesGraph with your contacts</string>
+    <string name="twitter">Tweet</string>
     <!-- From: file:/Users/marko/Documents/workspace/android/YesGraph-SDK-Android/yesgraph/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

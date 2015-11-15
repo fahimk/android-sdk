@@ -19,7 +19,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/layoutMaster">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -29,21 +30,24 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="15"
+            android:layout_weight="12"
             android:gravity="center">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="New Text"
-                android:id="@+id/shareText" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/share_default_text"
+                android:id="@+id/shareText"
+                android:textSize="@dimen/font_size_superbig"
+                android:gravity="center"
+                android:layout_margin="15dp" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_weight="5"
             android:layout_margin="10dp">
 
             <LinearLayout
@@ -52,20 +56,33 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:id="@+id/layoutFacebook">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageFacebook"
-                    android:src="@mipmap/ic_launcher"
-                    android:scaleType="fitCenter" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle"
+                    android:gravity="center"
+                    android:id="@+id/layoutFacebookCircle">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageFacebook"
+                        android:src="@drawable/facebook"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="15dp" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Text"
-                    android:id="@+id/textFacebook" />
+                    android:text="@string/facebook"
+                    android:id="@+id/textFacebook"
+                    android:textSize="@dimen/font_size_normal" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -74,20 +91,32 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="center" >
+                android:gravity="center"
+                android:id="@+id/layoutTwitter">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageTwitter"
-                    android:src="@mipmap/ic_launcher"
-                    android:scaleType="fitCenter" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle"
+                    android:gravity="center"
+                    android:id="@+id/layoutTwitterCircle">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageTwitter"
+                        android:src="@drawable/twitter"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="15dp" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Text"
-                    android:id="@+id/textTwitter" />
+                    android:text="@string/twitter"
+                    android:id="@+id/textTwitter"
+                    android:textSize="@dimen/font_size_normal" />
             </LinearLayout>
 
             <LinearLayout
@@ -96,20 +125,32 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:layout_margin="5dp"
-                android:gravity="center" >
+                android:gravity="center"
+                android:id="@+id/layoutContacts">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageContacts"
-                    android:src="@mipmap/ic_launcher"
-                    android:scaleType="fitCenter" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="@dimen/circle_size"
+                    android:layout_height="@dimen/circle_size"
+                    android:background="@drawable/circle"
+                    android:gravity="center"
+                    android:id="@+id/layoutContactsCircle">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/imageContacts"
+                        android:src="@drawable/phone"
+                        android:scaleType="fitCenter"
+                        android:layout_margin="15dp" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Text"
-                    android:id="@+id/textContacts" />
+                    android:text="@string/contacts"
+                    android:id="@+id/textContacts"
+                    android:textSize="@dimen/font_size_normal" />
             </LinearLayout>
         </LinearLayout>
 
@@ -128,7 +169,8 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="@dimen/font_size_small" />
         </LinearLayout>
 
     </LinearLayout>
