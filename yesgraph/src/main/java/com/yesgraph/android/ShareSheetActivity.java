@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bettervectordrawable.VectorDrawableCompat;
 import com.yesgraph.android.utils.Visual;
@@ -145,7 +146,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
     private void setCopyLinkText()
     {
-        TextView copyLinkText = (TextView)findViewById(R.id.textCopyLink);
+        final TextView copyLinkText = (TextView)findViewById(R.id.textCopyLink);
 
         copyLinkText.setBackgroundResource(R.drawable.rounded_corners);
 
@@ -154,6 +155,16 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         copyLinkText.setText(application.getCopyLinkText());
         copyLinkText.setTextColor(application.getDarkFontColor());
+        copyLinkText.setClickable(true);
+        copyLinkText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Share link", copyLinkText.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(context, R.string.copy_to_clipboard,Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setBackground()

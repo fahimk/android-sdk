@@ -16,4 +16,5 @@
     <string name="twitter">Tweet</string>
     <string name="contacts">Contacts</string>
     <string name="share_default_text">Demo our SDK by sharing YesGraph with your contacts</string>
+    <string name="copy_to_clipboard">Link copied to clipboard</string>
 </resources>
