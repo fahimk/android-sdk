@@ -25,6 +25,9 @@
         <activity android:name=".SendSmsActivity"
             android:label="@string/app_name">
         </activity>
+    <activity android:name=".ShareSheetActivity"
+        android:label="@string/app_name">
+    </activity>
     </application>
 
 </manifest>
