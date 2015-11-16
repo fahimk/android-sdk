@@ -12,8 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -61,7 +59,16 @@ public class SendSmsActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendSms(contacts);
+                if (YesGraph.isMarshmallow()) {
+                    if(sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
+                        sendSms(contacts);
+                    } else {
+                        askForPermissionAlertDialog();
+                    }
+                } else {
+                    sendSms(contacts);
+                }
+
             }
         });
     }
@@ -86,17 +93,40 @@ public class SendSmsActivity extends AppCompatActivity {
             if (YesGraph.isMarshmallow()) {
                 checkForPermissions();
                 if(sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
-                    showAlertDialog(contacts);
+                    showSendAlertDialog(contacts);
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.enable_permissions), Toast.LENGTH_LONG).show();
                 }
             } else {
-                showAlertDialog(contacts);
+                showSendAlertDialog(contacts);
             }
         }
     }
 
-    private void showAlertDialog(final String[] contacts){
+    private void askForPermissionAlertDialog(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        // set title
+        alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_grant_permission_title));
+        // set dialog message
+        alertDialogBuilder.setMessage(context.getResources().getString(R.string.alert_grant_permission_message))
+                .setCancelable(false)
+                .setPositiveButton(context.getResources().getString(R.string.sms_grant), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        sendSms(contacts);
+                    }
+                })
+                .setNegativeButton(context.getResources().getString(R.string.sms_deny), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
+    }
+
+    private void showSendAlertDialog(final String[] contacts){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_send_sms_title));
@@ -200,7 +230,7 @@ public class SendSmsActivity extends AppCompatActivity {
 
                     sharedPreferences.edit().putBoolean("send_sms_permision_granted", true).commit();
                     if(contacts != null && contacts.length > 0) {
-                        showAlertDialog(contacts);
+                        showSendAlertDialog(contacts);
                     } else {
                         Toast.makeText(context, context.getResources().getString(R.string.no_selected_contacts), Toast.LENGTH_LONG).show();
                     }
