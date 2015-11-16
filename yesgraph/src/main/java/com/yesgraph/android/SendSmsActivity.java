@@ -55,12 +55,16 @@ public class SendSmsActivity extends AppCompatActivity {
         piDelivered = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
         sms = SmsManager.getDefault();
 
+        if (YesGraph.isMarshmallow()) {
+            initCheckForPermissions();
+        }
+
         Button btn = (Button) findViewById(R.id.btn_send);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (YesGraph.isMarshmallow()) {
-                    if(sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
+                    if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
                         sendSms(contacts);
                     } else {
                         askForPermissionAlertDialog();
@@ -89,10 +93,10 @@ public class SendSmsActivity extends AppCompatActivity {
     }
 
     private void sendSms(final String[] contacts) {
-        if(contacts != null && contacts.length > 0) {
+        if (contacts != null && contacts.length > 0) {
             if (YesGraph.isMarshmallow()) {
                 checkForPermissions();
-                if(sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
+                if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
                     showSendAlertDialog(contacts);
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.enable_permissions), Toast.LENGTH_LONG).show();
@@ -103,7 +107,7 @@ public class SendSmsActivity extends AppCompatActivity {
         }
     }
 
-    private void askForPermissionAlertDialog(){
+    private void askForPermissionAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_grant_permission_title));
@@ -126,7 +130,7 @@ public class SendSmsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void showSendAlertDialog(final String[] contacts){
+    private void showSendAlertDialog(final String[] contacts) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_send_sms_title));
@@ -152,8 +156,8 @@ public class SendSmsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void initSmsSendReceiver(){
-        smsSentReceiver=new BroadcastReceiver() {
+    private void initSmsSendReceiver() {
+        smsSentReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
@@ -179,12 +183,12 @@ public class SendSmsActivity extends AppCompatActivity {
         };
     }
 
-    private void  initSmsDeliveredReceiver(){
-        smsDeliveredReceiver=new BroadcastReceiver() {
+    private void initSmsDeliveredReceiver() {
+        smsDeliveredReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
                 // TODO Auto-generated method stub
-                switch(getResultCode()) {
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         Toast.makeText(getBaseContext(), "SMS Delivered", Toast.LENGTH_SHORT).show();
                         break;
@@ -196,26 +200,18 @@ public class SendSmsActivity extends AppCompatActivity {
         };
     }
 
+    public void initCheckForPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            sharedPreferences.edit().putBoolean("send_sms_permision_granted", false).commit();
+        } else {
+            sharedPreferences.edit().putBoolean("send_sms_permision_granted", true).commit();
+        }
+    }
+
     public void checkForPermissions() {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
         } else {
             sharedPreferences.edit().putBoolean("send_sms_permision_granted", true).commit();
         }
@@ -229,7 +225,7 @@ public class SendSmsActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     sharedPreferences.edit().putBoolean("send_sms_permision_granted", true).commit();
-                    if(contacts != null && contacts.length > 0) {
+                    if (contacts != null && contacts.length > 0) {
                         showSendAlertDialog(contacts);
                     } else {
                         Toast.makeText(context, context.getResources().getString(R.string.no_selected_contacts), Toast.LENGTH_LONG).show();

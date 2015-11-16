@@ -1,1 +1,1 @@
-include ':yesgraph'
+include ':yesgraph', ':sample'
