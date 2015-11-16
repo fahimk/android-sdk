@@ -1,5 +1,7 @@
-package com.yesgraph.android;
+package com.yesgraph.android.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,7 +11,11 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.yesgraph.android.R;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +24,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        context = this;
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                String[] contacts = {"d.bozinoski@gmail.com","dean.bozinoski@poviolabs.com"};
+                Intent intent = new Intent(context,SendEmailActivity.class);
+                intent.putExtra("contacts",contacts);
+                intent.putExtra("subject","test subject");
+                intent.putExtra("message","test message");
+                startActivity(intent);
             }
         });
     }
