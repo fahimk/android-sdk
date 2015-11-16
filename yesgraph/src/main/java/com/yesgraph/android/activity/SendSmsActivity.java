@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -37,8 +38,8 @@ public class SendSmsActivity extends AppCompatActivity {
     private String[] contacts;
     private String message;
     private Intent intent;
-    private BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
-    private SmsManager sms;
+//    private BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
+//    private SmsManager sms;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -55,7 +56,7 @@ public class SendSmsActivity extends AppCompatActivity {
 
         piSent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
         piDelivered = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
-        sms = SmsManager.getDefault();
+//        sms = SmsManager.getDefault();
 
         if (YesGraph.isMarshmallow()) {
             initCheckForPermissions();
@@ -88,20 +89,20 @@ public class SendSmsActivity extends AppCompatActivity {
 //        });
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        initSmsSendReceiver();
-        initSmsDeliveredReceiver();
-        registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
-        registerReceiver(smsDeliveredReceiver, new IntentFilter("SMS_DELIVERED"));
-    }
-
-    public void onPause() {
-        super.onPause();
-        unregisterReceiver(smsSentReceiver);
-        unregisterReceiver(smsDeliveredReceiver);
-    }
+//    @Override
+//    protected void onPostResume() {
+//        super.onPostResume();
+//        initSmsSendReceiver();
+//        initSmsDeliveredReceiver();
+//        registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
+//        registerReceiver(smsDeliveredReceiver, new IntentFilter("SMS_DELIVERED"));
+//    }
+//
+//    public void onPause() {
+//        super.onPause();
+//        unregisterReceiver(smsSentReceiver);
+//        unregisterReceiver(smsDeliveredReceiver);
+//    }
 
     private void sendSms(final String[] contacts) {
         if (contacts != null && contacts.length > 0) {
@@ -151,9 +152,18 @@ public class SendSmsActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.alert_send_sms_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+//                        for (int i = 0; i < contacts.length; i++) {
+//                            sms.sendTextMessage(contacts[i], null, message, piSent, piDelivered);
+//                        }
+                        String all_contacts = "";
                         for (int i = 0; i < contacts.length; i++) {
-                            sms.sendTextMessage(contacts[i], null, message, piSent, piDelivered);
+                            all_contacts += contacts[i] + ";";
                         }
+                        Uri smsToUri = Uri.parse("smsto:" + all_contacts);
+                        Intent intent = new Intent(android.content.Intent.ACTION_SENDTO, smsToUri);
+                        String message = "hello";
+                        intent.putExtra("sms_body", message);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton(context.getResources().getString(R.string.alert_send_sms_no), new DialogInterface.OnClickListener() {
@@ -167,49 +177,49 @@ public class SendSmsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void initSmsSendReceiver() {
-        smsSentReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode()) {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS has been sent", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(getBaseContext(), "Generic Failure", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(getBaseContext(), "No Service", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(getBaseContext(), "Radio Off", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-    }
+//    private void initSmsSendReceiver() {
+//        smsSentReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context arg0, Intent arg1) {
+//                switch (getResultCode()) {
+//                    case Activity.RESULT_OK:
+//                        Toast.makeText(getBaseContext(), "SMS has been sent", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+//                        Toast.makeText(getBaseContext(), "Generic Failure", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+//                        Toast.makeText(getBaseContext(), "No Service", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_NULL_PDU:
+//                        Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+//                        Toast.makeText(getBaseContext(), "Radio Off", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            }
+//        };
+//    }
 
-    private void initSmsDeliveredReceiver() {
-        smsDeliveredReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                // TODO Auto-generated method stub
-                switch (getResultCode()) {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(getBaseContext(), "SMS Delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(getBaseContext(), "SMS not delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        };
-    }
+//    private void initSmsDeliveredReceiver() {
+//        smsDeliveredReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context arg0, Intent arg1) {
+//                // TODO Auto-generated method stub
+//                switch (getResultCode()) {
+//                    case Activity.RESULT_OK:
+//                        Toast.makeText(getBaseContext(), "SMS Delivered", Toast.LENGTH_SHORT).show();
+//                        break;
+//                    case Activity.RESULT_CANCELED:
+//                        Toast.makeText(getBaseContext(), "SMS not delivered", Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//            }
+//        };
+//    }
 
     public void initCheckForPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
