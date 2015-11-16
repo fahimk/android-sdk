@@ -2,6 +2,7 @@ package com.yesgraph.android;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 
@@ -28,4 +29,45 @@ public class YesGraph extends Application {
             return true;
         }
     }
+
+    public static boolean isFacebookSignedIn()
+    {
+        return true;
+    }
+
+    public static boolean isTwitterSignedIn()
+    {
+        return true;
+    }
+
+    public String getCopyLinkText()
+    {
+        return getString(R.string.default_share_link);
+    }
+
+    public String getShareText()
+    {
+        return getString(R.string.default_share_text);
+    }
+
+    public static int getMainForegroundColor()
+    {
+        return Color.BLUE;
+    }
+
+    public static int getMainBackgroundColor()
+    {
+        return Color.WHITE;
+    }
+
+    public static int getDarkFontColor()
+    {
+        return Color.BLACK;
+    }
+
+    public static int getLightFontColor()
+    {
+        return Color.WHITE;
+    }
+
 }
