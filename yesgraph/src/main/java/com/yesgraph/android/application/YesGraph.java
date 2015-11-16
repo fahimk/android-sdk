@@ -1,4 +1,4 @@
-package com.yesgraph.android;
+package com.yesgraph.android.application;
 
 import android.app.Application;
 import android.content.Context;

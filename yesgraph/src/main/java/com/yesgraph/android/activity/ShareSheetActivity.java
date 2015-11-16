@@ -1,4 +1,4 @@
-package com.yesgraph.android;
+package com.yesgraph.android.activity;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bettervectordrawable.VectorDrawableCompat;
+import com.yesgraph.android.R;
+import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.Visual;
 
 public class ShareSheetActivity extends AppCompatActivity {

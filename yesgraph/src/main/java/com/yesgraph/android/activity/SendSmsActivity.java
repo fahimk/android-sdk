@@ -1,4 +1,4 @@
-package com.yesgraph.android;
+package com.yesgraph.android.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,6 +22,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.yesgraph.android.R;
+import com.yesgraph.android.application.YesGraph;
+
 /**
  * Created by Dean Bozinoski on 11/13/2015.
  */
@@ -30,7 +33,6 @@ public class SendSmsActivity extends AppCompatActivity {
     private static int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private YesGraph application;
     private Context context;
-    private Toolbar toolbar;
     private PendingIntent piSent, piDelivered;
     private String[] contacts;
     private String message;
@@ -58,23 +60,32 @@ public class SendSmsActivity extends AppCompatActivity {
         if (YesGraph.isMarshmallow()) {
             initCheckForPermissions();
         }
-
-        Button btn = (Button) findViewById(R.id.btn_send);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (YesGraph.isMarshmallow()) {
-                    if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
-                        sendSms(contacts);
-                    } else {
-                        askForPermissionAlertDialog();
-                    }
-                } else {
-                    sendSms(contacts);
-                }
-
+        if (YesGraph.isMarshmallow()) {
+            if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
+                sendSms(contacts);
+            } else {
+                askForPermissionAlertDialog();
             }
-        });
+        } else {
+            sendSms(contacts);
+        }
+
+//        Button btn = (Button) findViewById(R.id.btn_send);
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (YesGraph.isMarshmallow()) {
+//                    if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
+//                        sendSms(contacts);
+//                    } else {
+//                        askForPermissionAlertDialog();
+//                    }
+//                } else {
+//                    sendSms(contacts);
+//                }
+//
+//            }
+//        });
     }
 
     @Override
