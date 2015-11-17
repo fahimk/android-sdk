@@ -35,6 +35,10 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name="com.yesgraph.android.activity.SendEmailActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name="com.yesgraph.android.activity.ShareSheetActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >

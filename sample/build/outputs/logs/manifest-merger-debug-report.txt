@@ -15,7 +15,7 @@ ADDED from D:\Projects\YesGraph-SDK-Android\sample\src\main\AndroidManifest.xml:
 		INJECTED from D:\Projects\YesGraph-SDK-Android\sample\src\main\AndroidManifest.xml
 application
 ADDED from D:\Projects\YesGraph-SDK-Android\sample\src\main\AndroidManifest.xml:5:5-21:19
-MERGED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:14:5-47:19
+MERGED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:14:5-51:19
 MERGED from [com.android.support:appcompat-v7:23.1.0] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.0\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.1.0] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.0\AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:design:23.1.0] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\com.android.support\design\23.1.0\AndroidManifest.xml:22:5-20
@@ -113,11 +113,17 @@ ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-
 		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:35:13-45
 	android:name
 		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:34:13-73
-activity#com.yesgraph.android.activity.ShareSheetActivity
-ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:37:9-46:20
+activity#com.yesgraph.android.activity.SendEmailActivity
+ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:37:9-40:20
 	android:label
 		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:39:13-45
-	android:theme
-		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:40:13-56
 	android:name
-		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:38:13-76
+		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:38:13-75
+activity#com.yesgraph.android.activity.ShareSheetActivity
+ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:41:9-50:20
+	android:label
+		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:43:13-45
+	android:theme
+		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:44:13-56
+	android:name
+		ADDED from [YesGraph-SDK-Android:yesgraph:unspecified] D:\Projects\YesGraph-SDK-Android\sample\build\intermediates\exploded-aar\YesGraph-SDK-Android\yesgraph\unspecified\AndroidManifest.xml:42:13-76

@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    private Context context;
 
     private Context context;
 
