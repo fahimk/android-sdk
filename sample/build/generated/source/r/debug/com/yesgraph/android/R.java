@@ -861,14 +861,17 @@ public final class R {
 		public static final int character_counter_pattern = 0x7f06001e;
 		public static final int contacts = 0x7f06001f;
 		public static final int copy_to_clipboard = 0x7f060020;
-		public static final int enable_permissions = 0x7f060021;
-		public static final int facebook = 0x7f060022;
-		public static final int no_selected_contacts = 0x7f060023;
-		public static final int share_default_text = 0x7f060024;
-		public static final int sms_deny = 0x7f060025;
-		public static final int sms_grant = 0x7f060026;
+		public static final int default_share_link = 0x7f060021;
+		public static final int default_share_text = 0x7f060022;
+		public static final int enable_permissions = 0x7f060023;
+		public static final int facebook = 0x7f060024;
+		public static final int no_selected_contacts = 0x7f060025;
+		public static final int share_default_text = 0x7f060026;
+		public static final int share_link_copy = 0x7f060027;
+		public static final int sms_deny = 0x7f060028;
+		public static final int sms_grant = 0x7f060029;
 		public static final int status_bar_notification_info_overflow = 0x7f060013;
-		public static final int twitter = 0x7f060027;
+		public static final int twitter = 0x7f06002a;
 	}
 	public static final class style {
 		public static final int AlertDialog_AppCompat = 0x7f09007f;

@@ -31,10 +31,13 @@
     <string name="app_name">YesGraph-SDK-Android</string>
     <string name="contacts">Contacts</string>
     <string name="copy_to_clipboard">Link copied to clipboard</string>
+    <string name="default_share_link">http://www.google.com</string>
+    <string name="default_share_text">Demo our SDK by sharing YesGraph with your contacts</string>
     <string name="enable_permissions">Please enable the permissions in Settings to proceed.</string>
     <string name="facebook">Facebook</string>
     <string name="no_selected_contacts">You have no selected contacts.</string>
     <string name="share_default_text">Demo our SDK by sharing YesGraph with your contacts</string>
+    <string name="share_link_copy">Share link</string>
     <string name="sms_deny">Deny</string>
     <string name="sms_grant">Grant</string>
     <string name="twitter">Tweet</string>

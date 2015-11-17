@@ -162,7 +162,7 @@ public class ShareSheetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("Share link", copyLinkText.getText().toString());
+                android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(context, R.string.copy_to_clipboard,Toast.LENGTH_SHORT).show();
             }
