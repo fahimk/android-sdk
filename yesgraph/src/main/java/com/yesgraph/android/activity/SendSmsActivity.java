@@ -34,12 +34,9 @@ public class SendSmsActivity extends AppCompatActivity {
     private static int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private YesGraph application;
     private Context context;
-    private PendingIntent piSent, piDelivered;
     private String[] contacts;
     private String message;
     private Intent intent;
-//    private BroadcastReceiver smsSentReceiver, smsDeliveredReceiver;
-//    private SmsManager sms;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -54,10 +51,6 @@ public class SendSmsActivity extends AppCompatActivity {
         contacts = intent.getStringArrayExtra("contacts");
         message = intent.getStringExtra("message");
 
-        piSent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT"), 0);
-        piDelivered = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED"), 0);
-//        sms = SmsManager.getDefault();
-
         if (YesGraph.isMarshmallow()) {
             initCheckForPermissions();
         }
@@ -70,39 +63,7 @@ public class SendSmsActivity extends AppCompatActivity {
         } else {
             sendSms(contacts);
         }
-
-//        Button btn = (Button) findViewById(R.id.btn_send);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (YesGraph.isMarshmallow()) {
-//                    if (sharedPreferences.getBoolean("send_sms_permision_granted", false)) {
-//                        sendSms(contacts);
-//                    } else {
-//                        askForPermissionAlertDialog();
-//                    }
-//                } else {
-//                    sendSms(contacts);
-//                }
-//
-//            }
-//        });
     }
-
-//    @Override
-//    protected void onPostResume() {
-//        super.onPostResume();
-//        initSmsSendReceiver();
-//        initSmsDeliveredReceiver();
-//        registerReceiver(smsSentReceiver, new IntentFilter("SMS_SENT"));
-//        registerReceiver(smsDeliveredReceiver, new IntentFilter("SMS_DELIVERED"));
-//    }
-//
-//    public void onPause() {
-//        super.onPause();
-//        unregisterReceiver(smsSentReceiver);
-//        unregisterReceiver(smsDeliveredReceiver);
-//    }
 
     private void sendSms(final String[] contacts) {
         if (contacts != null && contacts.length > 0) {
@@ -121,9 +82,7 @@ public class SendSmsActivity extends AppCompatActivity {
 
     private void askForPermissionAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_grant_permission_title));
-        // set dialog message
         alertDialogBuilder.setMessage(context.getResources().getString(R.string.alert_grant_permission_message))
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.sms_grant), new DialogInterface.OnClickListener() {
@@ -136,25 +95,18 @@ public class SendSmsActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-        // show it
         alertDialog.show();
     }
 
     private void showSendAlertDialog(final String[] contacts) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_send_sms_title));
-        // set dialog message
         alertDialogBuilder.setMessage(context.getResources().getString(R.string.alert_send_sms_message)
                 + " " + contacts.length + " " + context.getResources().getString(R.string.alert_send_sms_contacts))
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.alert_send_sms_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-//                        for (int i = 0; i < contacts.length; i++) {
-//                            sms.sendTextMessage(contacts[i], null, message, piSent, piDelivered);
-//                        }
                         String all_contacts = "";
                         for (int i = 0; i < contacts.length; i++) {
                             all_contacts += contacts[i] + ";";
@@ -171,55 +123,9 @@ public class SendSmsActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-        // show it
         alertDialog.show();
     }
-
-//    private void initSmsSendReceiver() {
-//        smsSentReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context arg0, Intent arg1) {
-//                switch (getResultCode()) {
-//                    case Activity.RESULT_OK:
-//                        Toast.makeText(getBaseContext(), "SMS has been sent", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-//                        Toast.makeText(getBaseContext(), "Generic Failure", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-//                        Toast.makeText(getBaseContext(), "No Service", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_NULL_PDU:
-//                        Toast.makeText(getBaseContext(), "Null PDU", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-//                        Toast.makeText(getBaseContext(), "Radio Off", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        };
-//    }
-
-//    private void initSmsDeliveredReceiver() {
-//        smsDeliveredReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context arg0, Intent arg1) {
-//                // TODO Auto-generated method stub
-//                switch (getResultCode()) {
-//                    case Activity.RESULT_OK:
-//                        Toast.makeText(getBaseContext(), "SMS Delivered", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case Activity.RESULT_CANCELED:
-//                        Toast.makeText(getBaseContext(), "SMS not delivered", Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
-//            }
-//        };
-//    }
 
     public void initCheckForPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
@@ -230,7 +136,6 @@ public class SendSmsActivity extends AppCompatActivity {
     }
 
     public void checkForPermissions() {
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
         } else {
@@ -251,9 +156,7 @@ public class SendSmsActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(context, context.getResources().getString(R.string.no_selected_contacts), Toast.LENGTH_LONG).show();
                     }
-
                 } else {
-
                     sharedPreferences.edit().putBoolean("send_sms_permision_granted", false).commit();
                 }
                 return;
