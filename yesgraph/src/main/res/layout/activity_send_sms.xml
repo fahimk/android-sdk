@@ -7,10 +7,10 @@
     android:fitsSystemWindows="true"
     tools:context=".SendSmsActivity">
 
-    <Button
-        android:id="@+id/btn_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SEND SMS"/>
+    <!--<Button-->
+        <!--android:id="@+id/btn_send"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="SEND SMS"/>-->
 
 </RelativeLayout>

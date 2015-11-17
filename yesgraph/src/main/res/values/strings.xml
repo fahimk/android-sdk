@@ -10,6 +10,10 @@
     <string name="alert_send_sms_no">No</string>
     <string name="enable_permissions">Please enable the permissions in Settings to proceed.</string>
     <string name="no_selected_contacts">You have no selected contacts.</string>
+    <string name="alert_grant_permission_title">Grand send sms permission</string>
+    <string name="alert_grant_permission_message">With granting this permission you allow application to send SMS messages. Are you sure you want grand send SMS permission?</string>
+    <string name="sms_grant">Grant</string>
+    <string name="sms_deny">Deny</string>
 
     <!--ShareSheetActivity-->
     <string name="facebook">Facebook</string>
