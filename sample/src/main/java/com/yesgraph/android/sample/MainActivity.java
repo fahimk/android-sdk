@@ -13,12 +13,16 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
     private Context context;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        context = this;
+
         context = this;
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

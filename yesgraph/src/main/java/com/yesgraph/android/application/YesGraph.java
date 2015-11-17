@@ -2,11 +2,8 @@ package com.yesgraph.android.application;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
-
-import com.yesgraph.android.R;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.
@@ -42,14 +39,14 @@ public class YesGraph extends Application {
         return true;
     }
 
-    public String getCopyLinkText()
+    public static String getCopyLinkText()
     {
-        return getString(R.string.default_share_link);
+        return "http://www.google.com";
     }
 
-    public String getShareText()
+    public static String getShareText()
     {
-        return getString(R.string.default_share_text);
+        return "Demo our SDK by sharing YesGraph with your contacts";
     }
 
     public static int getMainForegroundColor()
@@ -71,5 +68,4 @@ public class YesGraph extends Application {
     {
         return Color.WHITE;
     }
-
 }

@@ -15,6 +15,15 @@
     <string name="sms_grant">Grant</string>
     <string name="sms_deny">Deny</string>
 
+    <!--SendEmailActivity-->
+    <string name="alert_send_email_title">Send email</string>
+    <string name="alert_send_email_message">Are you sure you want to send email to</string>
+    <string name="alert_send_email_contacts">contacts</string>
+    <string name="alert_send_email_yes">Yes</string>
+    <string name="alert_send_email_no">No</string>
+    <string name="choose_email_client">Choose an Email client</string>
+    <string name="no_selected_contacts_email">You have no selected contacts.</string>
+
     <!--ShareSheetActivity-->
     <string name="facebook">Facebook</string>
     <string name="twitter">Tweet</string>
