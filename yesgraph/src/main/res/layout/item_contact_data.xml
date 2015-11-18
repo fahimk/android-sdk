@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:id="@+id/background">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="@dimen/circle_with_border_size"
+        android:layout_height="@dimen/circle_with_border_size"
+        android:background="@drawable/circle_with_border"
+        android:gravity="center"
+        android:id="@+id/check"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/checkImage"
+            android:src="@drawable/check"
+            android:scaleType="fitCenter"
+            android:layout_margin="6dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/name"
+            android:textSize="@dimen/font_size_normal"
+            android:textColor="@color/colorContactsName" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/contact"
+            android:textSize="@dimen/font_size_small"
+            android:textColor="@color/colorContactsNumber" />
+    </LinearLayout>
+
+</LinearLayout>
