@@ -3,6 +3,8 @@
     <!-- From: file:/D:/Projects/YesGraph-SDK-Android/yesgraph/src/main/res/values/colors.xml -->
     <eat-comment/>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorContactsName">#000000</color>
+    <color name="colorContactsNumber">#555555</color>
     <color name="colorFacebook">#3b5998</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
@@ -12,6 +14,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="circle_size">70dp</dimen>
+    <dimen name="circle_with_border_size">30dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="font_size_big">28dp</dimen>
     <dimen name="font_size_normal">18dp</dimen>
@@ -41,8 +44,10 @@
     <string name="default_share_text">Demo our SDK by sharing YesGraph with your contacts</string>
     <string name="enable_permissions">Please enable the permissions in Settings to proceed.</string>
     <string name="facebook">Facebook</string>
+    <string name="no_contact_name">(no contact name)</string>
     <string name="no_selected_contacts">You have no selected contacts.</string>
     <string name="no_selected_contacts_email">You have no selected contacts.</string>
+    <string name="search">Search</string>
     <string name="share_default_text">Demo our SDK by sharing YesGraph with your contacts</string>
     <string name="share_link_copy">Share link</string>
     <string name="sms_deny">Deny</string>

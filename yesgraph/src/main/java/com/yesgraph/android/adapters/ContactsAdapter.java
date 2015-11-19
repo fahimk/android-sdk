@@ -16,6 +16,7 @@ import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.utils.Visual;
+import com.yesgraph.android.utils.YSGTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +65,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             {
                 contactsViewHolder.check.setBackgroundResource(R.drawable.circle);
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
-                drawable.setColor(application.getMainForegroundColor());
-                drawable.setStroke(Visual.getPixelsFromDp(context, 1), application.getMainForegroundColor());
-                contactsViewHolder.background.setBackgroundColor(application.getRowSelectedColor());
+                drawable.setColor(YSGTheme.getMainForegroundColor());
+                drawable.setStroke(Visual.getPixelsFromDp(context, 1), YSGTheme.getMainForegroundColor());
+                contactsViewHolder.background.setBackgroundColor(YSGTheme.getRowSelectedColor());
             }
             else
             {
@@ -74,7 +75,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
                 drawable.setColor(context.getResources().getColor(android.R.color.white));
                 drawable.setStroke(Visual.getPixelsFromDp(context, 1), context.getResources().getColor(android.R.color.darker_gray));
-                contactsViewHolder.background.setBackgroundColor(application.getRowUnselectedColor());
+                contactsViewHolder.background.setBackgroundColor(YSGTheme.getRowUnselectedColor());
             }
         }
         else

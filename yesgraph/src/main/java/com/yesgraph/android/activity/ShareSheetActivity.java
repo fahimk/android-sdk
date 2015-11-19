@@ -1,9 +1,12 @@
 package com.yesgraph.android.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -16,26 +19,48 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bettervectordrawable.VectorDrawableCompat;
+import com.yesgraph.android.ContactsActivity;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.Visual;
+import com.yesgraph.android.utils.YSGTheme;
 
 public class ShareSheetActivity extends AppCompatActivity {
 
     private YesGraph application;
     private Context context;
+    private Toolbar toolbar;
+    private TextView shareText, facebookText, twitterText, contactsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_sheet);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar();
 
         application = (YesGraph) getApplicationContext();
         context = this;
 
+    }
+    private void setToolbar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
+        getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
+    }
+
+    private Drawable getColoredArrow() {
+        Drawable arrowDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
+
+        if (arrowDrawable != null && wrapped != null) {
+            // This should avoid tinting all the arrows
+            arrowDrawable.mutate();
+            DrawableCompat.setTint(wrapped, YSGTheme.getBackArrowColor());
+        }
+
+        return wrapped;
     }
 
     @Override
@@ -67,26 +92,26 @@ public class ShareSheetActivity extends AppCompatActivity {
     }
 
     private void setShareText() {
-        TextView shareText = (TextView)findViewById(R.id.shareText);
+        shareText = (TextView)findViewById(R.id.shareText);
         shareText.setText(application.getShareText());
-        shareText.setTextColor(application.getDarkFontColor());
+        shareText.setTextColor(YSGTheme.getDarkFontColor());
     }
 
     private void setActionBar() {
-        String color=String.format("#%06X", (0xFFFFFF & application.getLightFontColor()));
+        String color=String.format("#%06X", (0xFFFFFF & YSGTheme.getLightFontColor()));
         getSupportActionBar().setTitle(Html.fromHtml("<font color='"+color+"'>"+getSupportActionBar().getTitle()+"</font>"));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
     }
 
     private void setShareIconsAndText()
     {
-        TextView facebookText = (TextView)findViewById(R.id.textFacebook);
-        TextView twitterText = (TextView)findViewById(R.id.textTwitter);
-        TextView contactsText = (TextView)findViewById(R.id.textContacts);
+        facebookText = (TextView)findViewById(R.id.textFacebook);
+        twitterText = (TextView)findViewById(R.id.textTwitter);
+        contactsText = (TextView)findViewById(R.id.textContacts);
 
-        facebookText.setTextColor(application.getDarkFontColor());
-        twitterText.setTextColor(application.getDarkFontColor());
-        contactsText.setTextColor(application.getDarkFontColor());
+        facebookText.setTextColor(YSGTheme.getDarkFontColor());
+        twitterText.setTextColor(YSGTheme.getDarkFontColor());
+        contactsText.setTextColor(YSGTheme.getDarkFontColor());
 
         LinearLayout facebookLayout = (LinearLayout)findViewById(R.id.layoutFacebook);
         LinearLayout twitterLayout = (LinearLayout)findViewById(R.id.layoutTwitter);
@@ -106,7 +131,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         contactsCircleLayout.setBackgroundResource(R.drawable.circle);
         GradientDrawable drawableC = (GradientDrawable) contactsCircleLayout.getBackground();
-        drawableC.setColor(application.getMainForegroundColor());
+        drawableC.setColor(YSGTheme.getMainForegroundColor());
 
         ImageView facebookImage = (ImageView)findViewById(R.id.imageFacebook);
         ImageView twitterImage = (ImageView)findViewById(R.id.imageTwitter);
@@ -131,7 +156,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         contactsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, ContactsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -153,10 +179,10 @@ public class ShareSheetActivity extends AppCompatActivity {
         copyLinkText.setBackgroundResource(R.drawable.rounded_corners);
 
         GradientDrawable drawable = (GradientDrawable) copyLinkText.getBackground();
-        drawable.setStroke(Visual.getPixelsFromDp(context, 3), application.getMainForegroundColor());
+        drawable.setStroke(Visual.getPixelsFromDp(context, 3), YSGTheme.getMainForegroundColor());
 
         copyLinkText.setText(application.getCopyLinkText());
-        copyLinkText.setTextColor(application.getDarkFontColor());
+        copyLinkText.setTextColor(YSGTheme.getDarkFontColor());
         copyLinkText.setClickable(true);
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +198,7 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void setBackground()
     {
         RelativeLayout masterLayout = (RelativeLayout)findViewById(R.id.layoutMaster);
-        masterLayout.setBackgroundColor(application.getMainBackgroundColor());
+        masterLayout.setBackgroundColor(YSGTheme.getMainBackgroundColor());
     }
 
 

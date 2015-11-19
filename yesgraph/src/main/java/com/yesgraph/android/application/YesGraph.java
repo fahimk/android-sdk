@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.utils.Constants;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.
@@ -23,68 +24,28 @@ public class YesGraph extends Application {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public static boolean isMarshmallow(){
+    public static boolean isMarshmallow() {
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion < Build.VERSION_CODES.M){
+        if (currentapiVersion < Build.VERSION_CODES.M) {
             return false;
-        } else{
+        } else {
             return true;
         }
     }
 
-    public static boolean isFacebookSignedIn()
-    {
+    public static boolean isFacebookSignedIn() {
         return true;
     }
 
-    public static boolean isTwitterSignedIn()
-    {
+    public static boolean isTwitterSignedIn() {
         return true;
     }
 
-    public String getCopyLinkText()
-    {
+    public String getCopyLinkText() {
         return getString(R.string.default_share_link);
     }
 
-    public String getShareText()
-    {
+    public String getShareText() {
         return getString(R.string.default_share_text);
     }
-
-    public static int getMainForegroundColor()
-    {
-        return Color.DKGRAY;
-    }
-
-    public static int getMainBackgroundColor()
-    {
-        return Color.WHITE;
-    }
-
-    public static int getDarkFontColor()
-    {
-        return Color.BLACK;
-    }
-
-    public static int getLightFontColor()
-    {
-        return Color.WHITE;
-    }
-
-    public static int getRowSelectedColor()
-    {
-        return Color.GRAY;
-    }
-
-    public static int getRowUnselectedColor()
-    {
-        return Color.WHITE;
-    }
-
-    public static int getRowBackgroundColor()
-    {
-        return Color.LTGRAY;
-    }
-
 }

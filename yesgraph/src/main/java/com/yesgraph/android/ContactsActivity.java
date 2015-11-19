@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +29,9 @@ import com.yesgraph.android.adapters.ContactsAdapter;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
+import com.yesgraph.android.utils.YSGTheme;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -46,6 +51,7 @@ public class ContactsActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private ArrayList<RegularContact> contacts;
+    private Toolbar toolbar;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -53,21 +59,18 @@ public class ContactsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getMainForegroundColor()));
+        setToolbar();
 
         application = (YesGraph) getApplicationContext();
         context = this;
 
         search = (EditText)findViewById(R.id.search);
-        search.setTextColor(application.getLightFontColor());
-        search.getBackground().setColorFilter(application.getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
+        search.setTextColor(YSGTheme.getLightFontColor());
+        search.getBackground().setColorFilter(YSGTheme.getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
         searchBar = (LinearLayout)findViewById(R.id.searhBar);
-        searchBar.setBackgroundColor(application.getMainForegroundColor());
+        searchBar.setBackgroundColor(YSGTheme.getMainForegroundColor());
         contactsList = (RecyclerView)findViewById(R.id.contactsList);
-        contactsList.setBackgroundColor(application.getRowBackgroundColor());
+        contactsList.setBackgroundColor(YSGTheme.getRowBackgroundColor());
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -148,6 +151,27 @@ public class ContactsActivity extends AppCompatActivity {
 
         }*/
 
+    }
+
+    private void setToolbar(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
+        getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
+    }
+
+    private Drawable getColoredArrow() {
+        Drawable arrowDrawable = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable wrapped = DrawableCompat.wrap(arrowDrawable);
+
+        if (arrowDrawable != null && wrapped != null) {
+            // This should avoid tinting all the arrows
+            arrowDrawable.mutate();
+            DrawableCompat.setTint(wrapped, YSGTheme.getBackArrowColor());
+        }
+
+        return wrapped;
     }
 
     private ArrayList<RegularContact> getContactsFromContactList()
