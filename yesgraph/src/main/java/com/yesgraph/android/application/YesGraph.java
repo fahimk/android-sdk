@@ -54,7 +54,7 @@ public class YesGraph extends Application {
 
     public static int getMainForegroundColor()
     {
-        return Color.BLUE;
+        return Color.DKGRAY;
     }
 
     public static int getMainBackgroundColor()
@@ -70,6 +70,21 @@ public class YesGraph extends Application {
     public static int getLightFontColor()
     {
         return Color.WHITE;
+    }
+
+    public static int getRowSelectedColor()
+    {
+        return Color.GRAY;
+    }
+
+    public static int getRowUnselectedColor()
+    {
+        return Color.WHITE;
+    }
+
+    public static int getRowBackgroundColor()
+    {
+        return Color.LTGRAY;
     }
 
 }

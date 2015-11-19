@@ -33,4 +33,8 @@
     <string name="share_link_copy">Share link</string>
     <string name="default_share_text">Demo our SDK by sharing YesGraph with your contacts</string>
     <string name="default_share_link">http://www.google.com</string>
+
+    <!--ContactsActivity-->
+    <string name="search">Search</string>
+    <string name="no_contact_name">(no contact name)</string>
 </resources>

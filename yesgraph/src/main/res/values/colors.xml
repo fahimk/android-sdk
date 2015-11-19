@@ -6,4 +6,7 @@
 
     <color name="colorFacebook">#3b5998</color>
     <color name="colorTwitter">#4099FF</color>
+
+    <color name="colorContactsName">#000000</color>
+    <color name="colorContactsNumber">#555555</color>
 </resources>
