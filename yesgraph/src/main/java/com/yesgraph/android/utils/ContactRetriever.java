@@ -26,13 +26,7 @@ public class ContactRetriever {
             while (cur.moveToNext()) {
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                name = name.trim();
-
-                if(id.equals("951"))
-                {
-                    int ii=0;
-                    ii++;
-                }
+                name = name!=null ? name.trim() : "";
 
                 for(int i=0;i<name.length();i++)
                 {
