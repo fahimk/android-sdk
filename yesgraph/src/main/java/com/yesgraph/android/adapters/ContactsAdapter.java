@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yesgraph.android.R;
-import com.yesgraph.android.YesGraph;
+import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.utils.Visual;
