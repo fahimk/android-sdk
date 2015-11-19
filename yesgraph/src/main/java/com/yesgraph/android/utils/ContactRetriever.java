@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
+import com.yesgraph.android.R;
 import com.yesgraph.android.models.RegularContact;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ContactRetriever {
 
                 if(name.length()==0)
                 {
-                    name="(no contact name)";
+                    name=context.getString(R.string.no_contact_name);
                 }
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
