@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
                 YSGTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                YSGTheme.setReferralTextSize(14);
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }

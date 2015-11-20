@@ -10,6 +10,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -186,6 +187,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         copyLinkText.setText(application.getCopyLinkText());
         copyLinkText.setTextColor(YSGTheme.getDarkFontColor());
+        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP,YSGTheme.getReferralTextSize());
         copyLinkText.setClickable(true);
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override

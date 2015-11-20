@@ -43,6 +43,12 @@ public class YSGTheme {
         }
     }
 
+    public static void setReferralTextSize(int referralTextSize){
+        if(referralTextSize != 0){
+            Constants.SHARE_TEXT_FONT_SIZE = referralTextSize;
+        }
+    }
+
     public static int getMainForegroundColor() {
         return Constants.MAIN_FOREGROUND_COLOR;
     }
@@ -80,5 +86,9 @@ public class YSGTheme {
     }
     public static int getReferralBunnerBackgroundColor(){
         return Constants.REFERRAL_BANNER_BACKGROUND_COLOR;
+    }
+
+    public static int getReferralTextSize(){
+        return Constants.SHARE_TEXT_FONT_SIZE;
     }
 }
