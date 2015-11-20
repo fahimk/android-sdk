@@ -182,6 +182,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         GradientDrawable drawable = (GradientDrawable) copyLinkLayout.getBackground();
         drawable.setStroke(Visual.getPixelsFromDp(context, 3), YSGTheme.getMainForegroundColor());
+        drawable.setColor(YSGTheme.getReferralBunnerBackgroundColor());
 
         copyLinkText.setText(application.getCopyLinkText());
         copyLinkText.setTextColor(YSGTheme.getDarkFontColor());

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("subject","test subject");
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
-                YSGTheme.setThemeColor(Color.RED, Color.WHITE, Color.GREEN, Color.WHITE, Color.GREEN, Color.WHITE, Color.YELLOW, Color.WHITE,0);
+                YSGTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }

@@ -16,4 +16,5 @@ public class Constants {
     public static int ROW_BACKGROUND_COLOR = Color.LTGRAY;
     public static int BACK_ARROW_COLOR = Color.WHITE;
     public static int COPY_BUTTON_COLOR = Color.BLUE;
+    public static int REFERRAL_BANNER_BACKGROUND_COLOR = Color.WHITE;
 }

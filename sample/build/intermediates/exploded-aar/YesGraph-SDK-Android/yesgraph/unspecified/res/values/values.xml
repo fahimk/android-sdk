@@ -16,10 +16,10 @@
     <dimen name="circle_size">70dp</dimen>
     <dimen name="circle_with_border_size">30dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="font_size_big">28dp</dimen>
-    <dimen name="font_size_normal">18dp</dimen>
-    <dimen name="font_size_small">14dp</dimen>
-    <dimen name="font_size_superbig">35dp</dimen>
+    <dimen name="font_size_big">28sp</dimen>
+    <dimen name="font_size_normal">18sp</dimen>
+    <dimen name="font_size_small">14sp</dimen>
+    <dimen name="font_size_superbig">35sp</dimen>
     <dimen name="rounded_corners">25dp</dimen>
     <!-- From: file:/D:/Projects/YesGraph-SDK-Android/yesgraph/src/main/res/values/strings.xml -->
     <eat-comment/>

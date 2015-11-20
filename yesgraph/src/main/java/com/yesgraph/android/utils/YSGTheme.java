@@ -9,7 +9,8 @@ public class YSGTheme {
 
     public static void setThemeColor(int mainForegroundColor, int mainBackgroundColor,
                                      int darkFontColor, int lightFontColor, int rowSelectedColor,
-                                     int rowUnselectedColor, int rowBackgroundColor, int backArrowColor, int copyButtonColor) {
+                                     int rowUnselectedColor, int rowBackgroundColor, int backArrowColor, int copyButtonColor,
+                                     int referralBannerBackgroundColor) {
         if (mainForegroundColor != 0) {
             Constants.MAIN_FOREGROUND_COLOR = mainForegroundColor;
         }
@@ -36,6 +37,9 @@ public class YSGTheme {
         }
         if(copyButtonColor != 0){
             Constants.COPY_BUTTON_COLOR = copyButtonColor;
+        }
+        if(referralBannerBackgroundColor !=0){
+            Constants.REFERRAL_BANNER_BACKGROUND_COLOR = referralBannerBackgroundColor;
         }
     }
 
@@ -73,5 +77,8 @@ public class YSGTheme {
 
     public static int getCopyButtonColor(){
         return Constants.COPY_BUTTON_COLOR;
+    }
+    public static int getReferralBunnerBackgroundColor(){
+        return Constants.REFERRAL_BANNER_BACKGROUND_COLOR;
     }
 }

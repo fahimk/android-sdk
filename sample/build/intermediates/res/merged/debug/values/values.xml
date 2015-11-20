@@ -296,10 +296,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <!-- From: file:/D:/Projects/YesGraph-SDK-Android/sample/build/intermediates/exploded-aar/YesGraph-SDK-Android/yesgraph/unspecified/res/values/values.xml -->
     <eat-comment/>
-    <dimen name="font_size_big">28dp</dimen>
-    <dimen name="font_size_normal">18dp</dimen>
-    <dimen name="font_size_small">14dp</dimen>
-    <dimen name="font_size_superbig">35dp</dimen>
+    <dimen name="font_size_big">28sp</dimen>
+    <dimen name="font_size_normal">18sp</dimen>
+    <dimen name="font_size_small">14sp</dimen>
+    <dimen name="font_size_superbig">35sp</dimen>
     <!-- From: file:/D:/Projects/YesGraph-SDK-Android/sample/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.0/res/values/values.xml -->
     <eat-comment/>
     <item format="float" name="highlight_alpha_material_colored" type="dimen">0.26</item>
