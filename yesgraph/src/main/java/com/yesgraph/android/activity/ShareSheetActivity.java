@@ -175,10 +175,12 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void setCopyLinkText()
     {
         final TextView copyLinkText = (TextView)findViewById(R.id.textCopyLink);
+        final TextView copyButtonText = (TextView) findViewById(R.id.textCopyButton);
+        RelativeLayout copyLinkLayout = (RelativeLayout) findViewById(R.id.copyLinkLayout);
 
-        copyLinkText.setBackgroundResource(R.drawable.rounded_corners);
+        copyLinkLayout.setBackgroundResource(R.drawable.rounded_corners);
 
-        GradientDrawable drawable = (GradientDrawable) copyLinkText.getBackground();
+        GradientDrawable drawable = (GradientDrawable) copyLinkLayout.getBackground();
         drawable.setStroke(Visual.getPixelsFromDp(context, 3), YSGTheme.getMainForegroundColor());
 
         copyLinkText.setText(application.getCopyLinkText());
@@ -190,7 +192,19 @@ public class ShareSheetActivity extends AppCompatActivity {
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(context, R.string.copy_to_clipboard,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
+            }
+        });
+        copyButtonText.setText(application.getCopyButtonText());
+        copyButtonText.setTextColor(YSGTheme.getCopyButtonColor());
+        copyButtonText.setClickable(true);
+        copyButtonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
             }
         });
     }

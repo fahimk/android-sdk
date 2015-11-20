@@ -45,6 +45,10 @@ public class YesGraph extends Application {
         return getString(R.string.default_share_link);
     }
 
+    public String getCopyButtonText(){
+        return getString(R.string.button_copy_text);
+    }
+
     public String getShareText() {
         return getString(R.string.default_share_text);
     }

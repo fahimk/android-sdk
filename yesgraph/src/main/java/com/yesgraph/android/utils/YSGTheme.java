@@ -9,7 +9,7 @@ public class YSGTheme {
 
     public static void setThemeColor(int mainForegroundColor, int mainBackgroundColor,
                                      int darkFontColor, int lightFontColor, int rowSelectedColor,
-                                     int rowUnselectedColor, int rowBackgroundColor, int backArrowColor) {
+                                     int rowUnselectedColor, int rowBackgroundColor, int backArrowColor, int copyButtonColor) {
         if (mainForegroundColor != 0) {
             Constants.MAIN_FOREGROUND_COLOR = mainForegroundColor;
         }
@@ -33,6 +33,9 @@ public class YSGTheme {
         }
         if (backArrowColor != 0) {
             Constants.BACK_ARROW_COLOR = backArrowColor;
+        }
+        if(copyButtonColor != 0){
+            Constants.COPY_BUTTON_COLOR = copyButtonColor;
         }
     }
 
@@ -68,5 +71,7 @@ public class YSGTheme {
         return Constants.BACK_ARROW_COLOR;
     }
 
-
+    public static int getCopyButtonColor(){
+        return Constants.COPY_BUTTON_COLOR;
+    }
 }
