@@ -122,15 +122,28 @@ public class ShareSheetActivity extends AppCompatActivity {
         LinearLayout twitterCircleLayout = (LinearLayout)findViewById(R.id.layoutTwitterCircle);
         LinearLayout contactsCircleLayout = (LinearLayout)findViewById(R.id.layoutContactsCircle);
 
-        facebookCircleLayout.setBackgroundResource(R.drawable.circle);
+        String shareButtonShape = YSGTheme.getShareButtonsShape();
+        if(shareButtonShape.equals("circle")){
+            facebookCircleLayout.setBackgroundResource(R.drawable.circle);
+            twitterCircleLayout.setBackgroundResource(R.drawable.circle);
+            contactsCircleLayout.setBackgroundResource(R.drawable.circle);
+        } else if(shareButtonShape.equals("square")){
+            facebookCircleLayout.setBackgroundResource(R.drawable.square_shape);
+            twitterCircleLayout.setBackgroundResource(R.drawable.square_shape);
+            contactsCircleLayout.setBackgroundResource(R.drawable.square_shape);
+        } else if(shareButtonShape.equals("rounded_square")){
+            facebookCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
+            twitterCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
+            contactsCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
+        }
+
+
         GradientDrawable drawableF = (GradientDrawable) facebookCircleLayout.getBackground();
         drawableF.setColor(getResources().getColor(R.color.colorFacebook));
 
-        twitterCircleLayout.setBackgroundResource(R.drawable.circle);
         GradientDrawable drawableT = (GradientDrawable) twitterCircleLayout.getBackground();
         drawableT.setColor(getResources().getColor(R.color.colorTwitter));
 
-        contactsCircleLayout.setBackgroundResource(R.drawable.circle);
         GradientDrawable drawableC = (GradientDrawable) contactsCircleLayout.getBackground();
         drawableC.setColor(YSGTheme.getMainForegroundColor());
 

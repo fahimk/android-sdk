@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 //                startActivity(intent);
                 YSGTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                 YSGTheme.setReferralTextSize(14);
+                YSGTheme.setShareButtonsShape("rounded_square");
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }

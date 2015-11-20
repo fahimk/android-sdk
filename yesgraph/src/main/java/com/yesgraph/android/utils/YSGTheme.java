@@ -1,7 +1,5 @@
 package com.yesgraph.android.utils;
 
-import android.support.v7.app.AppCompatActivity;
-
 /**
  * Created by Dean Bozinoski on 11/19/2015.
  */
@@ -45,7 +43,13 @@ public class YSGTheme {
 
     public static void setReferralTextSize(int referralTextSize){
         if(referralTextSize != 0){
-            Constants.SHARE_TEXT_FONT_SIZE = referralTextSize;
+            Constants.REFERRAL_TEXT_FONT_SIZE = referralTextSize;
+        }
+    }
+
+    public static void setShareButtonsShape(String shape){
+        if(shape != null && !shape.isEmpty()){
+            Constants.SHARE_BUTTON_SHAPE = shape;
         }
     }
 
@@ -89,6 +93,10 @@ public class YSGTheme {
     }
 
     public static int getReferralTextSize(){
-        return Constants.SHARE_TEXT_FONT_SIZE;
+        return Constants.REFERRAL_TEXT_FONT_SIZE;
+    }
+
+    public static String getShareButtonsShape(){
+        return Constants.SHARE_BUTTON_SHAPE;
     }
 }

@@ -18,5 +18,7 @@ public class Constants {
     public static int COPY_BUTTON_COLOR = Color.BLUE;
     public static int REFERRAL_BANNER_BACKGROUND_COLOR = Color.WHITE;
 
-    public static int SHARE_TEXT_FONT_SIZE = 14;
+    public static int REFERRAL_TEXT_FONT_SIZE = 14;
+
+    public static String SHARE_BUTTON_SHAPE = "circle";
 }

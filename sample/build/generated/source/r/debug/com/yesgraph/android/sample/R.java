@@ -2412,10 +2412,12 @@ containing a value of this type.
         public static final int design_fab_background=0x7f020048;
         public static final int design_snackbar_background=0x7f020049;
         public static final int facebook=0x7f02004a;
-        public static final int notification_template_icon_bg=0x7f02004e;
+        public static final int notification_template_icon_bg=0x7f020050;
         public static final int phone=0x7f02004b;
         public static final int rounded_corners=0x7f02004c;
-        public static final int twitter=0x7f02004d;
+        public static final int rounded_square_shape=0x7f02004d;
+        public static final int square_shape=0x7f02004e;
+        public static final int twitter=0x7f02004f;
     }
     public static final class id {
         public static final int action0=0x7f0c0094;
@@ -2433,7 +2435,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f0c005f;
         public static final int action_mode_bar_stub=0x7f0c005e;
         public static final int action_mode_close_button=0x7f0c0044;
-        public static final int action_settings=0x7f0c00a1;
+        public static final int action_settings=0x7f0c00a2;
         public static final int activity_chooser_view_content=0x7f0c0045;
         public static final int add=0x7f0c000d;
         public static final int alertTitle=0x7f0c0051;
@@ -2522,6 +2524,7 @@ containing a value of this type.
         public static final int radio=0x7f0c005c;
         public static final int right=0x7f0c002b;
         public static final int round=0x7f0c003e;
+        public static final int rounded_square_shape=0x7f0c00a1;
         public static final int screen=0x7f0c000f;
         public static final int scroll=0x7f0c0020;
         public static final int scrollIndicatorDown=0x7f0c0056;

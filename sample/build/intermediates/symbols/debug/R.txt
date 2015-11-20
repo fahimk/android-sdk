@@ -587,10 +587,12 @@ int drawable circle_with_border 0x7f020047
 int drawable design_fab_background 0x7f020048
 int drawable design_snackbar_background 0x7f020049
 int drawable facebook 0x7f02004a
-int drawable notification_template_icon_bg 0x7f02004e
+int drawable notification_template_icon_bg 0x7f020050
 int drawable phone 0x7f02004b
 int drawable rounded_corners 0x7f02004c
-int drawable twitter 0x7f02004d
+int drawable rounded_square_shape 0x7f02004d
+int drawable square_shape 0x7f02004e
+int drawable twitter 0x7f02004f
 int id action0 0x7f0c0094
 int id action_bar 0x7f0c0062
 int id action_bar_activity_content 0x7f0c0000
@@ -606,7 +608,7 @@ int id action_menu_presenter 0x7f0c0003
 int id action_mode_bar 0x7f0c005f
 int id action_mode_bar_stub 0x7f0c005e
 int id action_mode_close_button 0x7f0c0044
-int id action_settings 0x7f0c00a1
+int id action_settings 0x7f0c00a2
 int id activity_chooser_view_content 0x7f0c0045
 int id add 0x7f0c000d
 int id alertTitle 0x7f0c0051
@@ -695,6 +697,7 @@ int id progress_horizontal 0x7f0c0007
 int id radio 0x7f0c005c
 int id right 0x7f0c002b
 int id round 0x7f0c003e
+int id rounded_square_shape 0x7f0c00a1
 int id screen 0x7f0c000f
 int id scroll 0x7f0c0020
 int id scrollIndicatorDown 0x7f0c0056
