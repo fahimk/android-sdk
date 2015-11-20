@@ -187,7 +187,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         copyLinkText.setText(application.getCopyLinkText());
         copyLinkText.setTextColor(YSGTheme.getDarkFontColor());
-        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP,YSGTheme.getReferralTextSize());
+        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, YSGTheme.getReferralTextSize());
         copyLinkText.setClickable(true);
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override
