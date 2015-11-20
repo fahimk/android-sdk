@@ -2,7 +2,7 @@
 /local.properties
 /.idea/
 .DS_Store
-/build/
-/sample/build/
+/build
+sample/build/
 /captures
 *.iml
