@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("subject","test subject");
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
-                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-                ysgTheme.setReferralTextSize(14);
-                ysgTheme.setShareButtonsShape("rounded_square");
-                ysgTheme.setFonts("Pacifico.ttf");
+                ysgTheme.setThemeColor(context.getResources().getColor(R.color.colorAccent), 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//                ysgTheme.setReferralTextSize(14);
+//                ysgTheme.setShareButtonsShape("rounded_square");
+//                ysgTheme.setFonts("Pacifico.ttf");
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }

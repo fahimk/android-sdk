@@ -60,7 +60,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         toolbarTitle.setText(getResources().getString(R.string.app_name));
         toolbarTitle.setTextColor(ysgTheme.getBackArrowColor());
         if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(toolbarTitle,ysgTheme.getFont());
+            fontManager.setFont(toolbarTitle, ysgTheme.getFont());
         }
     }
 
@@ -234,7 +234,12 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
         copyButtonText.setText(application.getCopyButtonText());
-        copyButtonText.setTextColor(ysgTheme.getCopyButtonColor());
+        if(ysgTheme.getCopyButtonColor() != 0){
+            copyButtonText.setTextColor(ysgTheme.getCopyButtonColor());
+        } else {
+            copyButtonText.setTextColor(ysgTheme.getMainForegroundColor());
+        }
+        copyButtonText.setTextSize(TypedValue.COMPLEX_UNIT_SP, ysgTheme.getReferralTextSize());
         copyButtonText.setClickable(true);
         copyButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,9 +251,9 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
 
-        if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(copyLinkText,ysgTheme.getFont());
-            fontManager.setFont(copyButtonText,ysgTheme.getFont());
+        if (!Constants.FONT.isEmpty()) {
+            fontManager.setFont(copyLinkText, ysgTheme.getFont());
+            fontManager.setFont(copyButtonText, ysgTheme.getFont());
         }
     }
 

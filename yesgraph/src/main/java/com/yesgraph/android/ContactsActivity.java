@@ -76,6 +76,7 @@ public class ContactsActivity extends AppCompatActivity {
         search = (EditText)findViewById(R.id.search);
         search.setTextColor(ysgTheme.getLightFontColor());
         search.getBackground().setColorFilter(ysgTheme.getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
+        search.setHintTextColor(ysgTheme.getLightFontColor());
         searchBar = (LinearLayout)findViewById(R.id.searhBar);
         searchBar.setBackgroundColor(ysgTheme.getMainForegroundColor());
         contactsList = (RecyclerView)findViewById(R.id.contactsList);
