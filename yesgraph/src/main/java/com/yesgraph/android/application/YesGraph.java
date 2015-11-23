@@ -2,12 +2,12 @@ package com.yesgraph.android.application;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.FontManager;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.

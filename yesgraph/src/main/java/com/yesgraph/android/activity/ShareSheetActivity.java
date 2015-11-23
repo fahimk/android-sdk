@@ -23,6 +23,8 @@ import com.bettervectordrawable.VectorDrawableCompat;
 import com.yesgraph.android.ContactsActivity;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
 import com.yesgraph.android.utils.YSGTheme;
 
@@ -32,6 +34,7 @@ public class ShareSheetActivity extends AppCompatActivity {
     private Context context;
     private Toolbar toolbar;
     private TextView shareText, facebookText, twitterText, contactsText;
+    private FontManager fontManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         application = (YesGraph) getApplicationContext();
         context = this;
+        fontManager = FontManager.getInstance();
 
     }
     private void setToolbar(){
@@ -96,11 +100,14 @@ public class ShareSheetActivity extends AppCompatActivity {
         shareText = (TextView)findViewById(R.id.shareText);
         shareText.setText(application.getShareText());
         shareText.setTextColor(YSGTheme.getDarkFontColor());
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(shareText,YSGTheme.getFont());
+        }
     }
 
     private void setActionBar() {
         String color=String.format("#%06X", (0xFFFFFF & YSGTheme.getLightFontColor()));
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='"+color+"'>"+getSupportActionBar().getTitle()+"</font>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getSupportActionBar().getTitle() + "</FONT>"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
     }
 
@@ -113,6 +120,12 @@ public class ShareSheetActivity extends AppCompatActivity {
         facebookText.setTextColor(YSGTheme.getDarkFontColor());
         twitterText.setTextColor(YSGTheme.getDarkFontColor());
         contactsText.setTextColor(YSGTheme.getDarkFontColor());
+
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(facebookText,YSGTheme.getFont());
+            fontManager.setFont(twitterText,YSGTheme.getFont());
+            fontManager.setFont(contactsText,YSGTheme.getFont());
+        }
 
         LinearLayout facebookLayout = (LinearLayout)findViewById(R.id.layoutFacebook);
         LinearLayout twitterLayout = (LinearLayout)findViewById(R.id.layoutTwitter);
@@ -223,6 +236,11 @@ public class ShareSheetActivity extends AppCompatActivity {
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
             }
         });
+
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(copyLinkText,YSGTheme.getFont());
+            fontManager.setFont(copyButtonText,YSGTheme.getFont());
+        }
     }
 
     private void setBackground()

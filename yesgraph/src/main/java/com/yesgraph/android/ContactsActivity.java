@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
+import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.YSGTheme;
 
 import java.lang.reflect.Array;
@@ -52,6 +54,7 @@ public class ContactsActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private ArrayList<RegularContact> contacts;
     private Toolbar toolbar;
+    private FontManager fontManager;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -62,6 +65,7 @@ public class ContactsActivity extends AppCompatActivity {
         setToolbar();
 
         application = (YesGraph) getApplicationContext();
+        fontManager = FontManager.getInstance();
         context = this;
 
         search = (EditText)findViewById(R.id.search);
@@ -71,6 +75,10 @@ public class ContactsActivity extends AppCompatActivity {
         searchBar.setBackgroundColor(YSGTheme.getMainForegroundColor());
         contactsList = (RecyclerView)findViewById(R.id.contactsList);
         contactsList.setBackgroundColor(YSGTheme.getRowBackgroundColor());
+
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(search,YSGTheme.getFont());
+        }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -172,6 +180,17 @@ public class ContactsActivity extends AppCompatActivity {
         }
 
         return wrapped;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private ArrayList<RegularContact> getContactsFromContactList()

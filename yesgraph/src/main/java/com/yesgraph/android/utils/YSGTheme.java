@@ -99,4 +99,13 @@ public class YSGTheme {
     public static String getShareButtonsShape(){
         return Constants.SHARE_BUTTON_SHAPE;
     }
+
+    public static void setFonts(String font){
+        Constants.FONT = font;
+
+    }
+
+    public static String getFont(){
+        return Constants.FONT;
+    }
 }

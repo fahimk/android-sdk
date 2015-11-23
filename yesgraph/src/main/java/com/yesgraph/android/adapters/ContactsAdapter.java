@@ -15,6 +15,8 @@ import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
 import com.yesgraph.android.utils.YSGTheme;
 
@@ -31,6 +33,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private OnItemClickListener itemClickListener;
     private YesGraph application;
+    private FontManager fontManager;
 
     private static final int TYPE_DATA = 1;
     private static final int TYPE_HEADER = 2;
@@ -39,6 +42,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.items = items;
         this.application = application;
         this.context = context;
+        fontManager = FontManager.getInstance();
     }
 
     @Override
@@ -60,6 +64,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             RegularContact contact=(RegularContact)items.get(i);
             contactsViewHolder.name.setText(contact.getName());
             contactsViewHolder.contact.setText(contact.getContact());
+
+            if(!Constants.FONT.isEmpty()){
+                fontManager.setFont(contactsViewHolder.name,YSGTheme.getFont());
+                fontManager.setFont(contactsViewHolder.contact,YSGTheme.getFont());
+            }
 
             if(contact.getSelected())
             {
@@ -83,6 +92,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             HeaderViewHolder headerViewHolder=(HeaderViewHolder)viewHolder;
             HeaderContact header=(HeaderContact)items.get(i);
             headerViewHolder.sign.setText(header.getSign());
+            if(!Constants.FONT.isEmpty()){
+                fontManager.setFont(headerViewHolder.sign,YSGTheme.getFont());
+            }
         }
     }
 

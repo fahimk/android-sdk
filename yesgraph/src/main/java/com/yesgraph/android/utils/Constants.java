@@ -21,4 +21,6 @@ public class Constants {
     public static int REFERRAL_TEXT_FONT_SIZE = 14;
 
     public static String SHARE_BUTTON_SHAPE = "circle";
+
+    public static String FONT = "";
 }
