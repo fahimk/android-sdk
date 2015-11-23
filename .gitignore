@@ -6,3 +6,4 @@
 sample/build/**
 /captures
 *.iml
+/sample/build
