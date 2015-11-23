@@ -10,4 +10,5 @@
     <dimen name="font_size_normal">18sp</dimen>
     <dimen name="font_size_big">28sp</dimen>
     <dimen name="font_size_superbig">35sp</dimen>
+    <dimen name="font_size_actionbar">20sp</dimen>
 </resources>

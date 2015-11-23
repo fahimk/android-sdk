@@ -33,26 +33,35 @@ public class ShareSheetActivity extends AppCompatActivity {
     private YesGraph application;
     private Context context;
     private Toolbar toolbar;
-    private TextView shareText, facebookText, twitterText, contactsText;
+    private TextView shareText, facebookText, twitterText, contactsText, toolbarTitle;
     private FontManager fontManager;
+    private YSGTheme ysgTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_sheet);
+
+        fontManager = FontManager.getInstance();
+        ysgTheme = new YSGTheme();
         setToolbar();
 
         application = (YesGraph) getApplicationContext();
         context = this;
-        fontManager = FontManager.getInstance();
 
     }
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ysgTheme.getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
+        toolbarTitle.setText(getResources().getString(R.string.app_name));
+        toolbarTitle.setTextColor(ysgTheme.getBackArrowColor());
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(toolbarTitle,ysgTheme.getFont());
+        }
     }
 
     private Drawable getColoredArrow() {
@@ -62,7 +71,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         if (arrowDrawable != null && wrapped != null) {
             // This should avoid tinting all the arrows
             arrowDrawable.mutate();
-            DrawableCompat.setTint(wrapped, YSGTheme.getBackArrowColor());
+            DrawableCompat.setTint(wrapped, ysgTheme.getBackArrowColor());
         }
 
         return wrapped;
@@ -99,16 +108,16 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void setShareText() {
         shareText = (TextView)findViewById(R.id.shareText);
         shareText.setText(application.getShareText());
-        shareText.setTextColor(YSGTheme.getDarkFontColor());
+        shareText.setTextColor(ysgTheme.getDarkFontColor());
         if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(shareText,YSGTheme.getFont());
+            fontManager.setFont(shareText,ysgTheme.getFont());
         }
     }
 
     private void setActionBar() {
-        String color=String.format("#%06X", (0xFFFFFF & YSGTheme.getLightFontColor()));
+        String color=String.format("#%06X", (0xFFFFFF & ysgTheme.getLightFontColor()));
         getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getSupportActionBar().getTitle() + "</FONT>"));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ysgTheme.getMainForegroundColor()));
     }
 
     private void setShareIconsAndText()
@@ -117,14 +126,14 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterText = (TextView)findViewById(R.id.textTwitter);
         contactsText = (TextView)findViewById(R.id.textContacts);
 
-        facebookText.setTextColor(YSGTheme.getDarkFontColor());
-        twitterText.setTextColor(YSGTheme.getDarkFontColor());
-        contactsText.setTextColor(YSGTheme.getDarkFontColor());
+        facebookText.setTextColor(ysgTheme.getDarkFontColor());
+        twitterText.setTextColor(ysgTheme.getDarkFontColor());
+        contactsText.setTextColor(ysgTheme.getDarkFontColor());
 
         if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(facebookText,YSGTheme.getFont());
-            fontManager.setFont(twitterText,YSGTheme.getFont());
-            fontManager.setFont(contactsText,YSGTheme.getFont());
+            fontManager.setFont(facebookText,ysgTheme.getFont());
+            fontManager.setFont(twitterText,ysgTheme.getFont());
+            fontManager.setFont(contactsText,ysgTheme.getFont());
         }
 
         LinearLayout facebookLayout = (LinearLayout)findViewById(R.id.layoutFacebook);
@@ -135,7 +144,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         LinearLayout twitterCircleLayout = (LinearLayout)findViewById(R.id.layoutTwitterCircle);
         LinearLayout contactsCircleLayout = (LinearLayout)findViewById(R.id.layoutContactsCircle);
 
-        String shareButtonShape = YSGTheme.getShareButtonsShape();
+        String shareButtonShape = ysgTheme.getShareButtonsShape();
         if(shareButtonShape.equals("circle")){
             facebookCircleLayout.setBackgroundResource(R.drawable.circle);
             twitterCircleLayout.setBackgroundResource(R.drawable.circle);
@@ -158,7 +167,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         drawableT.setColor(getResources().getColor(R.color.colorTwitter));
 
         GradientDrawable drawableC = (GradientDrawable) contactsCircleLayout.getBackground();
-        drawableC.setColor(YSGTheme.getMainForegroundColor());
+        drawableC.setColor(ysgTheme.getMainForegroundColor());
 
         ImageView facebookImage = (ImageView)findViewById(R.id.imageFacebook);
         ImageView twitterImage = (ImageView)findViewById(R.id.imageTwitter);
@@ -208,12 +217,12 @@ public class ShareSheetActivity extends AppCompatActivity {
         copyLinkLayout.setBackgroundResource(R.drawable.rounded_corners);
 
         GradientDrawable drawable = (GradientDrawable) copyLinkLayout.getBackground();
-        drawable.setStroke(Visual.getPixelsFromDp(context, 3), YSGTheme.getMainForegroundColor());
-        drawable.setColor(YSGTheme.getReferralBunnerBackgroundColor());
+        drawable.setStroke(Visual.getPixelsFromDp(context, 3), ysgTheme.getMainForegroundColor());
+        drawable.setColor(ysgTheme.getReferralBunnerBackgroundColor());
 
         copyLinkText.setText(application.getCopyLinkText());
-        copyLinkText.setTextColor(YSGTheme.getDarkFontColor());
-        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, YSGTheme.getReferralTextSize());
+        copyLinkText.setTextColor(ysgTheme.getDarkFontColor());
+        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, ysgTheme.getReferralTextSize());
         copyLinkText.setClickable(true);
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +234,7 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
         copyButtonText.setText(application.getCopyButtonText());
-        copyButtonText.setTextColor(YSGTheme.getCopyButtonColor());
+        copyButtonText.setTextColor(ysgTheme.getCopyButtonColor());
         copyButtonText.setClickable(true);
         copyButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,15 +247,15 @@ public class ShareSheetActivity extends AppCompatActivity {
         });
 
         if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(copyLinkText,YSGTheme.getFont());
-            fontManager.setFont(copyButtonText,YSGTheme.getFont());
+            fontManager.setFont(copyLinkText,ysgTheme.getFont());
+            fontManager.setFont(copyButtonText,ysgTheme.getFont());
         }
     }
 
     private void setBackground()
     {
         RelativeLayout masterLayout = (RelativeLayout)findViewById(R.id.layoutMaster);
-        masterLayout.setBackgroundColor(YSGTheme.getMainBackgroundColor());
+        masterLayout.setBackgroundColor(ysgTheme.getMainBackgroundColor());
     }
 
 

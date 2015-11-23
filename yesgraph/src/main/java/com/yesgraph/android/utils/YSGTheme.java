@@ -5,7 +5,7 @@ package com.yesgraph.android.utils;
  */
 public class YSGTheme {
 
-    public static void setThemeColor(int mainForegroundColor, int mainBackgroundColor,
+    public void setThemeColor(int mainForegroundColor, int mainBackgroundColor,
                                      int darkFontColor, int lightFontColor, int rowSelectedColor,
                                      int rowUnselectedColor, int rowBackgroundColor, int backArrowColor, int copyButtonColor,
                                      int referralBannerBackgroundColor) {
@@ -41,39 +41,39 @@ public class YSGTheme {
         }
     }
 
-    public static void setReferralTextSize(int referralTextSize){
+    public void setReferralTextSize(int referralTextSize){
         if(referralTextSize != 0){
             Constants.REFERRAL_TEXT_FONT_SIZE = referralTextSize;
         }
     }
 
-    public static void setShareButtonsShape(String shape){
+    public void setShareButtonsShape(String shape){
         if(shape != null && !shape.isEmpty()){
             Constants.SHARE_BUTTON_SHAPE = shape;
         }
     }
 
-    public static int getMainForegroundColor() {
+    public int getMainForegroundColor() {
         return Constants.MAIN_FOREGROUND_COLOR;
     }
 
-    public static int getMainBackgroundColor() {
+    public int getMainBackgroundColor() {
         return Constants.MAIN_BACKGROUND_COLOR;
     }
 
-    public static int getDarkFontColor() {
+    public int getDarkFontColor() {
         return Constants.DARK_FONT_COLOR;
     }
 
-    public static int getLightFontColor() {
+    public int getLightFontColor() {
         return Constants.LIGHT_FONT_COLOR;
     }
 
-    public static int getRowSelectedColor() {
+    public int getRowSelectedColor() {
         return Constants.ROW_SELECTED_COLOR;
     }
 
-    public static int getRowUnselectedColor() {
+    public int getRowUnselectedColor() {
         return Constants.ROW_UNSELECTED_COLOR;
     }
 
@@ -81,31 +81,31 @@ public class YSGTheme {
         return Constants.ROW_BACKGROUND_COLOR;
     }
 
-    public static int getBackArrowColor() {
+    public int getBackArrowColor() {
         return Constants.BACK_ARROW_COLOR;
     }
 
-    public static int getCopyButtonColor(){
+    public int getCopyButtonColor(){
         return Constants.COPY_BUTTON_COLOR;
     }
-    public static int getReferralBunnerBackgroundColor(){
+    public int getReferralBunnerBackgroundColor(){
         return Constants.REFERRAL_BANNER_BACKGROUND_COLOR;
     }
 
-    public static int getReferralTextSize(){
+    public int getReferralTextSize(){
         return Constants.REFERRAL_TEXT_FONT_SIZE;
     }
 
-    public static String getShareButtonsShape(){
+    public String getShareButtonsShape(){
         return Constants.SHARE_BUTTON_SHAPE;
     }
 
-    public static void setFonts(String font){
+    public void setFonts(String font){
         Constants.FONT = font;
 
     }
 
-    public static String getFont(){
+    public String getFont(){
         return Constants.FONT;
     }
 }

@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yesgraph.android.adapters.ContactsAdapter;
@@ -55,6 +56,8 @@ public class ContactsActivity extends AppCompatActivity {
     private ArrayList<RegularContact> contacts;
     private Toolbar toolbar;
     private FontManager fontManager;
+    private TextView toolbarTitle;
+    private YSGTheme ysgTheme;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -62,22 +65,24 @@ public class ContactsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+
+        fontManager = FontManager.getInstance();
+        ysgTheme = new YSGTheme();
         setToolbar();
 
         application = (YesGraph) getApplicationContext();
-        fontManager = FontManager.getInstance();
         context = this;
 
         search = (EditText)findViewById(R.id.search);
-        search.setTextColor(YSGTheme.getLightFontColor());
-        search.getBackground().setColorFilter(YSGTheme.getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
+        search.setTextColor(ysgTheme.getLightFontColor());
+        search.getBackground().setColorFilter(ysgTheme.getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
         searchBar = (LinearLayout)findViewById(R.id.searhBar);
-        searchBar.setBackgroundColor(YSGTheme.getMainForegroundColor());
+        searchBar.setBackgroundColor(ysgTheme.getMainForegroundColor());
         contactsList = (RecyclerView)findViewById(R.id.contactsList);
         contactsList.setBackgroundColor(YSGTheme.getRowBackgroundColor());
 
         if(!Constants.FONT.isEmpty()){
-            fontManager.setFont(search,YSGTheme.getFont());
+            fontManager.setFont(search,ysgTheme.getFont());
         }
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -163,10 +168,16 @@ public class ContactsActivity extends AppCompatActivity {
 
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(YSGTheme.getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ysgTheme.getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
+        toolbarTitle.setText(getResources().getString(R.string.app_name));
+        toolbarTitle.setTextColor(ysgTheme.getBackArrowColor());
+        if(!Constants.FONT.isEmpty()){
+            fontManager.setFont(toolbarTitle,ysgTheme.getFont());
+        }
     }
 
     private Drawable getColoredArrow() {
@@ -176,7 +187,7 @@ public class ContactsActivity extends AppCompatActivity {
         if (arrowDrawable != null && wrapped != null) {
             // This should avoid tinting all the arrows
             arrowDrawable.mutate();
-            DrawableCompat.setTint(wrapped, YSGTheme.getBackArrowColor());
+            DrawableCompat.setTint(wrapped, ysgTheme.getBackArrowColor());
         }
 
         return wrapped;
