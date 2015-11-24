@@ -2,17 +2,26 @@ package com.yesgraph.android.sample;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.utils.YSGTheme;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
+    private YesGraph yesGraphApplication;
+    private YSGTheme ysgTheme;
+    private TextView description5_3, description5_4, description5_1, description5_2;
+    private Button btn_tryYesGraph, btn_tryYesGraph2, btn_tryYesGraph3, btn_tryYesGraph4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,39 +31,95 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         context = this;
 
-        context = this;
+        yesGraphApplication = (YesGraph) getApplicationContext();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        initUI();
+
+//        ysgTheme = new YSGTheme();
+//        ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//        ysgTheme.setReferralTextSize(14);
+//        ysgTheme.setShareButtonsShape("rounded_square");
+//        ysgTheme.setFonts("Pacifico.ttf");
+//        yesGraphApplication.setYsgTheme(ysgTheme);
+    }
+
+    private void initUI() {
+
+        btn_tryYesGraph = (Button) findViewById(R.id.btn_tryYesGraph);
+        btn_tryYesGraph2 = (Button) findViewById(R.id.btn_tryYesGraph2);
+        btn_tryYesGraph3 = (Button) findViewById(R.id.btn_tryYesGraph3);
+        btn_tryYesGraph4 = (Button) findViewById(R.id.btn_tryYesGraph4);
+
+        description5_1 = (TextView) findViewById(R.id.description5_1);
+        description5_2 = (TextView) findViewById(R.id.description5_2);
+
+        description5_3 = (TextView) findViewById(R.id.description5_3);
+        description5_3.setText(Html.fromHtml(context.getResources().getString(R.string.description5_3)));
+        description5_3.setMovementMethod(LinkMovementMethod.getInstance());
+
+        description5_4 = (TextView) findViewById(R.id.description5_4);
+        description5_4.setText(Html.fromHtml(context.getResources().getString(R.string.description5_4)));
+        description5_4.setMovementMethod(LinkMovementMethod.getInstance());
+
+        description5_1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-                Intent intent = new Intent(context, com.yesgraph.android.activity.MainActivity.class);
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                startActivity(browserIntent);
+            }
+        });
+
+        description5_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                startActivity(browserIntent);
+            }
+        });
+
+        description5_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                startActivity(browserIntent);
+            }
+        });
+
+        description5_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+                startActivity(browserIntent);
+            }
+        });
+
+        btn_tryYesGraph.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        btn_tryYesGraph2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
+                startActivity(intent);
+            }
+        });
+        btn_tryYesGraph3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
+                startActivity(intent);
+            }
+        });
+        btn_tryYesGraph4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

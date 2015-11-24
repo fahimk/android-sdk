@@ -11,8 +11,8 @@
     <color name="colorContactsNumber">#555555</color>
 
     <color name="text_color_dark_gray">#212121</color>
-    <color name="base_color_main_bacground">#F5F5F5</color>
-    <color name="referral_banner_bacground_color">#F5F5F5</color>
+    <color name="base_color_main_background">#F5F5F5</color>
+    <color name="referral_banner_background_color">#F5F5F5</color>
 
     <color name="color_white">#00FFFFFF</color>
 </resources>
