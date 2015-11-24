@@ -124,8 +124,9 @@ abstract class HttpMethodAbstract {
                             Log.i("WEB RESPONSE", "CODE:" + responseCode + " MESSAGE:" + sResponse.toString());
                             JSONObject jsonResponse = new JSONObject(sResponse);
 
-                            if (responseCode != 200){
+                            if (responseCode < 200 || responseCode > 399){
                                 callbackMessage.obj = jsonResponse;
+                                callbackMessage.what = responseCode;
                                 return null;
                             }
 
@@ -133,7 +134,7 @@ abstract class HttpMethodAbstract {
 
                         } catch (IOException e) {
                             e.printStackTrace();
-
+                            callbackMessage.what = Constants.RESULT_ERROR;
                             return e;
                         } finally {
                             try {
@@ -144,12 +145,18 @@ abstract class HttpMethodAbstract {
                         }
                     }
                     else{
-                        return "Response is null!";
+                        JSONObject jsonError=new JSONObject();
+                        jsonError.put("error", "response is null");
+
+                        callbackMessage.obj = jsonError;
+                        callbackMessage.what = Constants.RESULT_ERROR;
+                        return null;
                     }
                 }
                 catch (Exception e)
                 {
                     e.printStackTrace();
+                    callbackMessage.what = Constants.RESULT_ERROR;
                     return e;
                 }
             }
@@ -159,13 +166,17 @@ abstract class HttpMethodAbstract {
                 //if result is JSONObject all is OK
                 if (result != null && (result instanceof JSONObject))
                 {
-                    callbackMessage.what = 1;
+                    callbackMessage.what = Constants.RESULT_OK;
                     callbackMessage.obj = result;
                     callback.handleMessage(callbackMessage);
                 }
                 else {
-                    callbackMessage.what = 0;
-                    if (callbackMessage.obj == null && result != null){
+                    /*if (callbackMessage.what != Constants.RESULT_ERROR)
+                    {
+                        callbackMessage.what = Constants.RESULT_ERROR;
+                    }*/
+                    if (callbackMessage.obj == null && result != null)
+                    {
                         callbackMessage.obj = result;
                     }
                     callback.handleMessage(callbackMessage);
