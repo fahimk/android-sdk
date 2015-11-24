@@ -2,6 +2,7 @@ package com.yesgraph.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,10 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.utils.YSGTheme;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
+    private YesGraph app;
+    private YSGTheme ysgTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         context = this;
+        app = (YesGraph) getApplication();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -32,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-                String[] contacts = {"+38975567106","+38978206505"};
-                Intent intent = new Intent(context,SendSmsActivity.class);
-                intent.putExtra("contacts",contacts);
-                intent.putExtra("message","test");
-                startActivity(intent);
+//                String[] contacts = {"+38975567106","+38978206505"};
+//                Intent intent = new Intent(context,SendSmsActivity.class);
+//                intent.putExtra("contacts",contacts);
+//                intent.putExtra("message","test");
+//                startActivity(intent);
 
 //                String[] contacts = {"d.bozinoski@gmail.com","dean.bozinoski@poviolabs.com"};
 //                Intent intent = new Intent(context,SendEmailActivity.class);
@@ -44,6 +50,15 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("subject","test subject");
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
+
+//                ysgTheme = new YSGTheme();
+//                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//                ysgTheme.setReferralTextSize(14);
+//                ysgTheme.setShareButtonsShape("rounded_square");
+//                ysgTheme.setFonts("Pacifico.ttf");
+//                app.setYsgTheme(ysgTheme);
+                Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
+                startActivity(intent);
             }
         });
     }

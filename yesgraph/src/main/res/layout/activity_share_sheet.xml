@@ -13,7 +13,17 @@
 
     <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
         android:layout_width="match_parent" android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:background="?attr/colorPrimary" app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/toolbarTitle"
+            android:textSize="@dimen/font_size_actionbar"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -155,15 +165,15 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
+        <RelativeLayout
+            android:id="@+id/copyLinkLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="10dp"
             android:layout_weight="2">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:text="New Text"
                 android:id="@+id/textCopyLink"
@@ -172,7 +182,19 @@
                 android:paddingRight="15dp"
                 android:singleLine="true"
                 android:textSize="@dimen/font_size_small" />
-        </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/textCopyButton"
+                android:gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:paddingRight="15dp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:textSize="@dimen/font_size_small" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>

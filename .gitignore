@@ -3,6 +3,7 @@
 /.idea/
 .DS_Store
 /build
-/sample/build
+sample/build/**
 /captures
 *.iml
+/sample/build

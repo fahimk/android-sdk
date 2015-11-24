@@ -15,7 +15,10 @@ import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
+import com.yesgraph.android.utils.YSGTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private OnItemClickListener itemClickListener;
     private YesGraph application;
+    private FontManager fontManager;
 
     private static final int TYPE_DATA = 1;
     private static final int TYPE_HEADER = 2;
@@ -38,6 +42,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.items = items;
         this.application = application;
         this.context = context;
+        fontManager = FontManager.getInstance();
+
     }
 
     @Override
@@ -60,13 +66,18 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             contactsViewHolder.name.setText(contact.getName());
             contactsViewHolder.contact.setText(contact.getContact());
 
+            if(!application.getYsgTheme().getFont().isEmpty()){
+                fontManager.setFont(contactsViewHolder.name,application.getYsgTheme().getFont());
+                fontManager.setFont(contactsViewHolder.contact,application.getYsgTheme().getFont());
+            }
+
             if(contact.getSelected())
             {
                 contactsViewHolder.check.setBackgroundResource(R.drawable.circle);
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
-                drawable.setColor(application.getMainForegroundColor());
-                drawable.setStroke(Visual.getPixelsFromDp(context, 1), application.getMainForegroundColor());
-                contactsViewHolder.background.setBackgroundColor(application.getRowSelectedColor());
+                drawable.setColor(application.getYsgTheme().getMainForegroundColor());
+                drawable.setStroke(Visual.getPixelsFromDp(context, 1), application.getYsgTheme().getMainForegroundColor());
+                contactsViewHolder.background.setBackgroundColor(application.getYsgTheme().getRowSelectedColor());
             }
             else
             {
@@ -74,7 +85,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
                 drawable.setColor(context.getResources().getColor(android.R.color.white));
                 drawable.setStroke(Visual.getPixelsFromDp(context, 1), context.getResources().getColor(android.R.color.darker_gray));
-                contactsViewHolder.background.setBackgroundColor(application.getRowUnselectedColor());
+                contactsViewHolder.background.setBackgroundColor(application.getYsgTheme().getRowUnselectedColor());
             }
         }
         else
@@ -82,6 +93,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             HeaderViewHolder headerViewHolder=(HeaderViewHolder)viewHolder;
             HeaderContact header=(HeaderContact)items.get(i);
             headerViewHolder.sign.setText(header.getSign());
+            if(!application.getYsgTheme().getFont().isEmpty()){
+                fontManager.setFont(headerViewHolder.sign,application.getYsgTheme().getFont());
+            }
+            headerViewHolder.view.setBackgroundColor(application.getYsgTheme().getRowSelectedColor());
         }
     }
 
@@ -136,10 +151,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
         protected TextView sign;
+        protected View view;
 
         public HeaderViewHolder(View v) {
             super(v);
             sign = (TextView) v.findViewById(R.id.sign);
+            view = v;
         }
     }
 
