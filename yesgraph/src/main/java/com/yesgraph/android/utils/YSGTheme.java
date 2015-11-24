@@ -1,111 +1,119 @@
 package com.yesgraph.android.utils;
 
+import com.yesgraph.android.application.YesGraph;
+
 /**
  * Created by Dean Bozinoski on 11/19/2015.
  */
 public class YSGTheme {
+
+    private Constants constants;
+
+    public YSGTheme (){
+        constants = new Constants();
+    }
 
     public void setThemeColor(int mainForegroundColor, int mainBackgroundColor,
                                      int darkFontColor, int lightFontColor, int rowSelectedColor,
                                      int rowUnselectedColor, int rowBackgroundColor, int backArrowColor, int copyButtonColor,
                                      int referralBannerBackgroundColor) {
         if (mainForegroundColor != 0) {
-            Constants.MAIN_FOREGROUND_COLOR = mainForegroundColor;
+            constants.setMAIN_FOREGROUND_COLOR(mainForegroundColor);
         }
         if (mainBackgroundColor != 0) {
-            Constants.MAIN_BACKGROUND_COLOR = mainBackgroundColor;
+            constants.setMAIN_BACKGROUND_COLOR(mainBackgroundColor);
         }
         if (darkFontColor != 0) {
-            Constants.DARK_FONT_COLOR = darkFontColor;
+            constants.setDARK_FONT_COLOR(darkFontColor);
         }
         if (lightFontColor != 0) {
-            Constants.LIGHT_FONT_COLOR = lightFontColor;
+            constants.setLIGHT_FONT_COLOR(lightFontColor);
         }
         if (rowSelectedColor != 0) {
-            Constants.ROW_SELECTED_COLOR = rowSelectedColor;
+            constants.setROW_SELECTED_COLOR(rowSelectedColor);
         }
         if (rowUnselectedColor != 0) {
-            Constants.ROW_UNSELECTED_COLOR = rowUnselectedColor;
+            constants.setROW_UNSELECTED_COLOR(rowUnselectedColor);
         }
         if (rowBackgroundColor != 0) {
-            Constants.ROW_BACKGROUND_COLOR = rowBackgroundColor;
+            constants.setROW_BACKGROUND_COLOR(rowBackgroundColor);
         }
         if (backArrowColor != 0) {
-            Constants.BACK_ARROW_COLOR = backArrowColor;
+            constants.setBACK_ARROW_COLOR(backArrowColor);
         }
         if(copyButtonColor != 0){
-            Constants.COPY_BUTTON_COLOR = copyButtonColor;
+            constants.setCOPY_BUTTON_COLOR(copyButtonColor);
         }
         if(referralBannerBackgroundColor !=0){
-            Constants.REFERRAL_BANNER_BACKGROUND_COLOR = referralBannerBackgroundColor;
+            constants.setREFERRAL_BANNER_BACKGROUND_COLOR(referralBannerBackgroundColor);
         }
     }
 
     public void setReferralTextSize(int referralTextSize){
         if(referralTextSize != 0){
-            Constants.REFERRAL_TEXT_FONT_SIZE = referralTextSize;
+            constants.setREFERRAL_TEXT_FONT_SIZE(referralTextSize);
         }
     }
 
     public void setShareButtonsShape(String shape){
         if(shape != null && !shape.isEmpty()){
-            Constants.SHARE_BUTTON_SHAPE = shape;
+            constants.setSHARE_BUTTON_SHAPE(shape);
         }
     }
 
+    public void setFonts(String font){
+        constants.setFONT(font);
+
+    }
+
     public int getMainForegroundColor() {
-        return Constants.MAIN_FOREGROUND_COLOR;
+        return constants.getMAIN_FOREGROUND_COLOR();
     }
 
     public int getMainBackgroundColor() {
-        return Constants.MAIN_BACKGROUND_COLOR;
+        return constants.getMAIN_BACKGROUND_COLOR();
     }
 
     public int getDarkFontColor() {
-        return Constants.DARK_FONT_COLOR;
+        return constants.getDARK_FONT_COLOR();
     }
 
     public int getLightFontColor() {
-        return Constants.LIGHT_FONT_COLOR;
+        return constants.getLIGHT_FONT_COLOR();
     }
 
     public int getRowSelectedColor() {
-        return Constants.ROW_SELECTED_COLOR;
+        return constants.getROW_SELECTED_COLOR();
     }
 
     public int getRowUnselectedColor() {
-        return Constants.ROW_UNSELECTED_COLOR;
+        return constants.getROW_UNSELECTED_COLOR();
     }
 
-    public static int getRowBackgroundColor() {
-        return Constants.ROW_BACKGROUND_COLOR;
+    public int getRowBackgroundColor() {
+        return constants.getROW_BACKGROUND_COLOR();
     }
 
     public int getBackArrowColor() {
-        return Constants.BACK_ARROW_COLOR;
+        return constants.getBACK_ARROW_COLOR();
     }
 
     public int getCopyButtonColor(){
-        return Constants.COPY_BUTTON_COLOR;
+        return constants.getCOPY_BUTTON_COLOR();
     }
     public int getReferralBunnerBackgroundColor(){
-        return Constants.REFERRAL_BANNER_BACKGROUND_COLOR;
+        return constants.getREFERRAL_BANNER_BACKGROUND_COLOR();
     }
 
     public int getReferralTextSize(){
-        return Constants.REFERRAL_TEXT_FONT_SIZE;
+        return constants.getREFERRAL_TEXT_FONT_SIZE();
     }
 
     public String getShareButtonsShape(){
-        return Constants.SHARE_BUTTON_SHAPE;
-    }
-
-    public void setFonts(String font){
-        Constants.FONT = font;
-
+        return constants.getSHARE_BUTTON_SHAPE();
     }
 
     public String getFont(){
-        return Constants.FONT;
+        return constants.getFONT();
     }
 }

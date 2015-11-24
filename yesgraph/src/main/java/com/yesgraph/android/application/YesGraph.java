@@ -4,15 +4,19 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.util.Log;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.FontManager;
+import com.yesgraph.android.utils.YSGTheme;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.
  */
 public class YesGraph extends Application {
+
+    private YSGTheme ysgTheme;
 
     @Override
     public void onCreate() {
@@ -22,6 +26,18 @@ public class YesGraph extends Application {
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public YSGTheme getYsgTheme() {
+        if(ysgTheme != null){
+            return this.ysgTheme;
+        } else {
+            return new YSGTheme();
+        }
+    }
+
+    public void setYsgTheme(YSGTheme ysgTheme) {
+        this.ysgTheme = ysgTheme;
     }
 
     public static boolean isMarshmallow() {

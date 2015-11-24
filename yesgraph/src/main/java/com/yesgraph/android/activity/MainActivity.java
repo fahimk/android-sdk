@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         context = this;
-        app = new YesGraph();
-        ysgTheme = new YSGTheme();
+        app = (YesGraph) getApplication();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -51,10 +50,13 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("subject","test subject");
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
-                ysgTheme.setThemeColor(context.getResources().getColor(R.color.colorAccent), 0, 0, 0, 0, 0, 0, 0, 0, 0);
-//                ysgTheme.setReferralTextSize(14);
-//                ysgTheme.setShareButtonsShape("rounded_square");
-//                ysgTheme.setFonts("Pacifico.ttf");
+
+                ysgTheme = new YSGTheme();
+                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                ysgTheme.setReferralTextSize(14);
+                ysgTheme.setShareButtonsShape("rounded_square");
+                ysgTheme.setFonts("Pacifico.ttf");
+                app.setYsgTheme(ysgTheme);
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
