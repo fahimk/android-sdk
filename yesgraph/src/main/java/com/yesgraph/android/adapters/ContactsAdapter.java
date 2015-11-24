@@ -96,6 +96,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if(!application.getYsgTheme().getFont().isEmpty()){
                 fontManager.setFont(headerViewHolder.sign,application.getYsgTheme().getFont());
             }
+            headerViewHolder.view.setBackgroundColor(application.getYsgTheme().getRowSelectedColor());
         }
     }
 
@@ -150,10 +151,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
         protected TextView sign;
+        protected View view;
 
         public HeaderViewHolder(View v) {
             super(v);
             sign = (TextView) v.findViewById(R.id.sign);
+            view = v;
         }
     }
 
