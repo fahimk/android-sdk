@@ -1,4 +1,32 @@
 <resources>
     <string name="app_name">YesGraph Sample</string>
     <string name="action_settings">Settings</string>
+
+    <!-- MainActivity -->
+    <string name="mainTitle">YesGraph Boosts Your App\'s Viral Growth</string>
+    <string name="description1">Welcome to YesGraph\'s example app! We\'ll show you how you grow
+        faster and how YesGraph works.\n\nYou can try ourSDK just by clicking \"Try YesGraph\" anytime.</string>
+    <string name="btn_tryYesGraph">Try YesGraph</string>
+    <string name="title2">Why Choose YesGraph</string>
+    <string name="description2">YesGraph can recommend exactly who you should invite.
+        We do this with machine learning and data crunching.\n\n
+        1.Our flow uses industry best practises.\n\n
+        2.Save engeneering time and focus on your app.\n\n
+        3.Improve your virality metrics, like conversion rate and # invites sent.\n\n
+        4.Personalized suggestions make for a better user experience.\n\n
+        5.Our SDK is easy to itegrate</string>
+    <string name="title3">How YesGraph Works</string>
+    <string name="description3">YesGraph learns the patterns in your app automatically using past
+        successful invitations to train a filter. We extract features about what kind of relationships
+        and people are good for your app.\n\n
+        What mightwe look for? Here are some examples.\n\n
+        Phone number area codes contain some location information, and some apps send invites to people in your same town.\n\n
+        B2B apps often involve collaboration with coworkers, so having the matching email domain matters.</string>
+    <string name="title4">Using Graph\'s Android SDK</string>
+    <string name="description4">YesGraph\'s SDK can power your invite flow. Try it out if you haven\'t already!</string>
+    <string name="description5">It\'s open source.\n</string>
+    <string name="description5_1">Find it on Github here\n\n</string>
+    <string name="description5_2">We have example application on Github.\n</string>
+    <string name="description5_3"><![CDATA[<font color="#ACADAF">You\'ll need a YesGraph account. <font color="#0078BD">Sign up and create an app to configure the SDK</font>]]>.\n\n</string>
+    <string name="description5_4"><![CDATA[<font color="#ACADAF">The documentation online is extensive, but if you have any trouble, email <font color="#0078BD">support@yesgraph.com.</font>]]>\n\n</string>
 </resources>
