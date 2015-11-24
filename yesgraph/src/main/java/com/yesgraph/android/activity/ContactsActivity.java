@@ -278,6 +278,7 @@ public class ContactsActivity extends AppCompatActivity {
                     // Permission Granted
                     sharedPreferences.edit().putBoolean("contacts_permision_granted", true).commit();
                     ContactRetriever.readContacts(context);
+                    getContacts("");
                 } else {
                     // Permission Denied
                     sharedPreferences.edit().putBoolean("contacts_permision_granted", false).commit();

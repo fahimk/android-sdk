@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bettervectordrawable.VectorDrawableCompat;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.FontManager;
@@ -86,11 +85,6 @@ public class ShareSheetActivity extends AppCompatActivity {
     public void onResume()
     {
         super.onResume();
-
-        VectorDrawableCompat.enableResourceInterceptionFor(getResources(),
-                R.drawable.facebook,
-                R.drawable.twitter,
-                R.drawable.phone);
 
         setBackground();
         setCopyLinkText();
