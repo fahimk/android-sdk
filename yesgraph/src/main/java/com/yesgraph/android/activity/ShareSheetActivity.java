@@ -20,13 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bettervectordrawable.VectorDrawableCompat;
-import com.yesgraph.android.ContactsActivity;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
-import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
-import com.yesgraph.android.utils.YSGTheme;
 
 public class ShareSheetActivity extends AppCompatActivity {
 

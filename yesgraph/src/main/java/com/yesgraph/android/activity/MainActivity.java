@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
 
-                ysgTheme = new YSGTheme();
-                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-                ysgTheme.setReferralTextSize(14);
-                ysgTheme.setShareButtonsShape("rounded_square");
-                ysgTheme.setFonts("Pacifico.ttf");
-                app.setYsgTheme(ysgTheme);
+//                ysgTheme = new YSGTheme();
+//                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//                ysgTheme.setReferralTextSize(14);
+//                ysgTheme.setShareButtonsShape("rounded_square");
+//                ysgTheme.setFonts("Pacifico.ttf");
+//                app.setYsgTheme(ysgTheme);
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
