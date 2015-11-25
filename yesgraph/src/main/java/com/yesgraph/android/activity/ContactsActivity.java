@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -105,60 +106,6 @@ public class ContactsActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
-        /*for(int i=0;i<4;i++)
-        {
-            if(i==0)
-            {
-                HeaderContact header=new HeaderContact();
-                header.setSign("Suggested");
-                items.add(header);
-            }
-            else if(i==6)
-            {
-                HeaderContact header=new HeaderContact();
-                header.setSign("A");
-                items.add(header);
-
-            }
-            else if(i==20)
-            {
-
-                HeaderContact header=new HeaderContact();
-                header.setSign("B");
-                items.add(header);
-            }
-            else if(i==30)
-            {
-
-                HeaderContact header=new HeaderContact();
-                header.setSign("C");
-                items.add(header);
-            }
-            else if(i==50)
-            {
-
-                HeaderContact header=new HeaderContact();
-                header.setSign("D");
-                items.add(header);
-            }
-            else if(i==80)
-            {
-
-                HeaderContact header=new HeaderContact();
-                header.setSign("E");
-                items.add(header);
-            }
-            else
-            {
-                RegularContact contact=new RegularContact();
-                contact.setName("Name Of Contact");
-                contact.setContact("1234123125");
-                items.add(contact);
-            }
-
-
-        }*/
-
     }
 
     private void setToolbar(){
@@ -190,13 +137,36 @@ public class ContactsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        final int invite = R.id.action_invite;
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
             default:
-                return super.onOptionsItemSelected(item);
+            {
+                int i = item.getItemId();
+                if (i == R.id.action_invite) {// User chose the "Invite" item
+
+
+                    return true;
+                } else {// If we got here, the user's action was not recognized.
+                    // Invoke the superclass to handle it.
+                    return super.onOptionsItemSelected(item);
+                }
+            }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_contacts, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu (Menu menu) {
+        return true;
     }
 
     private ArrayList<RegularContact> getContactsFromContactList()
