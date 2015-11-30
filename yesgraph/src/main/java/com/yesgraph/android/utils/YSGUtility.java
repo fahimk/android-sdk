@@ -37,7 +37,8 @@ public class YSGUtility {
     public static String iso8601dateStringFromMilliseconds(Long milliseconds)
     {
         Date date = new Date(milliseconds); // *1000 is to convert seconds to milliseconds
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"); // the format of your date
-        return sdf.format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"); // the format of your date
+        String formattedDate=sdf.format(date);
+        return formattedDate.substring(0, formattedDate.length()-2) + ":" + formattedDate.substring(formattedDate.length()-2, formattedDate.length());
     }
 }

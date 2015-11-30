@@ -39,4 +39,5 @@
     <string name="search">Search</string>
     <string name="no_contact_name">(no contact name)</string>
     <string name="invite">Invite</string>
+    <string name="suggested">Suggested</string>
 </resources>

@@ -39,8 +39,9 @@ public class YSGPrivate extends HttpMethodAbstract {
                 {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     try {
-                        sharedPreferences.edit().putString("secret_key", ((JSONObject)msg.obj).getString("client_key")).commit();
-                    } catch (JSONException e) {
+                        sharedPreferences.edit().putString("secret_key",((JSONObject)msg.obj).getString("client_key")).commit();
+                        sharedPreferences.edit().putString("user_id",((JSONObject)msg.obj).getString("user_id")).commit();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 

@@ -7,6 +7,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 
 import com.yesgraph.android.models.YSGContact;
+import com.yesgraph.android.models.YSGRankedContact;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.YSGUtility;
 
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  */
 public class YSGSuggestionsShown extends HttpMethodAbstract {
 
-    public JSONArray generateArrayOfSuggestionsFromListForUser(String userId, ArrayList<YSGContact> suggestions)
+    public JSONArray generateArrayOfSuggestionsFromListForUser(String userId, ArrayList<YSGRankedContact> suggestions)
     {
         JSONArray json=new JSONArray();
 
@@ -32,7 +33,7 @@ public class YSGSuggestionsShown extends HttpMethodAbstract {
             JSONObject jsonSuggestion=new JSONObject();
             try {
                 jsonSuggestion.put("user_id", userId);
-                jsonSuggestion.put("sent_at", YSGUtility.iso8601dateStringFromMilliseconds(time));
+                jsonSuggestion.put("seen_at", YSGUtility.iso8601dateStringFromMilliseconds(time));
                 jsonSuggestion.put("name", contact.name());
                 if(contact.phones()!=null)
                 {
@@ -70,7 +71,7 @@ public class YSGSuggestionsShown extends HttpMethodAbstract {
         return json;
     }
 
-    public void updateInvitesSentForUser(Context context, ArrayList<YSGContact> invites, String userId, final Handler.Callback callback)
+    public void updateSuggestionsSeen(Context context, ArrayList<YSGRankedContact> invites, String userId, final Handler.Callback callback)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String secretKey=sharedPreferences.getString("secret_key", "");

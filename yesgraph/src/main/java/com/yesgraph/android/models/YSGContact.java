@@ -14,6 +14,8 @@ public class YSGContact {
     final private static String YSGContactSuggestedKey = "suggested";
 
     private String name;
+    private String email;
+    private String phone;
     private ArrayList<String> emails;
     private ArrayList<String> phones;
     private JSONObject data;
@@ -40,6 +42,9 @@ public class YSGContact {
 
     public String phone()
     {
+        if(phone!=null)
+            return phone;
+
         if(phones!=null && phones.size()>0)
             return phones.get(0);
         else
@@ -48,6 +53,9 @@ public class YSGContact {
 
     public String email()
     {
+        if(email!=null)
+            return email;
+
         if(emails!=null && emails.size()>0)
             return emails.get(0);
         else
@@ -126,15 +134,21 @@ public class YSGContact {
             jsonContact.put("name", name);
             jsonContact.put("email", email());
             jsonContact.put("phone", phone());
-            for(String email : emails)
+            if(emails!=null)
             {
-                jsonEmail.put(email);
+                for(String email : emails)
+                {
+                    jsonEmail.put(email);
+                }
             }
             if(jsonEmail.length()>0)
                 jsonContact.put("emails",jsonEmail);
-            for(String phone : phones)
+            if(phones!=null)
             {
-                jsonEmail.put(phone);
+                for(String phone : phones)
+                {
+                    jsonPhones.put(phone);
+                }
             }
             if(jsonPhones.length()>0)
                 jsonContact.put("phones",jsonPhones);
@@ -144,5 +158,13 @@ public class YSGContact {
             e.printStackTrace();
         }
         return jsonContact;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

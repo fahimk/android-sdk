@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class YSGContactList {
     private Boolean useSuggestions;
-    private ArrayList<YSGContact> entries;
+    private ArrayList<YSGRankedContact> entries;
     private YSGSource source;
 
 
@@ -23,11 +23,11 @@ public class YSGContactList {
         this.useSuggestions = useSuggestions;
     }
 
-    public ArrayList<YSGContact> getEntries() {
+    public ArrayList<YSGRankedContact> getEntries() {
         return entries;
     }
 
-    public void setEntries(ArrayList<YSGContact> entries) {
+    public void setEntries(ArrayList<YSGRankedContact> entries) {
         this.entries = entries;
     }
 
@@ -47,10 +47,13 @@ public class YSGContactList {
         try {
             jsonSource.put("type", source.getType());
 
-            for(YSGContact contact : entries)
+            for(YSGRankedContact contact : entries)
             {
                 jsonEntries.put(contact.toJSONObject());
             }
+
+            json.put("source", jsonSource);
+            json.put("entries", jsonEntries);
             json.put("filter_suggested_seen", useSuggestions ? 1 : 0);
             json.put("user_id",userId);
         } catch (JSONException e) {

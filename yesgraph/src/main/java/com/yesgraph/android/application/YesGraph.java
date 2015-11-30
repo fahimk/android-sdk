@@ -49,6 +49,11 @@ public class YesGraph extends Application {
         }
     }
 
+    public static Integer getNumberOfSuggestedContacts()
+    {
+        return 5;
+    }
+
     public static boolean isFacebookSignedIn() {
         return true;
     }

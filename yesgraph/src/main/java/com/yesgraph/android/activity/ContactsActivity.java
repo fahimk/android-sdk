@@ -8,6 +8,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -17,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,10 +33,22 @@ import com.yesgraph.android.adapters.ContactsAdapter;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.models.YSGContactList;
+import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.YSGSource;
+import com.yesgraph.android.network.YSGAddressBook;
+import com.yesgraph.android.network.YSGSuggestionsShown;
+import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.FontManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by marko on 17/11/15.
@@ -53,6 +68,8 @@ public class ContactsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FontManager fontManager;
     private TextView toolbarTitle;
+
+    private YSGContactList ysgContactList;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -77,6 +94,8 @@ public class ContactsActivity extends AppCompatActivity {
         contactsList = (RecyclerView)findViewById(R.id.contactsList);
         contactsList.setBackgroundColor(application.getYsgTheme().getRowBackgroundColor());
 
+        ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
+
         if(!application.getYsgTheme().getFont().isEmpty()){
             fontManager.setFont(search,application.getYsgTheme().getFont());
         }
@@ -87,7 +106,22 @@ public class ContactsActivity extends AppCompatActivity {
 
         if (sharedPreferences.getBoolean("contacts_permision_granted", false))
         {
-            getContacts("");
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        if(!checkIfUploadNeeded())
+                        {
+                            ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                            getContacts("");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
         }
         else
         {
@@ -108,6 +142,44 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    private Boolean checkIfUploadNeeded() {
+        Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
+
+        if(!cached && sharedPreferences.getBoolean("contacts_permision_granted", false) && application.isOnline())
+        {
+            ArrayList<YSGRankedContact> list=ContactRetriever.readYSGContacts(ContactsActivity.this);
+
+            YSGContactList contactList=new YSGContactList();
+            contactList.setEntries(list);
+            contactList.setSource(new YSGSource());
+            contactList.setUseSuggestions(true);
+
+            YSGAddressBook ysgAddressBook=new YSGAddressBook();
+            ysgAddressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg)
+                {
+                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    if(msg.what== Constants.RESULT_OK)
+                    {
+                        try {
+                            ysgContactList=(YSGContactList)msg.obj;
+                            getContacts("");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return false;
+                }
+            });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
@@ -118,7 +190,7 @@ public class ContactsActivity extends AppCompatActivity {
         toolbarTitle.setText(getResources().getString(R.string.app_name));
         toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
         if(!application.getYsgTheme().getFont().isEmpty()){
-            fontManager.setFont(toolbarTitle,application.getYsgTheme().getFont());
+            fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
         }
     }
 
@@ -175,8 +247,28 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     private void getContacts(String filter) {
-        if(contacts==null)
-            contacts = getContactsFromContactList();
+        if(ysgContactList==null)
+        {
+            Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
+            if(cached)
+            {
+                YSGAddressBook ysgAddressBook = new YSGAddressBook();
+                try {
+                    ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
+                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    contacts = getContactsFromContactList();
+                }
+            }
+            else {
+                contacts = getContactsFromContactList();
+            }
+        }
+        else
+        {
+            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries());
+        }
 
         if(filter.length()>0)
         {
@@ -197,22 +289,39 @@ public class ContactsActivity extends AppCompatActivity {
             items = new ArrayList<>();
 
             String lastSign="";
+            Integer suggestedIndex=0;
             for(RegularContact contact : contacts)
             {
-                String thisSign=contact.getName().length()<0 ? "#" : contact.getName().substring(0,1).toUpperCase();
-                if(!ContactRetriever.isAlpha(thisSign))
-                    thisSign="#";
-
-                if(!lastSign.equals(thisSign))
+                if(suggestedIndex<application.getNumberOfSuggestedContacts())
                 {
-                    HeaderContact header=new HeaderContact();
-                    header.setSign(thisSign);
-                    items.add(header);
+                    if(suggestedIndex==0)
+                    {
+                        HeaderContact header=new HeaderContact();
+                        header.setSign(getString(R.string.suggested));
+                        items.add(header);
+                    }
+
+                    items.add(contact);
+
+                    suggestedIndex++;
                 }
+                else
+                {
+                    String thisSign=contact.getName().length()<0 ? "#" : contact.getName().substring(0,1).toUpperCase();
+                    if(!ContactRetriever.isAlpha(thisSign))
+                        thisSign="#";
 
-                items.add(contact);
+                    if(!lastSign.equals(thisSign))
+                    {
+                        HeaderContact header=new HeaderContact();
+                        header.setSign(thisSign);
+                        items.add(header);
+                    }
 
-                lastSign = thisSign;
+                    items.add(contact);
+
+                    lastSign = thisSign;
+                }
             }
         }
 
@@ -220,24 +329,155 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     private void setupRecycler() {
-        GridLayoutManager manager = new GridLayoutManager(this, 1,GridLayoutManager.VERTICAL, false);
+        runOnUiThread(new Runnable() {
+            public void run() {
+                GridLayoutManager manager = new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false);
 
-        contactsList.setLayoutManager(manager);
-        adapter = new ContactsAdapter(items, this, application);
+                contactsList.setLayoutManager(manager);
+                adapter = new ContactsAdapter(items, ContactsActivity.this, application);
 
-        adapter.setOnItemClickListener(new ContactsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                if (items.get(position) instanceof RegularContact) {
-                    RegularContact contact = (RegularContact) items.get(position);
-                    contact.setSelected(!contact.getSelected());
-                    adapter.notifyDataSetChanged();
+                adapter.setOnItemClickListener(new ContactsAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        if (items.get(position) instanceof RegularContact) {
+                            RegularContact contact = (RegularContact) items.get(position);
+                            contact.setSelected(!contact.getSelected());
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                });
+
+                contactsList.setAdapter(adapter);
+            }
+        });
+    }
+
+    private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<YSGRankedContact> ysgRankedContactArrayList)
+    {
+        ArrayList<RegularContact> regularContacts=new ArrayList<>();
+        ArrayList<RegularContact> suggestedContacts=new ArrayList<>();
+        ArrayList<YSGRankedContact> ysgRankedContacts=new ArrayList<>();
+
+        JSONArray jsonArrayCached=new JSONArray();
+
+        ArrayList<Integer> suggestedItemsIndex=new ArrayList<>();
+
+        for(int i=0;i<ysgRankedContactArrayList.size();i++)
+        {
+            YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
+
+            if(!ysgRankedContact.wasSuggested())
+            {
+                suggestedItemsIndex.add(i);
+                if(suggestedItemsIndex.size()==application.getNumberOfSuggestedContacts())
+                    break;
+            }
+        }
+
+        if(suggestedItemsIndex.size()<application.getNumberOfSuggestedContacts() && ysgRankedContactArrayList.size()>=application.getNumberOfSuggestedContacts())
+        {
+            for(int i=0;i<application.getNumberOfSuggestedContacts()-suggestedItemsIndex.size();i++)
+            {
+                suggestedItemsIndex.add(i);
+            }
+
+            for(int i=0;i<ysgRankedContactArrayList.size();i++)
+            {
+                YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
+                ysgRankedContact.setSuggested(false);
+            }
+        }
+
+        for(int i=0;i<ysgRankedContactArrayList.size();i++)
+        {
+            YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
+
+            if(suggestedItemsIndex.contains(i))
+            {
+                ysgRankedContact.setSuggested(true);
+                ysgRankedContacts.add(ysgRankedContact);
+
+                RegularContact regularContact=new RegularContact();
+                regularContact.setName(ysgRankedContact.name());
+                if(ysgRankedContact.email()!=null && ysgRankedContact.email().length()>0)
+                {
+                    regularContact.setContact(ysgRankedContact.email());
                 }
+                else if(ysgRankedContact.phone()!=null && ysgRankedContact.phone().length()>0)
+                {
+                    regularContact.setContact(ysgRankedContact.phone());
+                }
+                suggestedContacts.add(regularContact);
+            }
+            else
+            {
+                if(ysgRankedContact.emails()!=null && ysgRankedContact.emails().size()>0)
+                {
+                    for(String thisEmail : ysgRankedContact.emails()) {
+                        RegularContact regularContact = new RegularContact();
+                        regularContact.setName(ysgRankedContact.name());
+                        regularContact.setContact(thisEmail);
+                        regularContacts.add(regularContact);
+                    }
+                }
+                else if(ysgRankedContact.phones()!=null && ysgRankedContact.phones().size()>0)
+                {
+                    for(String thisPhone : ysgRankedContact.phones()) {
+                        RegularContact regularContact = new RegularContact();
+                        regularContact.setName(ysgRankedContact.name());
+                        regularContact.setContact(thisPhone);
+                        regularContacts.add(regularContact);
+                    }
+                }
+            }
+            Log.i("JSON_WRITE", ysgRankedContact.toJSONObjectExtended().toString());
+            jsonArrayCached.put(ysgRankedContact.toJSONObjectExtended());
+        }
 
+        YSGSuggestionsShown ysgSuggestionsShown=new YSGSuggestionsShown();
+        ysgSuggestionsShown.updateSuggestionsSeen(context,ysgRankedContacts,sharedPreferences.getString("user_id", ""),new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                Message callbackMessage = new Message();
+                if(msg.what == Constants.RESULT_OK)
+                {
+                }
+                return false;
             }
         });
 
-        contactsList.setAdapter(adapter);
+        sharedPreferences.edit().putString("contacts_cache", jsonArrayCached.toString()).commit();
+
+        Collections.sort(regularContacts, new Comparator<RegularContact>() {
+            public int compare(RegularContact s1, RegularContact s2) {
+
+                if (isAlpha(s1.getName().substring(0, 1)) && !isAlpha(s2.getName().substring(0, 1)))
+                    return -s1.getName().compareToIgnoreCase(s2.getName());
+
+                if (isAlpha(s2.getName().substring(0, 1)) && !isAlpha(s1.getName().substring(0, 1)))
+                    return -s1.getName().compareToIgnoreCase(s2.getName());
+
+                return s1.getName().compareToIgnoreCase(s2.getName());
+            }
+        });
+
+        for(RegularContact contact : regularContacts)
+        {
+            suggestedContacts.add(contact);
+        }
+
+        return suggestedContacts;
+    }
+
+    public static boolean isAlpha(String name) {
+        boolean bool=name.matches("[a-zA-Z]+");
+        return bool;
+    }
+
+    public static boolean isNumeric(String name) {
+        boolean bool=name.matches("[0-9]+");
+        return bool;
     }
 
     @Override
@@ -248,12 +488,32 @@ public class ContactsActivity extends AppCompatActivity {
                     // Permission Granted
                     sharedPreferences.edit().putBoolean("contacts_permision_granted", true).commit();
                     ContactRetriever.readContacts(context);
-                    getContacts("");
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if(!checkIfUploadNeeded())
+                                        {
+                                            ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                                            getContacts("");
+                                        }
+                                    }
+                                });
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    thread.start();
                 } else {
                     // Permission Denied
                     sharedPreferences.edit().putBoolean("contacts_permision_granted", false).commit();
                     Toast.makeText(ContactsActivity.this, "READ_CONTACTS Denied", Toast.LENGTH_SHORT)
                             .show();
+                    ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.GONE);
                 }
                 break;
             default:

@@ -94,6 +94,9 @@ abstract class HttpMethodAbstract {
 
                     if(method.equals(Constants.HTTP_METHOD_POST) && parameters!=null)
                     {
+
+                        Log.i("WEB POST", "JSON:" + parameters.toString());
+
                         conn.setDoInput(true);
                         conn.setDoOutput(true);
                         conn.setFixedLengthStreamingMode(parameters.toString().getBytes().length);
