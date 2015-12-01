@@ -2,6 +2,8 @@
     <string name="app_name">YesGraph-SDK-Android</string>
     <string name="action_settings">Settings</string>
 
+    <string name="facebook_app_id">1530095620635011</string>
+
     <!--SendSmsActivity-->
     <string name="alert_send_sms_title">Send sms</string>
     <string name="alert_send_sms_message">Are you sure you want to send sms to</string>
@@ -34,6 +36,8 @@
     <string name="default_share_text">Demo our SDK by sharing YesGraph with your contacts</string>
     <string name="default_share_link">http://www.google.com</string>
     <string name="button_copy_text">Copy</string>
+    <string name="facebook_share_success">Shared successfully</string>
+    <string name="initialize_facebook_sdk">You have to initialize Facebook sdk in yout Manifest.xml file</string>
 
     <!--ContactsActivity-->
     <string name="search">Search</string>

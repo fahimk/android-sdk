@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.FontManager;
@@ -31,11 +37,16 @@ public class ShareSheetActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView shareText, facebookText, twitterText, contactsText, toolbarTitle;
     private FontManager fontManager;
+    private ShareDialog shareDialog;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_sheet);
+
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
 
         application = (YesGraph) getApplication();
         fontManager = FontManager.getInstance();
@@ -43,7 +54,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         context = this;
     }
 
-    private void setToolbar(){
+    private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         setSupportActionBar(toolbar);
@@ -52,7 +63,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
         toolbarTitle.setText(getResources().getString(R.string.app_name));
         toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
-        if(!application.getYsgTheme().getFont().isEmpty()){
+        if (!application.getYsgTheme().getFont().isEmpty()) {
             fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
         }
     }
@@ -82,8 +93,7 @@ public class ShareSheetActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         setBackground();
@@ -94,54 +104,53 @@ public class ShareSheetActivity extends AppCompatActivity {
     }
 
     private void setShareText() {
-        shareText = (TextView)findViewById(R.id.shareText);
+        shareText = (TextView) findViewById(R.id.shareText);
         shareText.setText(application.getShareText());
         shareText.setTextColor(application.getYsgTheme().getDarkFontColor());
-        if(!application.getYsgTheme().getFont().isEmpty()){
-            fontManager.setFont(shareText,application.getYsgTheme().getFont());
+        if (!application.getYsgTheme().getFont().isEmpty()) {
+            fontManager.setFont(shareText, application.getYsgTheme().getFont());
         }
     }
 
     private void setActionBar() {
-        String color=String.format("#%06X", (0xFFFFFF & application.getYsgTheme().getLightFontColor()));
+        String color = String.format("#%06X", (0xFFFFFF & application.getYsgTheme().getLightFontColor()));
         getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getSupportActionBar().getTitle() + "</FONT>"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
     }
 
-    private void setShareIconsAndText()
-    {
-        facebookText = (TextView)findViewById(R.id.textFacebook);
-        twitterText = (TextView)findViewById(R.id.textTwitter);
-        contactsText = (TextView)findViewById(R.id.textContacts);
+    private void setShareIconsAndText() {
+        facebookText = (TextView) findViewById(R.id.textFacebook);
+        twitterText = (TextView) findViewById(R.id.textTwitter);
+        contactsText = (TextView) findViewById(R.id.textContacts);
 
         facebookText.setTextColor(application.getYsgTheme().getDarkFontColor());
         twitterText.setTextColor(application.getYsgTheme().getDarkFontColor());
         contactsText.setTextColor(application.getYsgTheme().getDarkFontColor());
 
-        if(!application.getYsgTheme().getFont().isEmpty()){
-            fontManager.setFont(facebookText,application.getYsgTheme().getFont());
-            fontManager.setFont(twitterText,application.getYsgTheme().getFont());
-            fontManager.setFont(contactsText,application.getYsgTheme().getFont());
+        if (!application.getYsgTheme().getFont().isEmpty()) {
+            fontManager.setFont(facebookText, application.getYsgTheme().getFont());
+            fontManager.setFont(twitterText, application.getYsgTheme().getFont());
+            fontManager.setFont(contactsText, application.getYsgTheme().getFont());
         }
 
-        LinearLayout facebookLayout = (LinearLayout)findViewById(R.id.layoutFacebook);
-        LinearLayout twitterLayout = (LinearLayout)findViewById(R.id.layoutTwitter);
-        LinearLayout contactsLayout = (LinearLayout)findViewById(R.id.layoutContacts);
+        LinearLayout facebookLayout = (LinearLayout) findViewById(R.id.layoutFacebook);
+        LinearLayout twitterLayout = (LinearLayout) findViewById(R.id.layoutTwitter);
+        LinearLayout contactsLayout = (LinearLayout) findViewById(R.id.layoutContacts);
 
-        LinearLayout facebookCircleLayout = (LinearLayout)findViewById(R.id.layoutFacebookCircle);
-        LinearLayout twitterCircleLayout = (LinearLayout)findViewById(R.id.layoutTwitterCircle);
-        LinearLayout contactsCircleLayout = (LinearLayout)findViewById(R.id.layoutContactsCircle);
+        LinearLayout facebookCircleLayout = (LinearLayout) findViewById(R.id.layoutFacebookCircle);
+        LinearLayout twitterCircleLayout = (LinearLayout) findViewById(R.id.layoutTwitterCircle);
+        LinearLayout contactsCircleLayout = (LinearLayout) findViewById(R.id.layoutContactsCircle);
 
         String shareButtonShape = application.getYsgTheme().getShareButtonsShape();
-        if(shareButtonShape.equals("circle")){
+        if (shareButtonShape.equals("circle")) {
             facebookCircleLayout.setBackgroundResource(R.drawable.circle);
             twitterCircleLayout.setBackgroundResource(R.drawable.circle);
             contactsCircleLayout.setBackgroundResource(R.drawable.circle);
-        } else if(shareButtonShape.equals("square")){
+        } else if (shareButtonShape.equals("square")) {
             facebookCircleLayout.setBackgroundResource(R.drawable.square_shape);
             twitterCircleLayout.setBackgroundResource(R.drawable.square_shape);
             contactsCircleLayout.setBackgroundResource(R.drawable.square_shape);
-        } else if(shareButtonShape.equals("rounded_square")){
+        } else if (shareButtonShape.equals("rounded_square")) {
             facebookCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
             twitterCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
             contactsCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
@@ -157,9 +166,9 @@ public class ShareSheetActivity extends AppCompatActivity {
         GradientDrawable drawableC = (GradientDrawable) contactsCircleLayout.getBackground();
         drawableC.setColor(application.getYsgTheme().getMainForegroundColor());
 
-        ImageView facebookImage = (ImageView)findViewById(R.id.imageFacebook);
-        ImageView twitterImage = (ImageView)findViewById(R.id.imageTwitter);
-        ImageView contactsImage = (ImageView)findViewById(R.id.imageContacts);
+        ImageView facebookImage = (ImageView) findViewById(R.id.imageFacebook);
+        ImageView twitterImage = (ImageView) findViewById(R.id.imageTwitter);
+        ImageView contactsImage = (ImageView) findViewById(R.id.imageContacts);
 
         facebookLayout.setClickable(true);
         twitterLayout.setClickable(true);
@@ -168,7 +177,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         facebookLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                shareToFacebook();
             }
         });
         twitterLayout.setOnClickListener(new View.OnClickListener() {
@@ -185,20 +194,17 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
 
-        if(!application.isFacebookSignedIn())
-        {
+        if (!application.isFacebookSignedIn()) {
             facebookLayout.setVisibility(View.GONE);
         }
 
-        if(!application.isTwitterSignedIn())
-        {
+        if (!application.isTwitterSignedIn()) {
             twitterLayout.setVisibility(View.GONE);
         }
     }
 
-    private void setCopyLinkText()
-    {
-        final TextView copyLinkText = (TextView)findViewById(R.id.textCopyLink);
+    private void setCopyLinkText() {
+        final TextView copyLinkText = (TextView) findViewById(R.id.textCopyLink);
         final TextView copyButtonText = (TextView) findViewById(R.id.textCopyButton);
         RelativeLayout copyLinkLayout = (RelativeLayout) findViewById(R.id.copyLinkLayout);
 
@@ -222,7 +228,7 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
         copyButtonText.setText(application.getCopyButtonText());
-        if(application.getYsgTheme().getCopyButtonColor() != 0){
+        if (application.getYsgTheme().getCopyButtonColor() != 0) {
             copyButtonText.setTextColor(application.getYsgTheme().getCopyButtonColor());
         } else {
             copyButtonText.setTextColor(application.getYsgTheme().getMainForegroundColor());
@@ -245,11 +251,29 @@ public class ShareSheetActivity extends AppCompatActivity {
         }
     }
 
-    private void setBackground()
-    {
-        RelativeLayout masterLayout = (RelativeLayout)findViewById(R.id.layoutMaster);
+    private void setBackground() {
+        RelativeLayout masterLayout = (RelativeLayout) findViewById(R.id.layoutMaster);
         masterLayout.setBackgroundColor(application.getYsgTheme().getMainBackgroundColor());
     }
 
+    private void shareToFacebook() {
+        try {
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder().build();
+                shareDialog.show(linkContent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, context.getResources().getString(R.string.initialize_facebook_sdk),Toast.LENGTH_LONG).show();
+        }
+    }
 
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 64207) {
+            Toast.makeText(context, context.getResources().getString(R.string.facebook_share_success), Toast.LENGTH_LONG).show();
+        }
+    }
 }
