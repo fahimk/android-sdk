@@ -25,6 +25,7 @@
     <string name="no_selected_contacts_email">You have no selected contacts.</string>
 
     <!--ShareSheetActivity-->
+    <string name="share_sheet">Share</string>
     <string name="facebook">Facebook</string>
     <string name="twitter">Tweet</string>
     <string name="contacts">Contacts</string>
@@ -32,10 +33,12 @@
     <string name="copy_to_clipboard">Link copied to clipboard</string>
     <string name="share_link_copy">Share link</string>
     <string name="default_share_text">Demo our SDK by sharing YesGraph with your contacts</string>
-    <string name="default_share_link">http://www.google.com</string>
-    <string name="button_copy_text">Copy</string>
+    <string name="default_share_link">www.yesgraph.com/#androidg</string>
+    <string name="button_copy_text">copy</string>
+    <string name="button_copied_text">copied</string>
 
     <!--ContactsActivity-->
+    <string name="contacts_list">Contacts</string>
     <string name="search">Search</string>
     <string name="no_contact_name">(no contact name)</string>
     <string name="invite">Invite</string>
