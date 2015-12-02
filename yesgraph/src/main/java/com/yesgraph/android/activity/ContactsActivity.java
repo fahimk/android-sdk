@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -52,6 +53,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Created by marko on 17/11/15.
@@ -63,6 +65,7 @@ public class ContactsActivity extends AppCompatActivity {
     private RecyclerView contactsList;
     private ContactsAdapter adapter;
     private ArrayList<Object> items;
+    private ArrayList<Object> itemsOld;
     private LinearLayout searchBar;
     private EditText search;
 
@@ -84,9 +87,9 @@ public class ContactsActivity extends AppCompatActivity {
         application = (YesGraph) getApplication();
         fontManager = FontManager.getInstance();
         setToolbar();
-
-
         context = this;
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         search = (EditText)findViewById(R.id.search);
         search.setTextColor(application.getYsgTheme().getLightFontColor());
@@ -161,7 +164,7 @@ public class ContactsActivity extends AppCompatActivity {
             contactList.setSource(new YSGSource());
             contactList.setUseSuggestions(true);
 
-            YSGAddressBook ysgAddressBook=new YSGAddressBook();
+            final YSGAddressBook ysgAddressBook=new YSGAddressBook();
             /*ysgAddressBook.fetchAddressBookForUserId(ContactsActivity.this,sharedPreferences.getString("user_id", ""), new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg)
@@ -179,6 +182,8 @@ public class ContactsActivity extends AppCompatActivity {
                     return false;
                 }
             });*/
+
+            Log.i("#YSGCONTACTS_COUNT", "1count:"+contactList.getEntries().size());
             ysgAddressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg)
@@ -188,10 +193,16 @@ public class ContactsActivity extends AppCompatActivity {
                     {
                         try {
                             ysgContactList=(YSGContactList)msg.obj;
+                            Log.i("#YSGCONTACTS_COUNT", "2count:"+ysgContactList.getEntries().size());
                             getContacts("");
                         } catch (Exception e) {
                             e.printStackTrace();
+                            getContacts("");
                         }
+                    }
+                    else
+                    {
+                        getContacts("");
                     }
                     return false;
                 }
@@ -354,7 +365,7 @@ public class ContactsActivity extends AppCompatActivity {
     }
 
     private void getContacts(String filter) {
-        if(ysgContactList==null)
+        if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
         {
             Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
             if(cached)
@@ -362,7 +373,7 @@ public class ContactsActivity extends AppCompatActivity {
                 YSGAddressBook ysgAddressBook = new YSGAddressBook();
                 try {
                     ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
-                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries());
+                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     contacts = getContactsFromContactList();
@@ -372,9 +383,9 @@ public class ContactsActivity extends AppCompatActivity {
                 contacts = getContactsFromContactList();
             }
         }
-        else
+        else if(contacts==null || contacts.size()==0)
         {
-            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries());
+            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
         }
 
         if(filter.length()>0)
@@ -392,43 +403,44 @@ public class ContactsActivity extends AppCompatActivity {
         }
         else
         {
-            items = null;
-            items = new ArrayList<>();
+            if(itemsOld==null || itemsOld.size()==0) {
+                items = null;
+                items = new ArrayList<>();
 
-            String lastSign="";
-            Integer suggestedIndex=0;
-            for(RegularContact contact : contacts)
+                String lastSign = "";
+                Integer suggestedIndex = 0;
+                for (RegularContact contact : contacts) {
+                    if (suggestedIndex < application.getNumberOfSuggestedContacts()) {
+                        if (suggestedIndex == 0) {
+                            HeaderContact header = new HeaderContact();
+                            header.setSign(getString(R.string.suggested));
+                            items.add(header);
+                        }
+
+                        items.add(contact);
+
+                        suggestedIndex++;
+                    } else {
+                        String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
+                        if (!ContactRetriever.isAlpha(thisSign))
+                            thisSign = "#";
+
+                        if (!lastSign.equals(thisSign)) {
+                            HeaderContact header = new HeaderContact();
+                            header.setSign(thisSign);
+                            items.add(header);
+                        }
+
+                        items.add(contact);
+
+                        lastSign = thisSign;
+                    }
+                }
+                itemsOld = (ArrayList<Object>)items.clone();
+            }
+            else
             {
-                if(suggestedIndex<application.getNumberOfSuggestedContacts())
-                {
-                    if(suggestedIndex==0)
-                    {
-                        HeaderContact header=new HeaderContact();
-                        header.setSign(getString(R.string.suggested));
-                        items.add(header);
-                    }
-
-                    items.add(contact);
-
-                    suggestedIndex++;
-                }
-                else
-                {
-                    String thisSign=contact.getName().length()<0 ? "#" : contact.getName().substring(0,1).toUpperCase();
-                    if(!ContactRetriever.isAlpha(thisSign))
-                        thisSign="#";
-
-                    if(!lastSign.equals(thisSign))
-                    {
-                        HeaderContact header=new HeaderContact();
-                        header.setSign(thisSign);
-                        items.add(header);
-                    }
-
-                    items.add(contact);
-
-                    lastSign = thisSign;
-                }
+                items = (ArrayList<Object>)itemsOld.clone();
             }
         }
 
@@ -461,7 +473,7 @@ public class ContactsActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<YSGRankedContact> ysgRankedContactArrayList)
+    private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<YSGRankedContact> ysgRankedContactArrayList, Integer suggestedCount, Boolean postSuggested)
     {
         ArrayList<RegularContact> regularContacts=new ArrayList<>();
         ArrayList<RegularContact> suggestedContacts=new ArrayList<>();
@@ -478,14 +490,14 @@ public class ContactsActivity extends AppCompatActivity {
             if(!ysgRankedContact.wasSuggested())
             {
                 suggestedItemsIndex.add(i);
-                if(suggestedItemsIndex.size()==application.getNumberOfSuggestedContacts())
+                if(suggestedItemsIndex.size()==suggestedCount)
                     break;
             }
         }
 
-        if(suggestedItemsIndex.size()<application.getNumberOfSuggestedContacts() && ysgRankedContactArrayList.size()>=application.getNumberOfSuggestedContacts())
+        if(suggestedItemsIndex.size()<suggestedCount && ysgRankedContactArrayList.size()>=suggestedCount)
         {
-            for(int i=0;i<application.getNumberOfSuggestedContacts()-suggestedItemsIndex.size();i++)
+            for(int i=0;i<suggestedCount-suggestedItemsIndex.size();i++)
             {
                 suggestedItemsIndex.add(i);
             }
@@ -529,8 +541,8 @@ public class ContactsActivity extends AppCompatActivity {
                         regularContacts.add(regularContact);
                     }
                 }
-                else if(ysgRankedContact.phones()!=null && ysgRankedContact.phones().size()>0)
-                {
+
+                if(ysgRankedContact.phones()!=null && ysgRankedContact.phones().size()>0) {
                     for(String thisPhone : ysgRankedContact.phones()) {
                         RegularContact regularContact = new RegularContact();
                         regularContact.setName(ysgRankedContact.name());
@@ -542,17 +554,18 @@ public class ContactsActivity extends AppCompatActivity {
             jsonArrayCached.put(ysgRankedContact.toJSONObjectExtended());
         }
 
-        YSGSuggestionsShown ysgSuggestionsShown=new YSGSuggestionsShown();
-        ysgSuggestionsShown.updateSuggestionsSeen(context,ysgRankedContacts,sharedPreferences.getString("user_id", ""),new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                Message callbackMessage = new Message();
-                if(msg.what == Constants.RESULT_OK)
-                {
+        if(postSuggested) {
+            YSGSuggestionsShown ysgSuggestionsShown = new YSGSuggestionsShown();
+            ysgSuggestionsShown.updateSuggestionsSeen(context, ysgRankedContacts, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    Message callbackMessage = new Message();
+                    if (msg.what == Constants.RESULT_OK) {
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
 
         sharedPreferences.edit().putString("contacts_cache", jsonArrayCached.toString()).commit();
 
