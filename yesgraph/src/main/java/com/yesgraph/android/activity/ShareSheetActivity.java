@@ -3,6 +3,7 @@ package com.yesgraph.android.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -60,6 +61,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
