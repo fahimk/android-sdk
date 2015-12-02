@@ -24,6 +24,17 @@ public class YSGPrivate extends HttpMethodAbstract {
 
     public void fetchClientKeyWithSecretKey(final Context context, String secretKey, String userId, final Handler.Callback callback)
     {
+        if(userId.equals("")) {
+            userId = randomId();
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            try {
+                sharedPreferences.edit().putString("user_id",userId).commit();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         JSONObject json=new JSONObject();
         try {
             json.put("user_id", userId);

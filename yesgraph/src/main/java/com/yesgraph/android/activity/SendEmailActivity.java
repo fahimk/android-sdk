@@ -51,11 +51,13 @@ public class SendEmailActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(context,context.getResources().getString(R.string.no_selected_contacts_email),Toast.LENGTH_LONG).show();
                         }
+                        finish();
                     }
                 })
                 .setNegativeButton(context.getResources().getString(R.string.alert_send_email_no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        finish();
                     }
                 });
         // create alert dialog

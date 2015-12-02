@@ -73,4 +73,16 @@ public class YesGraph extends Application {
     public String getShareText() {
         return getString(R.string.default_share_text);
     }
+
+    public String getSmsText() {
+        return getString(R.string.default_share_text);
+    }
+
+    public String getEmailText() {
+        return getString(R.string.default_share_text);
+    }
+
+    public String getEmailSubject() {
+        return getString(R.string.default_share_text);
+    }
 }

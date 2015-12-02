@@ -105,14 +105,15 @@ public class SendSmsActivity extends AppCompatActivity {
                         }
                         Uri smsToUri = Uri.parse("smsto:" + all_contacts);
                         Intent intent = new Intent(android.content.Intent.ACTION_SENDTO, smsToUri);
-                        String message = "hello";
                         intent.putExtra("sms_body", message);
                         startActivity(intent);
+                        finish();
                     }
                 })
                 .setNegativeButton(context.getResources().getString(R.string.alert_send_sms_no), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        finish();
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
