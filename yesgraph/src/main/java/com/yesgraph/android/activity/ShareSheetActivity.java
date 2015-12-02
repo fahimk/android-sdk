@@ -2,14 +2,19 @@ package com.yesgraph.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +26,20 @@ import android.widget.Toast;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.models.YSGContactList;
+import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.YSGSource;
+import com.yesgraph.android.network.YSGAddressBook;
+import com.yesgraph.android.network.YSGPrivate;
+import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class ShareSheetActivity extends AppCompatActivity {
 
@@ -31,6 +48,8 @@ public class ShareSheetActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView shareText, facebookText, twitterText, contactsText, toolbarTitle;
     private FontManager fontManager;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +60,50 @@ public class ShareSheetActivity extends AppCompatActivity {
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        YSGPrivate ysgPrivate=new YSGPrivate();
+        ysgPrivate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", "YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2", new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if(msg.what== Constants.RESULT_OK)
+                {
+                    if(timeToRefreshAddressBook() && sharedPreferences.getBoolean("contacts_permision_granted", false) && application.isOnline())
+                    {
+                        try {
+                            ArrayList<YSGRankedContact> list = ContactRetriever.readYSGContacts(context);
+
+                            YSGContactList contactList = new YSGContactList();
+                            contactList.setEntries(list);
+                            contactList.setSource(new YSGSource());
+                            contactList.setUseSuggestions(true);
+
+                            YSGAddressBook ysgAddressBook = new YSGAddressBook();
+                            ysgAddressBook.updateAddressBookWithContactListForUserId(context, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                                @Override
+                                public boolean handleMessage(Message msg) {
+                                    return false;
+                                }
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private boolean timeToRefreshAddressBook() {
+        if(sharedPreferences.getLong("contacts_last_upload", System.currentTimeMillis()) < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))
+            return true;
+        else
+            return false;
     }
 
     private void setToolbar(){

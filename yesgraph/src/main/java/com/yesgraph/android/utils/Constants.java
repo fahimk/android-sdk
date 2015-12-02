@@ -1,13 +1,26 @@
 package com.yesgraph.android.utils;
 
 import android.graphics.Color;
-
 import com.yesgraph.android.R;
 
 /**
  * Created by Dean Bozinoski on 11/19/2015.
  */
 public class Constants {
+
+    final public static String API_DOMAIN = "https://api.yesgraph.com/";
+    final public static String API_VERSION = "v0/";
+
+    final public static String HTTP_METHOD_GET = "GET";
+    final public static String HTTP_METHOD_POST = "POST";
+
+    final public static int TIMEOUT_CONNECTION = 45000;
+    final public static int TIMEOUT_READ = 45000;
+
+    final public static int RESULT_OK=1;
+    final public static int RESULT_ERROR=0;
+
+    final public static long HOURS_BETWEEN_UPLOAD=24L;
 
     private int MAIN_FOREGROUND_COLOR = Color.parseColor("#0078BD");
     private int MAIN_BACKGROUND_COLOR = Color.parseColor("#F5F5F5");
