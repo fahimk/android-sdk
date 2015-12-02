@@ -2,6 +2,7 @@ package com.yesgraph.android.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -33,10 +34,12 @@ import com.yesgraph.android.adapters.ContactsAdapter;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.models.YSGContact;
 import com.yesgraph.android.models.YSGContactList;
 import com.yesgraph.android.models.YSGRankedContact;
 import com.yesgraph.android.models.YSGSource;
 import com.yesgraph.android.network.YSGAddressBook;
+import com.yesgraph.android.network.YSGInvite;
 import com.yesgraph.android.network.YSGSuggestionsShown;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
@@ -112,7 +115,11 @@ public class ContactsActivity extends AppCompatActivity {
                     try {
                         if(!checkIfUploadNeeded())
                         {
-                            ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                                }
+                            });
                             getContacts("");
                         }
                     } catch (Exception e) {
@@ -155,6 +162,23 @@ public class ContactsActivity extends AppCompatActivity {
             contactList.setUseSuggestions(true);
 
             YSGAddressBook ysgAddressBook=new YSGAddressBook();
+            /*ysgAddressBook.fetchAddressBookForUserId(ContactsActivity.this,sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg)
+                {
+                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    if(msg.what== Constants.RESULT_OK)
+                    {
+                        try {
+                            ysgContactList=(YSGContactList)msg.obj;
+                            getContacts("");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    return false;
+                }
+            });*/
             ysgAddressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg)
@@ -217,9 +241,53 @@ public class ContactsActivity extends AppCompatActivity {
             default:
             {
                 int i = item.getItemId();
-                if (i == R.id.action_invite) {// User chose the "Invite" item
+                if (i == R.id.action_invite) {
+                    ArrayList<YSGContact> ysgContacts=new ArrayList<>();
+                    ArrayList<RegularContact> checkedEmails=getCheckedEmailContacts();
+                    ArrayList<RegularContact> checkedPhones=getCheckedPhoneContacts();
 
+                    if(checkedEmails.size()>0) {
+                        String[] stringEmails=new String[checkedEmails.size()];
+                        for(int x=0;x<checkedEmails.size();x++)
+                        {
+                            stringEmails[x]=checkedEmails.get(x).getContact();
+                            YSGRankedContact ysgRankedContact=new YSGRankedContact();
+                            ysgRankedContact.setName(checkedEmails.get(x).getName());
+                            ysgRankedContact.setEmail(checkedEmails.get(x).getContact());
+                            ysgContacts.add(ysgRankedContact);
+                        }
 
+                        Intent intent = new Intent(context, SendEmailActivity.class);
+                        intent.putExtra("contacts",stringEmails);
+                        intent.putExtra("subject",application.getEmailSubject());
+                        intent.putExtra("message",application.getEmailText());
+                        startActivity(intent);
+                    }
+
+                    if(checkedPhones.size()>0) {
+                        String[] stringPhones=new String[checkedPhones.size()];
+                        for(int x=0;x<checkedPhones.size();x++)
+                        {
+                            stringPhones[x]=checkedPhones.get(x).getContact();
+                            YSGRankedContact ysgRankedContact=new YSGRankedContact();
+                            ysgRankedContact.setName(checkedPhones.get(x).getName());
+                            ysgRankedContact.setPhone(checkedPhones.get(x).getContact());
+                            ysgContacts.add(ysgRankedContact);
+                        }
+
+                        Intent intent = new Intent(context, SendSmsActivity.class);
+                        intent.putExtra("contacts",stringPhones);
+                        intent.putExtra("message",application.getSmsText());
+                        startActivity(intent);
+                    }
+
+                    YSGInvite ysgInvite=new YSGInvite();
+                    ysgInvite.updateInvitesSentForUser(context, ysgContacts, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(Message msg) {
+                            return false;
+                        }
+                    });
                     return true;
                 } else {// If we got here, the user's action was not recognized.
                     // Invoke the superclass to handle it.
@@ -233,7 +301,46 @@ public class ContactsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_contacts, menu);
+        menu.getItem(0).setEnabled(isContactChecked());
         return true;
+    }
+
+    private boolean isContactChecked() {
+        for(Object contact : items)
+        {
+            if(contact instanceof RegularContact)
+            {
+                if(((RegularContact)contact).getSelected())
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private ArrayList<RegularContact> getCheckedEmailContacts() {
+        ArrayList<RegularContact> checkedEmails=new ArrayList<>();
+        for(Object contact : items)
+        {
+            if(contact instanceof RegularContact)
+            {
+                if(((RegularContact)contact).getSelected() && ((RegularContact)contact).getContact().contains("@"))
+                    checkedEmails.add((RegularContact)contact);
+            }
+        }
+        return checkedEmails;
+    }
+
+    private ArrayList<RegularContact> getCheckedPhoneContacts() {
+        ArrayList<RegularContact> checkedPhones=new ArrayList<>();
+        for(Object contact : items)
+        {
+            if(contact instanceof RegularContact)
+            {
+                if(((RegularContact)contact).getSelected() && !((RegularContact)contact).getContact().contains("@"))
+                    checkedPhones.add((RegularContact)contact);
+            }
+        }
+        return checkedPhones;
     }
 
     @Override
@@ -343,6 +450,7 @@ public class ContactsActivity extends AppCompatActivity {
                             RegularContact contact = (RegularContact) items.get(position);
                             contact.setSelected(!contact.getSelected());
                             adapter.notifyDataSetChanged();
+                            invalidateOptionsMenu();
                         }
 
                     }
@@ -431,7 +539,6 @@ public class ContactsActivity extends AppCompatActivity {
                     }
                 }
             }
-            Log.i("JSON_WRITE", ysgRankedContact.toJSONObjectExtended().toString());
             jsonArrayCached.put(ysgRankedContact.toJSONObjectExtended());
         }
 

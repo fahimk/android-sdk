@@ -64,7 +64,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         YSGPrivate ysgPrivate=new YSGPrivate();
-        ysgPrivate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", "YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2", new Handler.Callback() {
+        ysgPrivate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", sharedPreferences.getString("user_id", "")/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 if(msg.what== Constants.RESULT_OK)
