@@ -116,7 +116,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
-        toolbarTitle.setText(getResources().getString(R.string.app_name));
+        toolbarTitle.setText(getResources().getString(R.string.share_sheet));
         toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
         if(!application.getYsgTheme().getFont().isEmpty()){
             fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
@@ -170,7 +170,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
     private void setActionBar() {
         String color=String.format("#%06X", (0xFFFFFF & application.getYsgTheme().getLightFontColor()));
-        getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getSupportActionBar().getTitle() + "</FONT>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getResources().getString(R.string.share_sheet) + "</FONT>"));
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
     }
 
@@ -302,6 +302,7 @@ public class ShareSheetActivity extends AppCompatActivity {
                 android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
+                copyButtonText.setText(R.string.button_copied_text);
             }
         });
 

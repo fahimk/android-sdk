@@ -9,7 +9,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:name=".application.YesGraph"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -34,12 +34,12 @@
         </activity>
         
         <activity android:name=".activity.ShareSheetActivity"
-            android:label="@string/app_name"
+            android:label="@string/share_sheet"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity android:name=".activity.ContactsActivity"
-            android:label="@string/app_name"
+            android:label="@string/contacts_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

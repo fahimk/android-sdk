@@ -166,34 +166,40 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/copyLinkLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
             android:layout_weight="2">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="New Text"
-                android:id="@+id/textCopyLink"
-                android:gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:singleLine="true"
-                android:textSize="@dimen/font_size_small" />
+            <RelativeLayout
+                android:id="@+id/copyLinkLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:id="@+id/textCopyButton"
-                android:gravity="center_vertical"
-                android:layout_alignParentRight="true"
-                android:paddingRight="15dp"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:textSize="@dimen/font_size_small" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="New Text"
+                    android:id="@+id/textCopyLink"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/font_size_small" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:id="@+id/textCopyButton"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="15dp"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:textSize="@dimen/font_size_small" />
+
+            </RelativeLayout>
         </RelativeLayout>
 
     </LinearLayout>

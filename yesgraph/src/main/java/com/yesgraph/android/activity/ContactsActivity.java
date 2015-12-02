@@ -222,7 +222,7 @@ public class ContactsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
-        toolbarTitle.setText(getResources().getString(R.string.app_name));
+        toolbarTitle.setText(getResources().getString(R.string.contacts_list));
         toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
         if(!application.getYsgTheme().getFont().isEmpty()){
             fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
