@@ -48,12 +48,10 @@ import com.yesgraph.android.utils.FontManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * Created by marko on 17/11/15.
@@ -110,7 +108,7 @@ public class ContactsActivity extends AppCompatActivity {
 
         items = new ArrayList<>();
 
-        if (sharedPreferences.getBoolean("contacts_permision_granted", false))
+        if (sharedPreferences.getBoolean("contacts_permision_granted", false) && checkContactsReadPermission())
         {
             Thread thread = new Thread() {
                 @Override
@@ -152,10 +150,17 @@ public class ContactsActivity extends AppCompatActivity {
 
     }
 
+    private boolean checkContactsReadPermission()
+    {
+        String permission = Manifest.permission.READ_CONTACTS;
+        int res = context.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
     private Boolean checkIfUploadNeeded() {
         Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
 
-        if(!cached && sharedPreferences.getBoolean("contacts_permision_granted", false) && application.isOnline())
+        if(!cached && sharedPreferences.getBoolean("contacts_permision_granted", false) && checkContactsReadPermission() && application.isOnline())
         {
             ArrayList<YSGRankedContact> list=ContactRetriever.readYSGContacts(ContactsActivity.this);
 

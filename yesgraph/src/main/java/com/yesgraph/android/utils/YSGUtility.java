@@ -31,7 +31,7 @@ public class YSGUtility {
 
         String base64 = Base64.encodeToString(data, Base64.DEFAULT);
 
-        return "anon_" + base64;
+        return "anon_" + base64.replace("\n","");
     }
 
     public static String iso8601dateStringFromMilliseconds(Long milliseconds)
