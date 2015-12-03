@@ -1,7 +1,9 @@
 package com.yesgraph.android.utils;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 
@@ -18,11 +20,18 @@ import java.util.Comparator;
  */
 public class ContactRetriever {
     public static ArrayList<YSGRankedContact> readYSGContacts(Context context){
+
+        ArrayList<YSGRankedContact> list=new ArrayList<>();
+
+        String permission = Manifest.permission.READ_CONTACTS;
+        int res = context.checkCallingOrSelfPermission(permission);
+        if(res != PackageManager.PERMISSION_GRANTED)
+            return list;
+
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
 
-        ArrayList<YSGRankedContact> list=new ArrayList<>();
 
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
@@ -167,11 +176,17 @@ public class ContactRetriever {
     }
 
     public static ArrayList<RegularContact> readContacts(Context context){
+
+        ArrayList<RegularContact> list=new ArrayList<>();
+
+        String permission = Manifest.permission.READ_CONTACTS;
+        int res = context.checkCallingOrSelfPermission(permission);
+        if(res != PackageManager.PERMISSION_GRANTED)
+            return list;
+
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
-
-        ArrayList<RegularContact> list=new ArrayList<>();
 
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
