@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -172,8 +173,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             String stringLetter="";
             if(contacts.get(i) instanceof RegularContact)
             {
-                RegularContact contact = (RegularContact)contacts.get(i);
-                stringLetter=contact.getName().substring(0,1);
                 continue;
             }
             else
@@ -207,23 +206,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             contactList.setUseSuggestions(true);
 
             final YSGAddressBook ysgAddressBook=new YSGAddressBook();
-            /*ysgAddressBook.fetchAddressBookForUserId(ContactsActivity.this,sharedPreferences.getString("user_id", ""), new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg)
-                {
-                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
-                    if(msg.what== Constants.RESULT_OK)
-                    {
-                        try {
-                            ysgContactList=(YSGContactList)msg.obj;
-                            getContacts("");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return false;
-                }
-            });*/
 
             Log.i("#YSGCONTACTS_COUNT", "1count:"+contactList.getEntries().size());
             ysgAddressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
@@ -406,87 +388,112 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         return ContactRetriever.readContacts(context);
     }
 
-    private void getContacts(String filter) {
-        if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
+    private void getContacts(final String filter) {
+        new AsyncTask<Void, Void, Void>()
         {
-            Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
-            if(cached)
+            @Override
+            protected void onPreExecute()
             {
-                YSGAddressBook ysgAddressBook = new YSGAddressBook();
-                try {
-                    ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
-                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    contacts = getContactsFromContactList();
-                }
-            }
-            else {
-                contacts = getContactsFromContactList();
-            }
-        }
-        else if(contacts==null || contacts.size()==0)
-        {
-            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
-        }
 
-        if(filter.length()>0)
-        {
-            items = null;
-            items = new ArrayList<>();
+            }
 
-            for(RegularContact contact : contacts)
+            @Override
+            protected Void doInBackground(Void... params)
             {
-                if(contact.getName().toLowerCase().contains(filter.toLowerCase()))
+                if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
                 {
-                    items.add(contact);
-                }
-            }
-        }
-        else
-        {
-            if(itemsOld==null || itemsOld.size()==0) {
-                items = null;
-                items = new ArrayList<>();
-
-                String lastSign = "";
-                Integer suggestedIndex = 0;
-                for (RegularContact contact : contacts) {
-                    if (suggestedIndex < application.getNumberOfSuggestedContacts()) {
-                        if (suggestedIndex == 0) {
-                            HeaderContact header = new HeaderContact();
-                            header.setSign(getString(R.string.suggested));
-                            items.add(header);
+                    Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
+                    if(cached)
+                    {
+                        YSGAddressBook ysgAddressBook = new YSGAddressBook();
+                        try {
+                            ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
+                            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            contacts = getContactsFromContactList();
                         }
-
-                        items.add(contact);
-
-                        suggestedIndex++;
-                    } else {
-                        String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
-                        if (!ContactRetriever.isAlpha(thisSign))
-                            thisSign = "#";
-
-                        if (!lastSign.equals(thisSign)) {
-                            HeaderContact header = new HeaderContact();
-                            header.setSign(thisSign);
-                            items.add(header);
-                        }
-
-                        items.add(contact);
-
-                        lastSign = thisSign;
+                    }
+                    else {
+                        contacts = getContactsFromContactList();
                     }
                 }
-                itemsOld = (ArrayList<Object>)items.clone();
-            }
-            else
-            {
-                items = (ArrayList<Object>)itemsOld.clone();
-            }
-        }
+                else if(contacts==null || contacts.size()==0)
+                {
+                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
+                }
 
-        setupRecycler();
+                if(filter.length()>0)
+                {
+                    items = null;
+                    items = new ArrayList<>();
+
+                    for(RegularContact contact : contacts)
+                    {
+                        if(contact.getName().toLowerCase().contains(filter.toLowerCase()))
+                        {
+                            items.add(contact);
+                        }
+                    }
+                }
+                else
+                {
+                    if(itemsOld==null || itemsOld.size()==0) {
+                        items = null;
+                        items = new ArrayList<>();
+
+                        String lastSign = "";
+                        Integer suggestedIndex = 0;
+                        for (RegularContact contact : contacts) {
+                            if (suggestedIndex < application.getNumberOfSuggestedContacts()) {
+                                if (suggestedIndex == 0) {
+                                    HeaderContact header = new HeaderContact();
+                                    header.setSign(getString(R.string.suggested));
+                                    items.add(header);
+                                }
+
+                                items.add(contact);
+
+                                suggestedIndex++;
+                            } else {
+                                String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
+                                if (!ContactRetriever.isAlpha(thisSign))
+                                    thisSign = "#";
+
+                                if (!lastSign.equals(thisSign)) {
+                                    HeaderContact header = new HeaderContact();
+                                    header.setSign(thisSign);
+                                    items.add(header);
+                                }
+
+                                items.add(contact);
+
+                                lastSign = thisSign;
+                            }
+                        }
+                        itemsOld = (ArrayList<Object>)items.clone();
+                    }
+                    else
+                    {
+                        items = (ArrayList<Object>)itemsOld.clone();
+                    }
+                }
+
+                setupRecycler();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result)
+            {
+
+            }
+        }.execute((Void[]) null);
+
+
+
+
+
     }
 
     private void setupRecycler() {
