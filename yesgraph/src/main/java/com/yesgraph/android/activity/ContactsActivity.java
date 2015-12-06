@@ -17,16 +17,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,14 +56,18 @@ import com.yesgraph.android.utils.FontManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by marko on 17/11/15.
  */
-public class ContactsActivity extends AppCompatActivity {
+public class ContactsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private YesGraph application;
     private Context context;
@@ -72,6 +83,7 @@ public class ContactsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private FontManager fontManager;
     private TextView toolbarTitle;
+    private LinearLayout indexLayout;
 
     private YSGContactList ysgContactList;
 
@@ -89,6 +101,8 @@ public class ContactsActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        indexLayout = (LinearLayout) findViewById(R.id.side_index);
+        indexLayout.setBackgroundColor(application.getYsgTheme().getMainBackgroundColor());
         search = (EditText)findViewById(R.id.search);
         search.setTextColor(application.getYsgTheme().getLightFontColor());
         search.getBackground().setColorFilter(application.getYsgTheme().getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
@@ -148,6 +162,29 @@ public class ContactsActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
+    }
+
+    LinkedHashMap<String, Integer> mapIndex;
+
+    private void getIndexList(ArrayList<Object> contacts) {
+        mapIndex = new LinkedHashMap<String, Integer>();
+        for (int i = application.getNumberOfSuggestedContacts(); i < contacts.size(); i++) {
+            String stringLetter="";
+            if(contacts.get(i) instanceof RegularContact)
+            {
+                RegularContact contact = (RegularContact)contacts.get(i);
+                stringLetter=contact.getName().substring(0,1);
+                continue;
+            }
+            else
+            {
+                HeaderContact contact = (HeaderContact)contacts.get(i);
+                stringLetter=contact.getSign();
+            }
+
+            if (mapIndex.get(stringLetter) == null)
+                mapIndex.put(stringLetter, i);
+        }
     }
 
     private boolean checkContactsReadPermission()
@@ -474,6 +511,10 @@ public class ContactsActivity extends AppCompatActivity {
                 });
 
                 contactsList.setAdapter(adapter);
+
+                getIndexList(items);
+
+                displayIndex();
             }
         });
     }
@@ -645,4 +686,33 @@ public class ContactsActivity extends AppCompatActivity {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
+    private void displayIndex() {
+
+        indexLayout.removeAllViews();
+
+        TextView textView;
+        List<String> indexList = new ArrayList<String>(mapIndex.keySet());
+        for (String index : indexList) {
+            textView = (TextView) getLayoutInflater().inflate(
+                    R.layout.side_index_item, null);
+            textView.setText(index);
+            textView.setOnClickListener(this);
+            textView.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+            textView.setTextColor(application.getYsgTheme().getDarkFontColor());
+            textView.setBackgroundColor(application.getYsgTheme().getMainBackgroundColor());
+            if(!application.getYsgTheme().getFont().isEmpty()){
+                fontManager.setFont(textView, application.getYsgTheme().getFont());
+            }
+            indexLayout.addView(textView);
+
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        TextView selectedIndex = (TextView) v;
+        ((GridLayoutManager)contactsList.getLayoutManager()).scrollToPositionWithOffset(mapIndex.get(selectedIndex.getText()), 0);
+    }
+
 }
