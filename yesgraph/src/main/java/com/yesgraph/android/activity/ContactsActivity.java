@@ -111,9 +111,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         contactsList.setLayoutManager(new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false));
         contactsList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_DEFAULT);
         contactsList.setVerticalScrollBarEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            contactsList.setScrollBarSize(40);
-        }
         contactsListContent.addView(contactsList);
 
         indexLayout = (LinearLayout) findViewById(R.id.side_index);
