@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.widget.ShareDialog;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.YSGTheme;
 
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private YSGTheme ysgTheme;
     private TextView description5_3, description5_4, description5_1, description5_2;
     private Button btn_tryYesGraph, btn_tryYesGraph2, btn_tryYesGraph3, btn_tryYesGraph4;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
         context = this;
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
         yesGraphApplication = (YesGraph) getApplicationContext();
 
