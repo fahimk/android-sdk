@@ -70,11 +70,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/contactsList"
+                    <FrameLayout
+                        android:id="@+id/contactsListContent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="30dp" />
+                        android:layout_marginRight="30dp"/>
 
                     <LinearLayout
                         android:layout_width="30dp"

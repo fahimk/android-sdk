@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,12 +26,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -85,6 +88,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private FontManager fontManager;
     private TextView toolbarTitle;
     private LinearLayout indexLayout;
+    private FrameLayout contactsListContent;
 
     private YSGContactList ysgContactList;
 
@@ -102,6 +106,16 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
+        contactsList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.content_contact_list, null);
+        contactsList.setLayoutManager(new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false));
+        contactsList.setVerticalScrollbarPosition(View.SCROLLBAR_POSITION_DEFAULT);
+        contactsList.setVerticalScrollBarEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            contactsList.setScrollBarSize(40);
+        }
+        contactsListContent.addView(contactsList);
+
         indexLayout = (LinearLayout) findViewById(R.id.side_index);
         indexLayout.setBackgroundColor(application.getYsgTheme().getMainBackgroundColor());
         search = (EditText)findViewById(R.id.search);
@@ -110,7 +124,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         search.setHintTextColor(application.getYsgTheme().getLightFontColor());
         searchBar = (LinearLayout)findViewById(R.id.searhBar);
         searchBar.setBackgroundColor(application.getYsgTheme().getMainForegroundColor());
-        contactsList = (RecyclerView)findViewById(R.id.contactsList);
+        //contactsList = (RecyclerView)findViewById(R.id.contactsList);
         contactsList.setBackgroundColor(application.getYsgTheme().getRowBackgroundColor());
 
         ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
@@ -499,9 +513,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private void setupRecycler() {
         runOnUiThread(new Runnable() {
             public void run() {
-                GridLayoutManager manager = new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false);
-
-                contactsList.setLayoutManager(manager);
                 adapter = new ContactsAdapter(items, ContactsActivity.this, application);
 
                 adapter.setOnItemClickListener(new ContactsAdapter.OnItemClickListener() {
