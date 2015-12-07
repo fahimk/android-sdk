@@ -1,5 +1,7 @@
 package com.yesgraph.android.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +33,9 @@ import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.YSGContactList;
@@ -43,12 +48,18 @@ import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
 
+import io.fabric.sdk.android.Fabric;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class ShareSheetActivity extends AppCompatActivity {
+
+//    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+//    private static final String TWITTER_KEY = "qtlq3xsjIrP0RpMznEnd3mFx0";
+//    private static final String TWITTER_SECRET = " 8wwPxgwlN1CaDKyWMGCLmoRYroV0SHHEOsyWJByyutHym5yfCY";
 
     private YesGraph application;
     private Context context;
@@ -57,12 +68,27 @@ public class ShareSheetActivity extends AppCompatActivity {
     private FontManager fontManager;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
+    private Intent intent;
+    private String TWITTER_KEY = "";
+    private String TWITTER_SECRET = "";
 
     private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intent = getIntent();
+        if (intent != null) {
+            TWITTER_KEY = intent.getStringExtra("twitter_key");
+            TWITTER_SECRET = intent.getStringExtra("twitter_secret");
+            if (TWITTER_KEY != null && TWITTER_SECRET != null) {
+                if (!TWITTER_KEY.isEmpty() && !TWITTER_SECRET.isEmpty()) {
+                    TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                    Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
+                }
+            }
+        }
+
         setContentView(R.layout.activity_share_sheet);
 
         shareDialog = new ShareDialog(this);
@@ -249,7 +275,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                TweetComposer.Builder builder = new TweetComposer.Builder(context).text("");
+                builder.show();
             }
         });
         contactsLayout.setOnClickListener(new View.OnClickListener() {
@@ -287,8 +314,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
             }
@@ -304,8 +331,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         copyButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getString(R.string.share_link_copy), copyLinkText.getText().toString());
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
                 copyButtonText.setText(R.string.button_copied_text);
@@ -331,7 +358,7 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, context.getResources().getString(R.string.initialize_facebook_sdk),Toast.LENGTH_LONG).show();
+            Toast.makeText(context, context.getResources().getString(R.string.initialize_facebook_sdk), Toast.LENGTH_LONG).show();
         }
     }
 
