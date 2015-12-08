@@ -275,7 +275,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TweetComposer.Builder builder = new TweetComposer.Builder(context).text("");
+                TweetComposer.Builder builder = new TweetComposer.Builder(context).text(application.getCopyLinkText());
                 builder.show();
             }
         });
@@ -353,7 +353,12 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void shareToFacebook() {
         try {
             if (ShareDialog.canShow(ShareLinkContent.class)) {
-                ShareLinkContent linkContent = new ShareLinkContent.Builder().build();
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        //.setContentTitle("Content Title")
+                        //.setContentDescription("Content Description")
+                        .setContentUrl(Uri.parse(application.getCopyLinkText()))
+                        .build();
+
                 shareDialog.show(linkContent);
             }
         } catch (Exception e) {
@@ -367,7 +372,10 @@ public class ShareSheetActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 64207) {
-            Toast.makeText(context, context.getResources().getString(R.string.facebook_share_success), Toast.LENGTH_LONG).show();
+            if (resultCode == RESULT_OK)
+                Toast.makeText(context, context.getResources().getString(R.string.facebook_share_success), Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, context.getResources().getString(R.string.facebook_share_failure), Toast.LENGTH_SHORT).show();
         }
     }
 }

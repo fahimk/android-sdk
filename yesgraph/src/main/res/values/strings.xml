@@ -39,6 +39,7 @@
     <string name="button_copy_text">copy</string>
     <string name="button_copied_text">copied</string>
     <string name="facebook_share_success">Shared successfully</string>
+    <string name="facebook_share_failure">Message not shared</string>
     <string name="initialize_facebook_sdk">You have to initialize Facebook sdk in yout Manifest.xml file</string>
 
     <!--ContactsActivity-->
