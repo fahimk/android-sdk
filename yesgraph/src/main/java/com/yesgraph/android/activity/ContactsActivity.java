@@ -124,7 +124,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         //contactsList = (RecyclerView)findViewById(R.id.contactsList);
         contactsList.setBackgroundColor(application.getYsgTheme().getRowBackgroundColor());
 
-        ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
+        setProgressVisibility(true);
 
         if(!application.getYsgTheme().getFont().isEmpty()){
             fontManager.setFont(search,application.getYsgTheme().getFont());
@@ -142,11 +142,11 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     try {
                         if(!checkIfUploadNeeded())
                         {
-                            runOnUiThread(new Runnable() {
+                            /*runOnUiThread(new Runnable() {
                                 public void run() {
-                                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                                    setProgressVisibility(false);
                                 }
-                            });
+                            });*/
                             getContacts("");
                         }
                     } catch (Exception e) {
@@ -223,7 +223,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public boolean handleMessage(Message msg)
                 {
-                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    setProgressVisibility(false);
+
                     if(msg.what== Constants.RESULT_OK)
                     {
                         try {
@@ -248,6 +249,14 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         {
             return false;
         }
+    }
+
+    private void setProgressVisibility(boolean visible)
+    {
+        if(visible)
+            ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
+        else
+            ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.GONE);
     }
 
     private void setToolbar(){
@@ -500,11 +509,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
             }
         }.execute((Void[]) null);
-
-
-
-
-
     }
 
     private void setupRecycler() {
@@ -528,6 +532,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 contactsList.setAdapter(adapter);
 
                 getIndexList(items);
+
+                setProgressVisibility(false);
 
                 displayIndex();
             }
@@ -678,7 +684,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                                     public void run() {
                                         if(!checkIfUploadNeeded())
                                         {
-                                            ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                                            setProgressVisibility(false);
                                             getContacts("");
                                         }
                                     }
@@ -694,7 +700,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     sharedPreferences.edit().putBoolean("contacts_permision_granted", false).commit();
                     Toast.makeText(ContactsActivity.this, "READ_CONTACTS Denied", Toast.LENGTH_SHORT)
                             .show();
-                    ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    setProgressVisibility(false);
                 }
                 break;
             default:
