@@ -59,6 +59,68 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
 
     }
 
+
+    /**
+     * Validate contacts list ordered ascending
+     */
+    public void testValidateContactsListOrderedAsc() throws JSONException {
+
+        JSONArray jsonContacts = getJsonArray();
+
+        YSGContactList ysgContactList = new YSGAddressBook().contactListFromResponse(jsonContacts);
+
+        boolean areAscOrdered = isAscOrdered(ysgContactList);
+
+        assertEquals(true, areAscOrdered);
+
+    }
+
+    /**
+     * Validate mapping from YSGRankedContact to JsonObject
+     */
+    public void testValidateMappingYSGRankedContactToJson() throws JSONException {
+
+        YSGRankedContact contact = getRankedContact();
+
+        JSONObject jsonObject = contact.toJSONObjectExtended();
+
+        boolean hasName = jsonObject.has("name");
+        assertEquals(true, hasName);
+
+        boolean hasEmail = jsonObject.has("email");
+        assertEquals(true, hasEmail);
+
+        boolean hasPhones = jsonObject.has("phone");
+        assertEquals(true, hasPhones);
+
+        int actualPhonesCount = jsonObject.getJSONArray("phones").length();
+        int expectedPhonesCount = contact.phones().size();
+
+        assertEquals(expectedPhonesCount, actualPhonesCount);
+
+        boolean hasEmails = jsonObject.has("emails");
+        assertEquals(true, hasEmails);
+
+        int actualEmailsCount = jsonObject.getJSONArray("emails").length();
+        int expectedEmailsCount = contact.emails().size();
+
+        assertEquals(expectedEmailsCount, actualEmailsCount);
+
+        int actualRank = jsonObject.getInt("rank");
+        int expectedRank = contact.getRank();
+        assertEquals(expectedRank, actualRank);
+
+        double actualScore = jsonObject.getDouble("score");
+        double expectedScore = contact.getScore();
+        assertEquals(expectedScore, actualScore);
+
+    }
+
+
+    /**
+     * HELPER METHODS
+     */
+
     @NonNull
     private JSONObject getContactJsonObject() throws JSONException {
 
@@ -101,20 +163,6 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
         return jsonContact;
     }
 
-    /**
-     * Validate contacts list ordered ascending
-     */
-    public void testValidateContactsListOrderedAsc() throws JSONException {
-
-        JSONArray jsonContacts = getJsonArray();
-
-        YSGContactList ysgContactList = new YSGAddressBook().contactListFromResponse(jsonContacts);
-
-        boolean areAscOrdered = isAscOrdered(ysgContactList);
-
-        assertEquals(true, areAscOrdered);
-
-    }
 
     @NonNull
     private JSONArray getJsonArray() throws JSONException {
@@ -192,47 +240,6 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
         return isOrdered;
     }
 
-
-    /**
-     * Validate mapping from YSGRankedContact to JsonObject
-     */
-    public void testValidateMappingYSGRankedContactToJson() throws JSONException {
-
-        YSGRankedContact contact = getRankedContact();
-
-        JSONObject jsonObject = contact.toJSONObjectExtended();
-
-        boolean hasName = jsonObject.has("name");
-        assertEquals(true, hasName);
-
-        boolean hasEmail = jsonObject.has("email");
-        assertEquals(true, hasEmail);
-
-        boolean hasPhones = jsonObject.has("phone");
-        assertEquals(true, hasPhones);
-
-        int actualPhonesCount = jsonObject.getJSONArray("phones").length();
-        int expectedPhonesCount = contact.phones().size();
-
-        assertEquals(expectedPhonesCount, actualPhonesCount);
-
-        boolean hasEmails = jsonObject.has("emails");
-        assertEquals(true, hasEmails);
-
-        int actualEmailsCount = jsonObject.getJSONArray("emails").length();
-        int expectedEmailsCount = contact.emails().size();
-
-        assertEquals(expectedEmailsCount, actualEmailsCount);
-
-        int actualRank = jsonObject.getInt("rank");
-        int expectedRank = contact.getRank();
-        assertEquals(expectedRank, actualRank);
-
-        double actualScore = jsonObject.getDouble("score");
-        double expectedScore = contact.getScore();
-        assertEquals(expectedScore, actualScore);
-
-    }
 
     @NonNull
     private YSGRankedContact getRankedContact() {

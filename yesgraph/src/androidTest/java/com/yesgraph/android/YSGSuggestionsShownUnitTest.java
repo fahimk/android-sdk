@@ -64,32 +64,6 @@ public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application
 
     }
 
-    @NonNull
-    private ArrayList<YSGRankedContact> getRankedContacts() {
-
-        ArrayList<YSGRankedContact> suggestions = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-
-            YSGRankedContact contact = new YSGRankedContact();
-            contact.setName("John" + String.valueOf(i));
-
-            ArrayList<String> emails = new ArrayList<>();
-            emails.add("john@email.com" + String.valueOf(i));
-            emails.add("john@email.com" + String.valueOf(i));
-
-            contact.setEmails(emails);
-
-            ArrayList<String> phones = new ArrayList<>();
-            phones.add("123-456-542" + String.valueOf(i));
-            phones.add("123-456-542" + String.valueOf(i));
-
-            contact.setPhones(phones);
-
-            suggestions.add(contact);
-        }
-        return suggestions;
-    }
 
     /**
      * Validate generated JSONArray from suggestions ranked contacts list without emails and phones array items
@@ -130,5 +104,32 @@ public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application
         boolean hasEmails = jsonArray.getJSONObject(0).has("emails");
         assertEquals(true, hasEmails);
 
+    }
+
+    @NonNull
+    private ArrayList<YSGRankedContact> getRankedContacts() {
+
+        ArrayList<YSGRankedContact> suggestions = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+            YSGRankedContact contact = new YSGRankedContact();
+            contact.setName("John" + String.valueOf(i));
+
+            ArrayList<String> emails = new ArrayList<>();
+            emails.add("john@email.com" + String.valueOf(i));
+            emails.add("john@email.com" + String.valueOf(i));
+
+            contact.setEmails(emails);
+
+            ArrayList<String> phones = new ArrayList<>();
+            phones.add("123-456-542" + String.valueOf(i));
+            phones.add("123-456-542" + String.valueOf(i));
+
+            contact.setPhones(phones);
+
+            suggestions.add(contact);
+        }
+        return suggestions;
     }
 }

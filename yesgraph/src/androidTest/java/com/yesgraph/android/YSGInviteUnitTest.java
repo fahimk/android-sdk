@@ -54,22 +54,6 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
 
     }
 
-    @NonNull
-    private ArrayList<YSGContact> getContacts() {
-
-        ArrayList<YSGContact> suggestions = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-
-            YSGContact contact = new YSGContact();
-            contact.setName("John" + String.valueOf(i));
-            contact.setPhone("123-432-453");
-            contact.setEmail("john@email.com");
-
-            suggestions.add(contact);
-        }
-        return suggestions;
-    }
 
     /**
      * Validate generated JSON array from invite contacts list with missing data
@@ -105,6 +89,25 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
         assertEquals(false, hasEmail);
 
     }
+
+
+    @NonNull
+    private ArrayList<YSGContact> getContacts() {
+
+        ArrayList<YSGContact> suggestions = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+            YSGContact contact = new YSGContact();
+            contact.setName("John" + String.valueOf(i));
+            contact.setPhone("123-432-453");
+            contact.setEmail("john@email.com");
+
+            suggestions.add(contact);
+        }
+        return suggestions;
+    }
+
 
     @NonNull
     private ArrayList<YSGContact> getContactsWithMissingData() {

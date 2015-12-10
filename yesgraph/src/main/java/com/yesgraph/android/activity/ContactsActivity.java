@@ -2,7 +2,6 @@ package com.yesgraph.android.activity;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -10,7 +9,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,24 +17,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,21 +45,18 @@ import com.yesgraph.android.models.YSGRankedContact;
 import com.yesgraph.android.models.YSGSource;
 import com.yesgraph.android.network.YSGAddressBook;
 import com.yesgraph.android.network.YSGInvite;
-import com.yesgraph.android.network.YSGSuggestionsShown;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.FontManager;
+import com.yesgraph.android.utils.RankingContactsManager;
+import com.yesgraph.android.utils.SenderManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by marko on 17/11/15.
@@ -91,6 +81,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private FrameLayout contactsListContent;
 
     private YSGContactList ysgContactList;
+    private LinkedHashMap<String, Integer> mapIndex;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -98,6 +89,46 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
+
+        init();
+
+        checkUpload();
+
+    }
+
+    private void checkUpload() {
+
+        if (sharedPreferences.getBoolean("contacts_permision_granted", false) && checkContactsReadPermission())
+        {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        if(!checkIfUploadNeeded())
+                        {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                                }
+                            });
+                            getContacts("");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+        }
+    }
+
+    private void init() {
 
         application = (YesGraph) getApplication();
         fontManager = FontManager.getInstance();
@@ -134,35 +165,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
         items = new ArrayList<>();
 
-        if (sharedPreferences.getBoolean("contacts_permision_granted", false) && checkContactsReadPermission())
-        {
-            Thread thread = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        if(!checkIfUploadNeeded())
-                        {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
-                                }
-                            });
-                            getContacts("");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            thread.start();
-
-        }
-        else
-        {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS},
-                    REQUEST_CODE_ASK_PERMISSIONS);
-        }
-
         search.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
@@ -173,10 +175,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
-
     }
-
-    LinkedHashMap<String, Integer> mapIndex;
 
     private void getIndexList(ArrayList<Object> contacts) {
         mapIndex = new LinkedHashMap<String, Integer>();
@@ -288,44 +287,13 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             {
                 int i = item.getItemId();
                 if (i == R.id.action_invite) {
-                    ArrayList<YSGContact> ysgContacts=new ArrayList<>();
-                    ArrayList<RegularContact> checkedEmails=getCheckedEmailContacts();
-                    ArrayList<RegularContact> checkedPhones=getCheckedPhoneContacts();
 
-                    if(checkedEmails.size()>0) {
-                        String[] stringEmails=new String[checkedEmails.size()];
-                        for(int x=0;x<checkedEmails.size();x++)
-                        {
-                            stringEmails[x]=checkedEmails.get(x).getContact();
-                            YSGRankedContact ysgRankedContact=new YSGRankedContact();
-                            ysgRankedContact.setName(checkedEmails.get(x).getName());
-                            ysgRankedContact.setEmail(checkedEmails.get(x).getContact());
-                            ysgContacts.add(ysgRankedContact);
-                        }
+                    SenderManager senderManager = new SenderManager(items);
 
-                        Intent intent = new Intent(context, SendEmailActivity.class);
-                        intent.putExtra("contacts",stringEmails);
-                        intent.putExtra("subject",application.getEmailSubject());
-                        intent.putExtra("message",application.getEmailText());
-                        startActivity(intent);
-                    }
+                    senderManager.sendEmail(context, application);
+                    senderManager.sendSms(context,application);
 
-                    if(checkedPhones.size()>0) {
-                        String[] stringPhones=new String[checkedPhones.size()];
-                        for(int x=0;x<checkedPhones.size();x++)
-                        {
-                            stringPhones[x]=checkedPhones.get(x).getContact();
-                            YSGRankedContact ysgRankedContact=new YSGRankedContact();
-                            ysgRankedContact.setName(checkedPhones.get(x).getName());
-                            ysgRankedContact.setPhone(checkedPhones.get(x).getContact());
-                            ysgContacts.add(ysgRankedContact);
-                        }
-
-                        Intent intent = new Intent(context, SendSmsActivity.class);
-                        intent.putExtra("contacts",stringPhones);
-                        intent.putExtra("message",application.getSmsText());
-                        startActivity(intent);
-                    }
+                    ArrayList<YSGContact> ysgContacts = senderManager.getInvitedContacts();
 
                     YSGInvite ysgInvite=new YSGInvite();
                     ysgInvite.updateInvitesSentForUser(context, ysgContacts, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
@@ -363,32 +331,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         return false;
     }
 
-    private ArrayList<RegularContact> getCheckedEmailContacts() {
-        ArrayList<RegularContact> checkedEmails=new ArrayList<>();
-        for(Object contact : items)
-        {
-            if(contact instanceof RegularContact)
-            {
-                if(((RegularContact)contact).getSelected() && ((RegularContact)contact).getContact().contains("@"))
-                    checkedEmails.add((RegularContact)contact);
-            }
-        }
-        return checkedEmails;
-    }
-
-    private ArrayList<RegularContact> getCheckedPhoneContacts() {
-        ArrayList<RegularContact> checkedPhones=new ArrayList<>();
-        for(Object contact : items)
-        {
-            if(contact instanceof RegularContact)
-            {
-                if(((RegularContact)contact).getSelected() && !((RegularContact)contact).getContact().contains("@"))
-                    checkedPhones.add((RegularContact)contact);
-            }
-        }
-        return checkedPhones;
-    }
-
     @Override
     public boolean onPrepareOptionsMenu (Menu menu) {
         return true;
@@ -411,83 +353,15 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             @Override
             protected Void doInBackground(Void... params)
             {
-                if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
-                {
-                    Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
-                    if(cached)
-                    {
-                        YSGAddressBook ysgAddressBook = new YSGAddressBook();
-                        try {
-                            ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
-                            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            contacts = getContactsFromContactList();
-                        }
-                    }
-                    else {
-                        contacts = getContactsFromContactList();
-                    }
-                }
-                else if(contacts==null || contacts.size()==0)
-                {
-                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
-                }
+                setContactsFromCacheOrContactsProvider();
 
                 if(filter.length()>0)
                 {
-                    items = null;
-                    items = new ArrayList<>();
-
-                    for(RegularContact contact : contacts)
-                    {
-                        if(contact.getName().toLowerCase().contains(filter.toLowerCase()))
-                        {
-                            items.add(contact);
-                        }
-                    }
+                    setContactsByFilter(filter);
                 }
                 else
                 {
-                    if(itemsOld==null || itemsOld.size()==0) {
-                        items = null;
-                        items = new ArrayList<>();
-
-                        String lastSign = "";
-                        Integer suggestedIndex = 0;
-                        for (RegularContact contact : contacts) {
-                            if (suggestedIndex < application.getNumberOfSuggestedContacts()) {
-                                if (suggestedIndex == 0) {
-                                    HeaderContact header = new HeaderContact();
-                                    header.setSign(getString(R.string.suggested));
-                                    items.add(header);
-                                }
-
-                                items.add(contact);
-
-                                suggestedIndex++;
-                            } else {
-                                String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
-                                if (!ContactRetriever.isAlpha(thisSign))
-                                    thisSign = "#";
-
-                                if (!lastSign.equals(thisSign)) {
-                                    HeaderContact header = new HeaderContact();
-                                    header.setSign(thisSign);
-                                    items.add(header);
-                                }
-
-                                items.add(contact);
-
-                                lastSign = thisSign;
-                            }
-                        }
-                        itemsOld = (ArrayList<Object>)items.clone();
-                    }
-                    else
-                    {
-                        items = (ArrayList<Object>)itemsOld.clone();
-                    }
+                    setSuggestedContactsOnTheTop();
                 }
 
                 setupRecycler();
@@ -500,11 +374,93 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
             }
         }.execute((Void[]) null);
+    }
 
 
+    private void setSuggestedContactsOnTheTop() {
 
+        if(itemsOld==null || itemsOld.size()==0) {
+            items = null;
+            items = new ArrayList<>();
 
+            String lastSign = "";
+            Integer suggestedIndex = 0;
+            for (RegularContact contact : contacts) {
+                if (suggestedIndex < application.getNumberOfSuggestedContacts()) {
+                    if (suggestedIndex == 0) {
+                        HeaderContact header = new HeaderContact();
+                        header.setSign(getString(R.string.suggested));
+                        items.add(header);
+                    }
 
+                    items.add(contact);
+
+                    suggestedIndex++;
+                } else {
+                    String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
+                    if (!ContactRetriever.isAlpha(thisSign))
+                        thisSign = "#";
+
+                    if (!lastSign.equals(thisSign)) {
+                        HeaderContact header = new HeaderContact();
+                        header.setSign(thisSign);
+                        items.add(header);
+                    }
+
+                    items.add(contact);
+
+                    lastSign = thisSign;
+                }
+            }
+            itemsOld = (ArrayList<Object>)items.clone();
+        }
+        else
+        {
+            items = (ArrayList<Object>)itemsOld.clone();
+        }
+    }
+
+    private void setContactsByFilter(String filter) {
+
+        items = null;
+        items = new ArrayList<>();
+
+        for(RegularContact contact : contacts)
+        {
+            if(contact.getName().toLowerCase().contains(filter.toLowerCase()))
+            {
+                items.add(contact);
+            }
+        }
+    }
+
+    /**
+     * Get contacts from application cache or from Contacts Provider
+     */
+    private void setContactsFromCacheOrContactsProvider() {
+
+        if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
+        {
+            Boolean cached=!sharedPreferences.getString("contacts_cache","").equals("");
+            if(cached)
+            {
+                YSGAddressBook ysgAddressBook = new YSGAddressBook();
+                try {
+                    ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(sharedPreferences.getString("contacts_cache","")));
+                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    contacts = getContactsFromContactList();
+                }
+            }
+            else {
+                contacts = getContactsFromContactList();
+            }
+        }
+        else if(contacts==null || contacts.size()==0)
+        {
+            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
+        }
     }
 
     private void setupRecycler() {
@@ -536,130 +492,9 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
     private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<YSGRankedContact> ysgRankedContactArrayList, Integer suggestedCount, Boolean postSuggested)
     {
-        ArrayList<RegularContact> regularContacts=new ArrayList<>();
-        ArrayList<RegularContact> suggestedContacts=new ArrayList<>();
-        ArrayList<YSGRankedContact> ysgRankedContacts=new ArrayList<>();
-
-        JSONArray jsonArrayCached=new JSONArray();
-
-        ArrayList<Integer> suggestedItemsIndex=new ArrayList<>();
-
-        for(int i=0;i<ysgRankedContactArrayList.size();i++)
-        {
-            YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
-
-            if(!ysgRankedContact.wasSuggested())
-            {
-                suggestedItemsIndex.add(i);
-                if(suggestedItemsIndex.size()==suggestedCount)
-                    break;
-            }
-        }
-
-        if(suggestedItemsIndex.size()<suggestedCount && ysgRankedContactArrayList.size()>=suggestedCount)
-        {
-            for(int i=0;i<suggestedCount-suggestedItemsIndex.size();i++)
-            {
-                suggestedItemsIndex.add(i);
-            }
-
-            for(int i=0;i<ysgRankedContactArrayList.size();i++)
-            {
-                YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
-                ysgRankedContact.setSuggested(false);
-            }
-        }
-
-        for(int i=0;i<ysgRankedContactArrayList.size();i++)
-        {
-            YSGRankedContact ysgRankedContact = ysgRankedContactArrayList.get(i);
-
-            if(suggestedItemsIndex.contains(i))
-            {
-                ysgRankedContact.setSuggested(true);
-                ysgRankedContacts.add(ysgRankedContact);
-
-                RegularContact regularContact=new RegularContact();
-                regularContact.setName(ysgRankedContact.name());
-                if(ysgRankedContact.email()!=null && ysgRankedContact.email().length()>0)
-                {
-                    regularContact.setContact(ysgRankedContact.email());
-                }
-                else if(ysgRankedContact.phone()!=null && ysgRankedContact.phone().length()>0)
-                {
-                    regularContact.setContact(ysgRankedContact.phone());
-                }
-                suggestedContacts.add(regularContact);
-            }
-            else
-            {
-                if(ysgRankedContact.emails()!=null && ysgRankedContact.emails().size()>0)
-                {
-                    for(String thisEmail : ysgRankedContact.emails()) {
-                        RegularContact regularContact = new RegularContact();
-                        regularContact.setName(ysgRankedContact.name());
-                        regularContact.setContact(thisEmail);
-                        regularContacts.add(regularContact);
-                    }
-                }
-
-                if(ysgRankedContact.phones()!=null && ysgRankedContact.phones().size()>0) {
-                    for(String thisPhone : ysgRankedContact.phones()) {
-                        RegularContact regularContact = new RegularContact();
-                        regularContact.setName(ysgRankedContact.name());
-                        regularContact.setContact(thisPhone);
-                        regularContacts.add(regularContact);
-                    }
-                }
-            }
-            jsonArrayCached.put(ysgRankedContact.toJSONObjectExtended());
-        }
-
-        if(postSuggested) {
-            YSGSuggestionsShown ysgSuggestionsShown = new YSGSuggestionsShown();
-            ysgSuggestionsShown.updateSuggestionsSeen(context, ysgRankedContacts, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    Message callbackMessage = new Message();
-                    if (msg.what == Constants.RESULT_OK) {
-                    }
-                    return false;
-                }
-            });
-        }
-
-        sharedPreferences.edit().putString("contacts_cache", jsonArrayCached.toString()).commit();
-
-        Collections.sort(regularContacts, new Comparator<RegularContact>() {
-            public int compare(RegularContact s1, RegularContact s2) {
-
-                if (isAlpha(s1.getName().substring(0, 1)) && !isAlpha(s2.getName().substring(0, 1)))
-                    return -s1.getName().compareToIgnoreCase(s2.getName());
-
-                if (isAlpha(s2.getName().substring(0, 1)) && !isAlpha(s1.getName().substring(0, 1)))
-                    return -s1.getName().compareToIgnoreCase(s2.getName());
-
-                return s1.getName().compareToIgnoreCase(s2.getName());
-            }
-        });
-
-        for(RegularContact contact : regularContacts)
-        {
-            suggestedContacts.add(contact);
-        }
-
-        return suggestedContacts;
+        return new RankingContactsManager(context).rankedContactsToRegularContacts(ysgRankedContactArrayList,suggestedCount,postSuggested);
     }
 
-    public static boolean isAlpha(String name) {
-        boolean bool=name.matches("[a-zA-Z]+");
-        return bool;
-    }
-
-    public static boolean isNumeric(String name) {
-        boolean bool=name.matches("[0-9]+");
-        return bool;
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

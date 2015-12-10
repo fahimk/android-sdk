@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -99,13 +100,11 @@ public class SendSmsActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.alert_send_sms_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String all_contacts = "";
-                        for (int i = 0; i < contacts.length; i++) {
-                            all_contacts += contacts[i] + ";";
-                        }
-                        Uri smsToUri = Uri.parse("smsto:" + all_contacts);
-                        Intent intent = new Intent(android.content.Intent.ACTION_SENDTO, smsToUri);
-                        intent.putExtra("sms_body", message);
+
+                        String all_contacts = getAllContacts(contacts);
+
+                        Intent intent = sendSmsTo(all_contacts);
+
                         startActivity(intent);
                         finish();
                     }
@@ -118,6 +117,22 @@ public class SendSmsActivity extends AppCompatActivity {
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+
+    private Intent sendSmsTo(String all_contacts) {
+        Uri smsToUri = Uri.parse("smsto:" + all_contacts);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
+        intent.putExtra("sms_body", message);
+        return intent;
+    }
+
+    private String getAllContacts(String[] contacts) {
+        String all_contacts = "";
+        for (int i = 0; i < contacts.length; i++) {
+            all_contacts += contacts[i] + ";";
+        }
+        return all_contacts;
     }
 
     public void initCheckForPermissions() {

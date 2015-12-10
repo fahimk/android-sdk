@@ -66,6 +66,12 @@ public class YSGContactListUnitTest extends ApplicationTestCase<Application> {
 
     }
 
+
+    /**
+     * HELPER METHODS
+     *
+     */
+
     @NonNull
     private ArrayList<YSGRankedContact> getRankedContacts() {
 
