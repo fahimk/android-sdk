@@ -5,11 +5,11 @@ import com.yesgraph.android.application.YesGraph;
 /**
  * Created by Dean Bozinoski on 11/19/2015.
  */
-public class YSGTheme {
+public class CustomTheme {
 
     private Constants constants;
 
-    public YSGTheme (){
+    public CustomTheme(){
         constants = new Constants();
     }
 

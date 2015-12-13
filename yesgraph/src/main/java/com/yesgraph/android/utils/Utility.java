@@ -12,7 +12,7 @@ import java.util.Random;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGUtility {
+public class Utility {
     public static String randomUserId()
     {
         Random rand = new Random();

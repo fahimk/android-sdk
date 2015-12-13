@@ -8,8 +8,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGRankedContact;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +19,9 @@ import java.util.Comparator;
  * Created by marko on 18/11/15.
  */
 public class ContactRetriever {
-    public static ArrayList<YSGRankedContact> readYSGContacts(Context context){
+    public static ArrayList<RankedContact> readYSGContacts(Context context){
 
-        ArrayList<YSGRankedContact> list=new ArrayList<>();
+        ArrayList<RankedContact> list=new ArrayList<>();
 
         String permission = Manifest.permission.READ_CONTACTS;
         int res = context.checkCallingOrSelfPermission(permission);
@@ -94,7 +94,7 @@ public class ContactRetriever {
                     }
                     pCur.close();
 
-                    YSGRankedContact ysgRankedContact = new YSGRankedContact();
+                    RankedContact ysgRankedContact = new RankedContact();
                     ysgRankedContact.setName(name);
                     if(phones.size()>0)ysgRankedContact.setPhones(phones);
                     if(emails.size()>0)ysgRankedContact.setEmails(emails);

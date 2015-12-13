@@ -6,10 +6,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.models.YSGContactList;
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,22 +19,22 @@ import java.util.ArrayList;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGInvite extends HttpMethodAbstract {
+public class Invite extends HttpMethod {
 
-    public JSONArray generateArrayOfInviteesFromListForUser(String userId, ArrayList<YSGContact> inviteesList)
+    public JSONArray generateArrayOfInviteesFromListForUser(String userId, ArrayList<Contact> inviteesList)
     {
         JSONArray json=new JSONArray();
 
         Long time=System.currentTimeMillis();
 
-        for(YSGContact contact: inviteesList)
+        for(Contact contact: inviteesList)
         {
             JSONObject jsonInvitee=new JSONObject();
             try {
                 Boolean insert=false;
 
                 jsonInvitee.put("user_id", userId);
-                jsonInvitee.put("sent_at", YSGUtility.iso8601dateStringFromMilliseconds(time));
+                jsonInvitee.put("sent_at", Utility.iso8601dateStringFromMilliseconds(time));
                 if(contact.name()!=null)
                 {
                     jsonInvitee.put("invitee_name",contact.name());
@@ -61,7 +60,7 @@ public class YSGInvite extends HttpMethodAbstract {
         return json;
     }
 
-    public void updateInvitesSentForUser(Context context, ArrayList<YSGContact> invites, String userId, final Handler.Callback callback)
+    public void updateInvitesSentForUser(Context context, ArrayList<Contact> invites, String userId, final Handler.Callback callback)
     {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String secretKey=sharedPreferences.getString("secret_key", "");

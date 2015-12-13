@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGContact {
+public class Contact {
 
     final private static String YSGContactSuggestedKey = "suggested";
 

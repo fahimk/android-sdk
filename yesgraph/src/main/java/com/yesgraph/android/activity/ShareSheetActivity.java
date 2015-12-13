@@ -18,7 +18,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -38,20 +35,17 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.models.YSGSource;
-import com.yesgraph.android.network.YSGAddressBook;
-import com.yesgraph.android.network.YSGPrivate;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Source;
+import com.yesgraph.android.network.AddressBook;
+import com.yesgraph.android.network.Authenticate;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
 
 import io.fabric.sdk.android.Fabric;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -99,12 +93,14 @@ public class ShareSheetActivity extends AppCompatActivity {
         setToolbar();
         context = this;
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        YSGPrivate ysgPrivate=new YSGPrivate();
-        ysgPrivate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", sharedPreferences.getString("user_id", "")/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
+        sharedPreferences.edit().putBoolean("contacts_uploading", false).commit();
+
+        Authenticate authenticate =new Authenticate();
+        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", sharedPreferences.getString("user_id", "")/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 if(msg.what== Constants.RESULT_OK)
@@ -112,17 +108,19 @@ public class ShareSheetActivity extends AppCompatActivity {
                     if(timeToRefreshAddressBook() && sharedPreferences.getBoolean("contacts_permision_granted", false) && application.isOnline())
                     {
                         try {
-                            ArrayList<YSGRankedContact> list = ContactRetriever.readYSGContacts(context);
+                            sharedPreferences.edit().putBoolean("contacts_uploading", true).commit();
+                            ArrayList<RankedContact> list = ContactRetriever.readYSGContacts(context);
 
-                            YSGContactList contactList = new YSGContactList();
+                            ContactList contactList = new ContactList();
                             contactList.setEntries(list);
-                            contactList.setSource(new YSGSource());
+                            contactList.setSource(new Source());
                             contactList.setUseSuggestions(true);
 
-                            YSGAddressBook ysgAddressBook = new YSGAddressBook();
-                            ysgAddressBook.updateAddressBookWithContactListForUserId(context, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+                            AddressBook addressBook = new AddressBook();
+                            addressBook.updateAddressBookWithContactListForUserId(context, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
                                 @Override
                                 public boolean handleMessage(Message msg) {
+                                    sharedPreferences.edit().putBoolean("contacts_uploading", false).commit();
                                     return false;
                                 }
                             });
@@ -151,12 +149,12 @@ public class ShareSheetActivity extends AppCompatActivity {
         toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getCustomTheme().getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
         toolbarTitle.setText(getResources().getString(R.string.share_sheet));
-        toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
-        if (!application.getYsgTheme().getFont().isEmpty()) {
-            fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
+        toolbarTitle.setTextColor(application.getCustomTheme().getBackArrowColor());
+        if (!application.getCustomTheme().getFont().isEmpty()) {
+            fontManager.setFont(toolbarTitle, application.getCustomTheme().getFont());
         }
     }
 
@@ -167,7 +165,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         if (arrowDrawable != null && wrapped != null) {
             // This should avoid tinting all the arrows
             arrowDrawable.mutate();
-            DrawableCompat.setTint(wrapped, application.getYsgTheme().getBackArrowColor());
+            DrawableCompat.setTint(wrapped, application.getCustomTheme().getBackArrowColor());
         }
 
         return wrapped;
@@ -198,16 +196,16 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void setShareText() {
         shareText = (TextView) findViewById(R.id.shareText);
         shareText.setText(application.getShareText());
-        shareText.setTextColor(application.getYsgTheme().getDarkFontColor());
-        if (!application.getYsgTheme().getFont().isEmpty()) {
-            fontManager.setFont(shareText, application.getYsgTheme().getFont());
+        shareText.setTextColor(application.getCustomTheme().getDarkFontColor());
+        if (!application.getCustomTheme().getFont().isEmpty()) {
+            fontManager.setFont(shareText, application.getCustomTheme().getFont());
         }
     }
 
     private void setActionBar() {
-        String color=String.format("#%06X", (0xFFFFFF & application.getYsgTheme().getLightFontColor()));
+        String color=String.format("#%06X", (0xFFFFFF & application.getCustomTheme().getLightFontColor()));
         getSupportActionBar().setTitle(Html.fromHtml("<FONT color='" + color + "'>" + getResources().getString(R.string.share_sheet) + "</FONT>"));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getCustomTheme().getMainForegroundColor()));
     }
 
     private void setShareIconsAndText() {
@@ -215,14 +213,14 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterText = (TextView) findViewById(R.id.textTwitter);
         contactsText = (TextView) findViewById(R.id.textContacts);
 
-        facebookText.setTextColor(application.getYsgTheme().getDarkFontColor());
-        twitterText.setTextColor(application.getYsgTheme().getDarkFontColor());
-        contactsText.setTextColor(application.getYsgTheme().getDarkFontColor());
+        facebookText.setTextColor(application.getCustomTheme().getDarkFontColor());
+        twitterText.setTextColor(application.getCustomTheme().getDarkFontColor());
+        contactsText.setTextColor(application.getCustomTheme().getDarkFontColor());
 
-        if (!application.getYsgTheme().getFont().isEmpty()) {
-            fontManager.setFont(facebookText, application.getYsgTheme().getFont());
-            fontManager.setFont(twitterText, application.getYsgTheme().getFont());
-            fontManager.setFont(contactsText, application.getYsgTheme().getFont());
+        if (!application.getCustomTheme().getFont().isEmpty()) {
+            fontManager.setFont(facebookText, application.getCustomTheme().getFont());
+            fontManager.setFont(twitterText, application.getCustomTheme().getFont());
+            fontManager.setFont(contactsText, application.getCustomTheme().getFont());
         }
 
         LinearLayout facebookLayout = (LinearLayout) findViewById(R.id.layoutFacebook);
@@ -233,7 +231,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         LinearLayout twitterCircleLayout = (LinearLayout) findViewById(R.id.layoutTwitterCircle);
         LinearLayout contactsCircleLayout = (LinearLayout) findViewById(R.id.layoutContactsCircle);
 
-        String shareButtonShape = application.getYsgTheme().getShareButtonsShape();
+        String shareButtonShape = application.getCustomTheme().getShareButtonsShape();
         if (shareButtonShape.equals("circle")) {
             facebookCircleLayout.setBackgroundResource(R.drawable.circle);
             twitterCircleLayout.setBackgroundResource(R.drawable.circle);
@@ -256,7 +254,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         drawableT.setColor(getResources().getColor(R.color.colorTwitter));
 
         GradientDrawable drawableC = (GradientDrawable) contactsCircleLayout.getBackground();
-        drawableC.setColor(application.getYsgTheme().getMainForegroundColor());
+        drawableC.setColor(application.getCustomTheme().getMainForegroundColor());
 
         ImageView facebookImage = (ImageView) findViewById(R.id.imageFacebook);
         ImageView twitterImage = (ImageView) findViewById(R.id.imageTwitter);
@@ -304,12 +302,12 @@ public class ShareSheetActivity extends AppCompatActivity {
         copyLinkLayout.setBackgroundResource(R.drawable.rounded_corners);
 
         GradientDrawable drawable = (GradientDrawable) copyLinkLayout.getBackground();
-        drawable.setStroke(Visual.getPixelsFromDp(context, 3), application.getYsgTheme().getMainForegroundColor());
-        drawable.setColor(application.getYsgTheme().getReferralBunnerBackgroundColor());
+        drawable.setStroke(Visual.getPixelsFromDp(context, 3), application.getCustomTheme().getMainForegroundColor());
+        drawable.setColor(application.getCustomTheme().getReferralBunnerBackgroundColor());
 
         copyLinkText.setText(application.getCopyLinkText());
-        copyLinkText.setTextColor(application.getYsgTheme().getDarkFontColor());
-        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getYsgTheme().getReferralTextSize());
+        copyLinkText.setTextColor(application.getCustomTheme().getDarkFontColor());
+        copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getCustomTheme().getReferralTextSize());
         copyLinkText.setClickable(true);
         copyLinkText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,12 +319,12 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
         copyButtonText.setText(application.getCopyButtonText());
-        if (application.getYsgTheme().getCopyButtonColor() != 0) {
-            copyButtonText.setTextColor(application.getYsgTheme().getCopyButtonColor());
+        if (application.getCustomTheme().getCopyButtonColor() != 0) {
+            copyButtonText.setTextColor(application.getCustomTheme().getCopyButtonColor());
         } else {
-            copyButtonText.setTextColor(application.getYsgTheme().getMainForegroundColor());
+            copyButtonText.setTextColor(application.getCustomTheme().getMainForegroundColor());
         }
-        copyButtonText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getYsgTheme().getReferralTextSize());
+        copyButtonText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getCustomTheme().getReferralTextSize());
         copyButtonText.setClickable(true);
         copyButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,15 +337,15 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
 
-        if (!application.getYsgTheme().getFont().isEmpty()) {
-            fontManager.setFont(copyLinkText, application.getYsgTheme().getFont());
-            fontManager.setFont(copyButtonText, application.getYsgTheme().getFont());
+        if (!application.getCustomTheme().getFont().isEmpty()) {
+            fontManager.setFont(copyLinkText, application.getCustomTheme().getFont());
+            fontManager.setFont(copyButtonText, application.getCustomTheme().getFont());
         }
     }
 
     private void setBackground() {
         RelativeLayout masterLayout = (RelativeLayout) findViewById(R.id.layoutMaster);
-        masterLayout.setBackgroundColor(application.getYsgTheme().getMainBackgroundColor());
+        masterLayout.setBackgroundColor(application.getCustomTheme().getMainBackgroundColor());
     }
 
     private void shareToFacebook() {
