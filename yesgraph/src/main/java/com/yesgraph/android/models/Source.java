@@ -3,14 +3,14 @@ package com.yesgraph.android.models;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGSource {
+public class Source {
 
     private String name;
     private String email;
     private String phone;
     private String type;
 
-    public YSGSource()
+    public Source()
     {
         type="android";
     }

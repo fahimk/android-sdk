@@ -15,36 +15,22 @@ import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.yesgraph.android.adapters.ContactsAdapter;
-
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.facebook.share.widget.ShareDialog;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.FavouriteContacts;
 import com.yesgraph.android.models.FullDetailsContact;
 import com.yesgraph.android.models.RecentlyContactedContact;
-import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.utils.ContactRetriever;
-import com.yesgraph.android.utils.YSGTheme;
-import io.fabric.sdk.android.Fabric;
+import com.yesgraph.android.utils.CustomTheme;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -68,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Context context;
     private YesGraph yesGraphApplication;
-    private YSGTheme ysgTheme;
+    private CustomTheme customTheme;
     private TextView description5_3, description5_4, description5_1, description5_2;
 
     private Button btn_tryYesGraph, btn_tryYesGraph2, btn_tryYesGraph3, btn_tryYesGraph4, btn_export_contacts;
@@ -111,12 +97,12 @@ public class MainActivity extends AppCompatActivity {
 
         initUI();
 
-//        ysgTheme = new YSGTheme();
-//        ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-//        ysgTheme.setReferralTextSize(14);
-//        ysgTheme.setShareButtonsShape("rounded_square");
-//        ysgTheme.setFonts("Pacifico.ttf");
-//        yesGraphApplication.setYsgTheme(ysgTheme);
+//        customTheme = new CustomTheme();
+//        customTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//        customTheme.setReferralTextSize(14);
+//        customTheme.setShareButtonsShape("rounded_square");
+//        customTheme.setFonts("Pacifico.ttf");
+//        yesGraphApplication.setCustomTheme(customTheme);
     }
 
     private void initUI() {

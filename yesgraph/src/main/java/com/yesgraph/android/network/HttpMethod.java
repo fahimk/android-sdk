@@ -27,7 +27,7 @@ import java.util.Iterator;
 /**
  * Created by marko on 20/11/15.
  */
-abstract class HttpMethodAbstract {
+abstract class HttpMethod {
 
     private static String getParametersString(JSONObject parameters)
     {

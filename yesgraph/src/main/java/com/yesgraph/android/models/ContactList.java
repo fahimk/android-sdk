@@ -9,10 +9,10 @@ import java.util.ArrayList;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGContactList {
+public class ContactList {
     private Boolean useSuggestions;
-    private ArrayList<YSGRankedContact> entries;
-    private YSGSource source;
+    private ArrayList<RankedContact> entries;
+    private Source source;
 
 
     public Boolean getUseSuggestions() {
@@ -23,19 +23,19 @@ public class YSGContactList {
         this.useSuggestions = useSuggestions;
     }
 
-    public ArrayList<YSGRankedContact> getEntries() {
+    public ArrayList<RankedContact> getEntries() {
         return entries;
     }
 
-    public void setEntries(ArrayList<YSGRankedContact> entries) {
+    public void setEntries(ArrayList<RankedContact> entries) {
         this.entries = entries;
     }
 
-    public YSGSource getSource() {
+    public Source getSource() {
         return source;
     }
 
-    public void setSource(YSGSource source) {
+    public void setSource(Source source) {
         this.source = source;
     }
 
@@ -47,7 +47,7 @@ public class YSGContactList {
         try {
             jsonSource.put("type", source.getType());
 
-            for(YSGRankedContact contact : entries)
+            for(RankedContact contact : entries)
             {
                 jsonEntries.put(contact.toJSONObject());
             }

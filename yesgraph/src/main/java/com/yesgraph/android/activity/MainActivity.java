@@ -2,10 +2,8 @@ package com.yesgraph.android.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,13 +12,13 @@ import android.view.MenuItem;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
-import com.yesgraph.android.utils.YSGTheme;
+import com.yesgraph.android.utils.CustomTheme;
 
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
     private YesGraph app;
-    private YSGTheme ysgTheme;
+    private CustomTheme customTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
 //                intent.putExtra("message","test message");
 //                startActivity(intent);
 
-//                ysgTheme = new YSGTheme();
-//                ysgTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-//                ysgTheme.setReferralTextSize(14);
-//                ysgTheme.setShareButtonsShape("rounded_square");
-//                ysgTheme.setFonts("Pacifico.ttf");
-//                app.setYsgTheme(ysgTheme);
+//                customTheme = new CustomTheme();
+//                customTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+//                customTheme.setReferralTextSize(14);
+//                customTheme.setShareButtonsShape("rounded_square");
+//                customTheme.setFonts("Pacifico.ttf");
+//                app.setCustomTheme(customTheme);
                 Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
