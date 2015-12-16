@@ -31,6 +31,7 @@ import com.yesgraph.android.models.FavouriteContacts;
 import com.yesgraph.android.models.FullDetailsContact;
 import com.yesgraph.android.models.RecentlyContactedContact;
 import com.yesgraph.android.utils.CustomTheme;
+import com.yesgraph.android.utils.FilterType;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -92,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         yesGraphApplication = (YesGraph) getApplicationContext();
-
 //        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
         initUI();

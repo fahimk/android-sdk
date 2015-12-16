@@ -61,37 +61,6 @@
 
             </LinearLayout>
 
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/radio_all_contacts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:layout_weight="1"
-                    android:checked="true"
-                    android:text="All contacts" />
-
-                <RadioButton
-                    android:id="@+id/radio_only_phones_contacts"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Only phones" />
-
-                <RadioButton
-                    android:id="@+id/radio_only_emails_contacts"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="Only emails" />
-            </RadioGroup>
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"

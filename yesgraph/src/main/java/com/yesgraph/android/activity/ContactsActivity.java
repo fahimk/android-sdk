@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,7 +87,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private ContactList contactList;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    private int filterType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +97,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
-        filterType = FilterType.ALL_CONTACTS.ordinal();
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
         contactsList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.content_contact_list, null);
         contactsList.setLayoutManager(new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false));
@@ -744,44 +743,15 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      * Set contacts by selected filter
      */
     private void setContactsByFilter(){
+
+        int contactsFilterType = application.getCustomTheme().getContactsFilterType();
+
         try {
-            contacts = new ContactsFilterManager(contacts).getByFilterType(filterType);
+            contacts = new ContactsFilterManager(contacts).getByFilterType(contactsFilterType);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.i("Type",String.valueOf(contactsFilterType));
     }
-
-    /**
-     * Radio button click listener
-     *
-     * @param view radio button
-     */
-    public void onRadioButtonClicked(View view) {
-
-        boolean isChecked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        int id = view.getId();
-
-        if (id == R.id.radio_only_phones_contacts) {
-            if (isChecked) {
-                filterType = FilterType.ONLY_PHONES.ordinal();
-            }
-        } else if (id == R.id.radio_only_emails_contacts) {
-            if (isChecked) {
-                filterType = FilterType.ONLY_EMAILS.ordinal();
-            }
-        } else if (id == R.id.radio_all_contacts) {
-            if (isChecked) {
-                filterType = FilterType.ALL_CONTACTS.ordinal();
-            }
-        }
-
-        //reset old items
-        itemsOld = null;
-        contacts = null;
-
-        getContacts("");
-    }
-
 }
