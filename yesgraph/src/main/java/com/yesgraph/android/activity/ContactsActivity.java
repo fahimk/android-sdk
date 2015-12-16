@@ -371,7 +371,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         {
             if(contact instanceof RegularContact)
             {
-                if(((RegularContact)contact).getSelected() && ((RegularContact)contact).getContact().contains("@"))
+                if(((RegularContact)contact).getSelected() && ((RegularContact)contact).isEmail())
                     checkedEmails.add((RegularContact)contact);
             }
         }
@@ -384,7 +384,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         {
             if(contact instanceof RegularContact)
             {
-                if(((RegularContact)contact).getSelected() && !((RegularContact)contact).getContact().contains("@"))
+                if(((RegularContact)contact).getSelected() && ((RegularContact)contact).isPhone())
                     checkedPhones.add((RegularContact)contact);
             }
         }
@@ -582,33 +582,39 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 regularContact.setName(ysgRankedContact.name());
                 if(ysgRankedContact.email()!=null && ysgRankedContact.email().length()>0)
                 {
-                    regularContact.setContact(ysgRankedContact.email());
+                    regularContact.setEmail(ysgRankedContact.email());
                 }
                 else if(ysgRankedContact.phone()!=null && ysgRankedContact.phone().length()>0)
                 {
-                    regularContact.setContact(ysgRankedContact.phone());
+                    regularContact.setPhone(ysgRankedContact.phone());
                 }
                 suggestedContacts.add(regularContact);
             }
             else
             {
-                if(ysgRankedContact.emails()!=null && ysgRankedContact.emails().size()>0)
+                if(ysgRankedContact.email()!=null && ysgRankedContact.email().length()>0)
                 {
-                    for(String thisEmail : ysgRankedContact.emails()) {
+                    RegularContact regularContact = new RegularContact();
+                    regularContact.setName(ysgRankedContact.name());
+                    regularContact.setEmail(ysgRankedContact.email());
+                    regularContacts.add(regularContact);
+                    /*for(String thisEmail : ysgRankedContact.emails()) {
                         RegularContact regularContact = new RegularContact();
                         regularContact.setName(ysgRankedContact.name());
-                        regularContact.setContact(thisEmail);
+                        regularContact.setEmail(thisEmail);
                         regularContacts.add(regularContact);
-                    }
-                }
-
-                if(ysgRankedContact.phones()!=null && ysgRankedContact.phones().size()>0) {
-                    for(String thisPhone : ysgRankedContact.phones()) {
+                    }*/
+                }else if(ysgRankedContact.phone()!=null && ysgRankedContact.phone().length()>0) {
+                    RegularContact regularContact = new RegularContact();
+                    regularContact.setName(ysgRankedContact.name());
+                    regularContact.setPhone(ysgRankedContact.phone());
+                    regularContacts.add(regularContact);
+                    /*for(String thisPhone : ysgRankedContact.phones()) {
                         RegularContact regularContact = new RegularContact();
                         regularContact.setName(ysgRankedContact.name());
-                        regularContact.setContact(thisPhone);
+                        regularContact.setPhone(thisPhone);
                         regularContacts.add(regularContact);
-                    }
+                    }*/
                 }
             }
             jsonArrayCached.put(ysgRankedContact.toJSONObjectExtended());

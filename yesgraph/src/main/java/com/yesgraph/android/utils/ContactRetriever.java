@@ -96,12 +96,63 @@ public class ContactRetriever {
 
                     RankedContact ysgRankedContact = new RankedContact();
                     ysgRankedContact.setName(name);
-                    if(phones.size()>0)ysgRankedContact.setPhones(phones);
-                    if(emails.size()>0)ysgRankedContact.setEmails(emails);
-                    if(phones.size()>0)ysgRankedContact.setPhone(phones.get(0));
-                    if(emails.size()>0)ysgRankedContact.setEmail(emails.get(0));
 
-                    list.add(ysgRankedContact);
+                    boolean duplicate=false;
+
+                    for(RankedContact oldYsgRankedContact : list)
+                    {
+                        if(ysgRankedContact.name().equals("123"))
+                        {
+                            int ii=0;
+                            ii++;
+                        }
+
+                        if(ysgRankedContact.name().equals(oldYsgRankedContact.name()))
+                        {
+                            duplicate=true;
+
+                            if(phones.size()>0)
+                            {
+                                for(String thisContact : phones)
+                                {
+                                    if(oldYsgRankedContact.phones()==null)
+                                        oldYsgRankedContact.setPhones(new ArrayList<String>());
+
+                                    oldYsgRankedContact.phones().add(thisContact);
+                                }
+                            }
+                            if(emails.size()>0)
+                            {
+                                for(String thisContact : emails)
+                                {
+                                    if(oldYsgRankedContact.emails()==null)
+                                        oldYsgRankedContact.setEmails(new ArrayList<String>());
+
+                                    oldYsgRankedContact.emails().add(thisContact);
+                                }
+                            }
+                            if(phones.size()>0 && (oldYsgRankedContact.phone()==null || oldYsgRankedContact.phone().length()==0))
+                            {
+                                oldYsgRankedContact.setPhone(phones.get(0));
+                            }
+                            if(emails.size()>0 && (oldYsgRankedContact.email()==null || oldYsgRankedContact.email().length()==0))
+                            {
+                                oldYsgRankedContact.setEmail(emails.get(0));
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if(!duplicate)
+                    {
+                        if (phones.size() > 0) ysgRankedContact.setPhones(phones);
+                        if (emails.size() > 0) ysgRankedContact.setEmails(emails);
+                        if (phones.size() > 0) ysgRankedContact.setPhone(phones.get(0));
+                        if (emails.size() > 0) ysgRankedContact.setEmail(emails.get(0));
+
+                        list.add(ysgRankedContact);
+                    }
 /*
                     // Get note.......
                     String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
@@ -231,7 +282,7 @@ public class ContactRetriever {
 
                         RegularContact newContact=new RegularContact();
                         newContact.setName(name);
-                        newContact.setContact(email);
+                        newContact.setEmail(email);
                         list.add(newContact);
                     }
                     emailCur.close();
@@ -247,7 +298,7 @@ public class ContactRetriever {
 
                         RegularContact newContact=new RegularContact();
                         newContact.setName(name);
-                        newContact.setContact(phone);
+                        newContact.setPhone(phone);
                         list.add(newContact);
                     }
                     pCur.close();
