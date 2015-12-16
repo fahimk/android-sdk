@@ -5,7 +5,8 @@ package com.yesgraph.android.models;
  */
 public class RegularContact {
     private String name;
-    private String contact;
+    private String email;
+    private String phone;
     private Integer position;
     private Boolean selected=false;
 
@@ -34,10 +35,22 @@ public class RegularContact {
     }
 
     public String getContact() {
-        return contact;
+        return email!=null ? email : phone;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    public Boolean isEmail() {
+        return email!=null ? true : false;
+    }
+
+    public Boolean isPhone() {
+        return email!=null ? false : true;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
