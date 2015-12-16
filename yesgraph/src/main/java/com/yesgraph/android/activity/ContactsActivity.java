@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -22,7 +21,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +48,8 @@ import com.yesgraph.android.network.Invite;
 import com.yesgraph.android.network.SuggestionsShown;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactRetriever;
+import com.yesgraph.android.utils.ContactsFilterManager;
+import com.yesgraph.android.utils.FilterType;
 import com.yesgraph.android.utils.FontManager;
 
 import org.json.JSONArray;
@@ -85,6 +86,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private ContactList contactList;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    private int filterType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +97,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
-
+        filterType = FilterType.ALL_CONTACTS.ordinal();
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
@@ -436,6 +438,9 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
                 }
 
+                // set contacts by selected filter
+                setContactsByFilter();
+
                 if(filter.length()>0)
                 {
                     items = null;
@@ -733,6 +738,50 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         TextView selectedIndex = (TextView) v;
         ((GridLayoutManager)contactsList.getLayoutManager()).scrollToPositionWithOffset(mapIndex.get(selectedIndex.getText()), 0);
+    }
+
+    /**
+     * Set contacts by selected filter
+     */
+    private void setContactsByFilter(){
+        try {
+            contacts = new ContactsFilterManager(contacts).getByFilterType(filterType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Radio button click listener
+     *
+     * @param view radio button
+     */
+    public void onRadioButtonClicked(View view) {
+
+        boolean isChecked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        int id = view.getId();
+
+        if (id == R.id.radio_only_phones_contacts) {
+            if (isChecked) {
+                filterType = FilterType.ONLY_PHONES.ordinal();
+            }
+        } else if (id == R.id.radio_only_emails_contacts) {
+            if (isChecked) {
+                filterType = FilterType.ONLY_EMAILS.ordinal();
+            }
+        } else if (id == R.id.radio_all_contacts) {
+            if (isChecked) {
+                filterType = FilterType.ALL_CONTACTS.ordinal();
+            }
+        }
+
+        //reset old items
+        itemsOld = null;
+        contacts = null;
+
+        getContacts("");
     }
 
 }
