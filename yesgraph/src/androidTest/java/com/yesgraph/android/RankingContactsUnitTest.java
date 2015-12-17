@@ -1,12 +1,15 @@
 package com.yesgraph.android;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
+import android.test.mock.MockApplication;
 import android.test.mock.MockContext;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.models.YSGRankedContact;
@@ -133,6 +136,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
 
         assertEquals(true, suggestedAreCorrect);
     }
+
 
 
     /**

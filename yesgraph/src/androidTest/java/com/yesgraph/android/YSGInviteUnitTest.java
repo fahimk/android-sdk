@@ -90,7 +90,6 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
 
     }
 
-
     @NonNull
     private ArrayList<YSGContact> getContacts() {
 
