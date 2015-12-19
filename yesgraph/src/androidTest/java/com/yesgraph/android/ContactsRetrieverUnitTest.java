@@ -82,6 +82,49 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
         }
 
         assertEquals(false, contactNameIsEmpty);
+    }
+
+    /**
+     * Check if any of contact selected
+     */
+    public void testCheckAnyOfContactSelected() {
+
+        ArrayList<Object> contacts = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+            RegularContact contact = new RegularContact();
+            contact.setName("John");
+
+            if (i == 1) {
+                contact.setSelected(true);
+            }
+            contacts.add(contact);
+        }
+
+        boolean isSelected = new ContactRetriever().isContactChecked(contacts);
+
+        assertEquals(true,isSelected);
+
+    }
+
+    /**
+     * Check if all of contact are unselected
+     */
+    public void testCheckNonContactsSelected() {
+
+        ArrayList<Object> contacts = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+
+            RegularContact contact = new RegularContact();
+            contact.setName("John");
+            contacts.add(contact);
+        }
+
+        boolean isNotSelected = !new ContactRetriever().isContactChecked(contacts);
+
+        assertEquals(true,isNotSelected);
 
     }
 

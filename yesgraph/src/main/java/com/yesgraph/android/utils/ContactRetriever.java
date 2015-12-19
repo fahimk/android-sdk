@@ -41,7 +41,7 @@ public class ContactRetriever {
 
                 for(int i=0;i<name.length();i++)
                 {
-                    if(!isAlpha(name.substring(i,i+1)) && !isNumeric(name.substring(i,i+1)))
+                    if(!YSGUtility.isAlpha(name.substring(i, i + 1)) && !YSGUtility.isNumeric(name.substring(i, i + 1)))
                     {
                         name = name.substring(i+1,name.length());
                         i--;
@@ -196,7 +196,7 @@ public class ContactRetriever {
 
                 for(int i=0;i<name.length();i++)
                 {
-                    if(!isAlpha(name.substring(i,i+1)) && !isNumeric(name.substring(i,i+1)))
+                    if(!YSGUtility.isAlpha(name.substring(i, i + 1)) && !YSGUtility.isNumeric(name.substring(i, i + 1)))
                     {
                         name = name.substring(i+1,name.length());
                         i--;
@@ -324,10 +324,10 @@ public class ContactRetriever {
         Collections.sort(list, new Comparator<RegularContact>() {
             public int compare(RegularContact s1, RegularContact s2) {
 
-                if(isAlpha(s1.getName().substring(0,1)) && !isAlpha(s2.getName().substring(0,1)))
+                if(YSGUtility.isAlpha(s1.getName().substring(0, 1)) && !YSGUtility.isAlpha(s2.getName().substring(0, 1)))
                     return -s1.getName().compareToIgnoreCase(s2.getName());;
 
-                if(isAlpha(s2.getName().substring(0,1)) && !isAlpha(s1.getName().substring(0,1)))
+                if(YSGUtility.isAlpha(s2.getName().substring(0, 1)) && !YSGUtility.isAlpha(s1.getName().substring(0, 1)))
                     return -s1.getName().compareToIgnoreCase(s2.getName());;
 
                 return s1.getName().compareToIgnoreCase(s2.getName());
@@ -337,13 +337,21 @@ public class ContactRetriever {
         return list;
     }
 
-    public static boolean isAlpha(String name) {
-        boolean bool=name.matches("[a-zA-Z]+");
-        return bool;
+    /**
+     * Check if any contact is checked
+     * @param items contacts
+     * @return true if is checked
+     */
+    public boolean isContactChecked(ArrayList<Object> items) {
+        for(Object contact : items)
+        {
+            if(contact instanceof RegularContact)
+            {
+                if(((RegularContact)contact).getSelected())
+                    return true;
+            }
+        }
+        return false;
     }
 
-    public static boolean isNumeric(String name) {
-        boolean bool=name.matches("[0-9]+");
-        return bool;
-    }
 }

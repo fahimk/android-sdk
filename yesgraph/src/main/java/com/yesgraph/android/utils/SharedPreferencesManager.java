@@ -25,4 +25,12 @@ public class SharedPreferencesManager {
         return sharedPreferences.getBoolean(key, false);
     }
 
+    public void putString(String key,String value){
+        sharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public String getString(String key){
+        return sharedPreferences.getString(key, "");
+    }
+
 }

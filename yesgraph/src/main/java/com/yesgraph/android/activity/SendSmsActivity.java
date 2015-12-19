@@ -59,7 +59,7 @@ public class SendSmsActivity extends AppCompatActivity {
 
         if (YesGraph.isMarshmallow()) {
 
-            boolean isSendSmsPermissionGranted = new PermissionGrantedManager(this).getSendSmsPermission();
+            boolean isSendSmsPermissionGranted = new PermissionGrantedManager(this).isSendSmsPermission();
 
             if (isSendSmsPermissionGranted) {
                 sendSms();
@@ -75,8 +75,8 @@ public class SendSmsActivity extends AppCompatActivity {
     private void sendSms() {
 
         if (YesGraph.isMarshmallow()) {
-            new PermissionGrantedManager(getBaseContext()).checkForSendSmsPermission(this);
-            boolean isSendSmsPermissionGranted = new PermissionGrantedManager(this).getSendSmsPermission();
+            new PermissionGrantedManager(getBaseContext()).checkSendSmsPermission(this);
+            boolean isSendSmsPermissionGranted = new PermissionGrantedManager(this).isSendSmsPermission();
             if (isSendSmsPermissionGranted) {
                 showSendAlertDialog();
             } else {

@@ -14,6 +14,7 @@ public class PermissionGrantedManager {
 
     private static int MY_PERMISSIONS_REQUEST_SEND_SMS = 1;
     private static final String SEND_SMS_PERMISSION = "send_sms_permission_granted";
+    private static final String READ_CONTACTS_PERMISSION = "contacts_permission_granted";
 
 
     private Context context;
@@ -35,7 +36,7 @@ public class PermissionGrantedManager {
         }
     }
 
-    public void checkForSendSmsPermission(Activity activity) {
+    public void checkSendSmsPermission(Activity activity) {
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
@@ -44,11 +45,25 @@ public class PermissionGrantedManager {
         }
     }
 
-    public boolean getSendSmsPermission() {
+    public boolean checkContactsReadPermission() {
+        String permission = Manifest.permission.READ_CONTACTS;
+        int res = context.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public boolean isSendSmsPermission() {
         return new SharedPreferencesManager(context).getBoolean(SEND_SMS_PERMISSION);
     }
 
     public void putSendSmsPermission(boolean value) {
-         new SharedPreferencesManager(context).putBoolean(SEND_SMS_PERMISSION,value);
+        new SharedPreferencesManager(context).putBoolean(SEND_SMS_PERMISSION, value);
+    }
+
+    public boolean isReadContactsPermission() {
+        return new SharedPreferencesManager(context).getBoolean(READ_CONTACTS_PERMISSION);
+    }
+
+    public void setReadContactsPermission(boolean value) {
+        new SharedPreferencesManager(context).putBoolean(READ_CONTACTS_PERMISSION, value);
     }
 }
