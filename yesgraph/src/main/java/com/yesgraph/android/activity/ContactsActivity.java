@@ -100,7 +100,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
         if (isReadContactPermissionGranted && checkContactsReadPermission)
         {
-            getContactsNewThread();
+            getContactsOnThread();
         }
         else
         {
@@ -248,22 +248,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             {
                 int i = item.getItemId();
                 if (i == R.id.action_invite) {
-
-                    SenderManager senderManager = new SenderManager(items);
-
-                    senderManager.sendEmail(context, application);
-                    senderManager.sendSms(context,application);
-
-                    ArrayList<YSGContact> ysgContacts = senderManager.getInvitedContacts();
-                    String userId = new SharedPreferencesManager(context).getString("user_id");
-
-                    YSGInvite ysgInvite=new YSGInvite();
-                    ysgInvite.updateInvitesSentForUser(context, ysgContacts, userId, new Handler.Callback() {
-                        @Override
-                        public boolean handleMessage(Message msg) {
-                            return false;
-                        }
-                    });
+                    inviteContacts();
                     return true;
                 } else {// If we got here, the user's action was not recognized.
                     // Invoke the superclass to handle it.
@@ -271,6 +256,28 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
+    }
+
+    /**
+     * Send emails and sms to contacts
+     */
+    private void inviteContacts() {
+
+        SenderManager senderManager = new SenderManager(items);
+
+        senderManager.sendEmail(context, application);
+        senderManager.sendSms(context, application);
+
+        ArrayList<YSGContact> ysgContacts = senderManager.getInvitedContacts();
+        String userId = new SharedPreferencesManager(context).getString("user_id");
+
+        YSGInvite ysgInvite=new YSGInvite();
+        ysgInvite.updateInvitesSentForUser(context, ysgContacts, userId, new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -463,7 +470,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     new PermissionGrantedManager(context).setReadContactsPermission(true);
                     ContactRetriever.readContacts(context);
 
-                    getContactsNewThread();
+                    getContactsOnThread();
 
                 } else {
                     //Set Permission Denied
@@ -486,7 +493,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         ((GridLayoutManager)contactsList.getLayoutManager()).scrollToPositionWithOffset(alphabeticalIndexManager.getIndexList().get(selectedIndex.getText()), 0);
     }
 
-    private void getContactsNewThread(){
+    private void getContactsOnThread(){
 
         Thread thread = new Thread() {
             @Override

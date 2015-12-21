@@ -114,20 +114,4 @@ public class SendEmailManagerUnitTest extends ApplicationTestCase<Application> {
 
         assertEquals(true, areEqualContacts);
     }
-
-    //TODO: need to be mock
-    public void testValidateSendEmail() throws Exception {
-
-        String[] contacts = {"123-431-233", "998-323-434", "655-434-655"};
-        String message = "message";
-        String subject = "subject";
-
-        SendEmailManager sendSmsManager = new SendEmailManager(getContext(), message, subject, contacts);
-
-        boolean isSuccessSent = sendSmsManager.sendEmail();
-
-        assertEquals(false, isSuccessSent);
-    }
-
-
 }
