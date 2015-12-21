@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.utils.SendEmailManager;
 
 /**
  * Created by Dean Bozinoski on 11/16/2015.
@@ -16,10 +17,7 @@ import com.yesgraph.android.R;
 public class SendEmailActivity extends AppCompatActivity {
 
     private Context context;
-    private Intent intent;
-    private String[] contacts_emails;
-    private String message;
-    private String subject;
+    private SendEmailManager sendEmailManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +25,34 @@ public class SendEmailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send_email);
         context = this;
 
-        intent = getIntent();
+        getData();
 
-        contacts_emails = intent.getStringArrayExtra("contacts");
-        subject = intent.getStringExtra("subject");
-        message = intent.getStringExtra("message");
-        showSendAlertDialog(contacts_emails);
+        showSendAlertDialog();
 
     }
 
-    private void showSendAlertDialog(final String[] contacts) {
+    /**
+     * Get contacts emails, subject and message data from intent bundle
+     */
+    private void getData() {
+
+        String[] contacts_emails = getIntent().getStringArrayExtra("contacts");
+        String subject = getIntent().getStringExtra("subject");
+        String message = getIntent().getStringExtra("message");
+
+        try {
+            sendEmailManager = new SendEmailManager(this, message, subject, contacts_emails);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, context.getResources().getString(R.string.no_selected_contacts_email), Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+    private void showSendAlertDialog() {
+
+        String[] contacts = sendEmailManager.getContacts_emails();
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         // set title
         alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_send_email_title));
@@ -46,11 +62,7 @@ public class SendEmailActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(context.getResources().getString(R.string.alert_send_email_yes), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (contacts_emails != null && contacts_emails.length > 0) {
-                            sendEmail(contacts_emails, subject, message);
-                        } else {
-                            Toast.makeText(context,context.getResources().getString(R.string.no_selected_contacts_email),Toast.LENGTH_LONG).show();
-                        }
+                        sendEmailManager.sendEmail();
                         finish();
                     }
                 })
@@ -65,15 +77,4 @@ public class SendEmailActivity extends AppCompatActivity {
         // show it
         alertDialog.show();
     }
-
-    private void sendEmail(String[] contacts_emails, String subject, String message) {
-        Intent email = new Intent(Intent.ACTION_SEND);
-        email.putExtra(Intent.EXTRA_EMAIL, contacts_emails);
-        email.putExtra(Intent.EXTRA_SUBJECT, subject);
-        email.putExtra(Intent.EXTRA_TEXT, message);
-        //need this to prompts email client only
-        email.setType("message/rfc822");
-        startActivity(Intent.createChooser(email, context.getResources().getString(R.string.choose_email_client)));
-    }
-
 }

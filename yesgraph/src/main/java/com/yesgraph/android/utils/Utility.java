@@ -41,4 +41,14 @@ public class Utility {
         String formattedDate=sdf.format(date);
         return formattedDate.substring(0, formattedDate.length()-2) + ":" + formattedDate.substring(formattedDate.length()-2, formattedDate.length());
     }
+
+    public static boolean isAlpha(String name) {
+        boolean bool = name.matches("[a-zA-Z]+");
+        return bool;
+    }
+
+    public static boolean isNumeric(String name) {
+        boolean bool = name.matches("[0-9]+");
+        return bool;
+    }
 }

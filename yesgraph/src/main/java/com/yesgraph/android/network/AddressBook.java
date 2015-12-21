@@ -105,7 +105,7 @@ public class AddressBook extends HttpMethod {
         });
     }
 
-    public ContactList contactListFromResponse(JSONArray jsonArray)
+    public static ContactList contactListFromResponse(JSONArray jsonArray)
     {
         ArrayList<RankedContact> contacts=new ArrayList<>();
 
