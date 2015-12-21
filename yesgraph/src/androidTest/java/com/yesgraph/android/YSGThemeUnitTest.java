@@ -4,8 +4,8 @@ import android.app.Application;
 import android.graphics.Color;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.utils.YSGTheme;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.CustomTheme;
+import com.yesgraph.android.utils.Utility;
 
 /**
  * Created by Klemen on 17.12.2015.
@@ -20,7 +20,7 @@ public class YSGThemeUnitTest extends ApplicationTestCase<Application> {
      */
     public void testValidateCustomThemeColors() {
 
-        YSGTheme theme = new YSGTheme();
+        CustomTheme theme = new CustomTheme();
 
         int mainForegroundColor = Color.parseColor("#0078BD");
         int mainBackgroundColor = Color.parseColor("#1078BD");
@@ -75,7 +75,7 @@ public class YSGThemeUnitTest extends ApplicationTestCase<Application> {
 
         String customFonts = "Arial";
 
-        YSGTheme theme = new YSGTheme();
+        CustomTheme theme = new CustomTheme();
         theme.setFonts(customFonts);
 
         boolean isEqualFont = customFonts.equals(theme.getFont());
@@ -91,7 +91,7 @@ public class YSGThemeUnitTest extends ApplicationTestCase<Application> {
 
         int textSize = 22;
 
-        YSGTheme theme = new YSGTheme();
+        CustomTheme theme = new CustomTheme();
         theme.setReferralTextSize(textSize);
 
         boolean isEqualTextSize = theme.getReferralTextSize() == textSize;
@@ -107,7 +107,7 @@ public class YSGThemeUnitTest extends ApplicationTestCase<Application> {
 
         String shape = "rectangle";
 
-        YSGTheme theme = new YSGTheme();
+        CustomTheme theme = new CustomTheme();
         theme.setShareButtonsShape(shape);
 
         boolean isEqual = theme.getShareButtonsShape().equals(shape);

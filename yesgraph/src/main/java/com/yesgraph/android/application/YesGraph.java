@@ -4,19 +4,16 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.yesgraph.android.R;
-import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.FontManager;
-import com.yesgraph.android.utils.YSGTheme;
+import com.yesgraph.android.utils.CustomTheme;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.
  */
 public class YesGraph extends Application {
 
-    private YSGTheme ysgTheme;
+    private CustomTheme customTheme;
 
     @Override
     public void onCreate() {
@@ -28,16 +25,16 @@ public class YesGraph extends Application {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public YSGTheme getYsgTheme() {
-        if(ysgTheme != null){
-            return this.ysgTheme;
+    public CustomTheme getCustomTheme() {
+        if(customTheme != null){
+            return this.customTheme;
         } else {
-            return new YSGTheme();
+            return new CustomTheme();
         }
     }
 
-    public void setYsgTheme(YSGTheme ysgTheme) {
-        this.ysgTheme = ysgTheme;
+    public void setCustomTheme(CustomTheme customTheme) {
+        this.customTheme = customTheme;
     }
 
     public static boolean isMarshmallow() {

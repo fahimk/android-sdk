@@ -8,8 +8,8 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGRankedContact;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +19,9 @@ import java.util.Comparator;
  * Created by marko on 18/11/15.
  */
 public class ContactRetriever {
-    public static ArrayList<YSGRankedContact> readYSGContacts(Context context){
+    public static ArrayList<RankedContact> readYSGContacts(Context context){
 
-        ArrayList<YSGRankedContact> list=new ArrayList<>();
+        ArrayList<RankedContact> list=new ArrayList<>();
 
         String permission = Manifest.permission.READ_CONTACTS;
         int res = context.checkCallingOrSelfPermission(permission);
@@ -41,7 +41,7 @@ public class ContactRetriever {
 
                 for(int i=0;i<name.length();i++)
                 {
-                    if(!YSGUtility.isAlpha(name.substring(i, i + 1)) && !YSGUtility.isNumeric(name.substring(i, i + 1)))
+                    if(!Utility.isAlpha(name.substring(i, i + 1)) && !Utility.isNumeric(name.substring(i, i + 1)))
                     {
                         name = name.substring(i+1,name.length());
                         i--;
@@ -94,14 +94,59 @@ public class ContactRetriever {
                     }
                     pCur.close();
 
-                    YSGRankedContact ysgRankedContact = new YSGRankedContact();
+                    RankedContact ysgRankedContact = new RankedContact();
                     ysgRankedContact.setName(name);
-                    if(phones.size()>0)ysgRankedContact.setPhones(phones);
-                    if(emails.size()>0)ysgRankedContact.setEmails(emails);
-                    if(phones.size()>0)ysgRankedContact.setPhone(phones.get(0));
-                    if(emails.size()>0)ysgRankedContact.setEmail(emails.get(0));
 
-                    list.add(ysgRankedContact);
+                    boolean duplicate=false;
+
+                    for(RankedContact oldYsgRankedContact : list)
+                    {
+                        if(ysgRankedContact.name().equals(oldYsgRankedContact.name()))
+                        {
+                            duplicate=true;
+
+                            if(phones.size()>0)
+                            {
+                                for(String thisContact : phones)
+                                {
+                                    if(oldYsgRankedContact.phones()==null)
+                                        oldYsgRankedContact.setPhones(new ArrayList<String>());
+
+                                    oldYsgRankedContact.phones().add(thisContact);
+                                }
+                            }
+                            if(emails.size()>0)
+                            {
+                                for(String thisContact : emails)
+                                {
+                                    if(oldYsgRankedContact.emails()==null)
+                                        oldYsgRankedContact.setEmails(new ArrayList<String>());
+
+                                    oldYsgRankedContact.emails().add(thisContact);
+                                }
+                            }
+                            if(phones.size()>0 && (oldYsgRankedContact.phone()==null || oldYsgRankedContact.phone().length()==0))
+                            {
+                                oldYsgRankedContact.setPhone(phones.get(0));
+                            }
+                            if(emails.size()>0 && (oldYsgRankedContact.email()==null || oldYsgRankedContact.email().length()==0))
+                            {
+                                oldYsgRankedContact.setEmail(emails.get(0));
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if(!duplicate)
+                    {
+                        if (phones.size() > 0) ysgRankedContact.setPhones(phones);
+                        if (emails.size() > 0) ysgRankedContact.setEmails(emails);
+                        if (phones.size() > 0) ysgRankedContact.setPhone(phones.get(0));
+                        if (emails.size() > 0) ysgRankedContact.setEmail(emails.get(0));
+
+                        list.add(ysgRankedContact);
+                    }
 /*
                     // Get note.......
                     String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
@@ -196,7 +241,7 @@ public class ContactRetriever {
 
                 for(int i=0;i<name.length();i++)
                 {
-                    if(!YSGUtility.isAlpha(name.substring(i, i + 1)) && !YSGUtility.isNumeric(name.substring(i, i + 1)))
+                    if(!Utility.isAlpha(name.substring(i, i + 1)) && !Utility.isNumeric(name.substring(i, i + 1)))
                     {
                         name = name.substring(i+1,name.length());
                         i--;
@@ -209,6 +254,12 @@ public class ContactRetriever {
                 {
                     name=context.getString(R.string.no_contact_name);
                 }
+
+                ArrayList<String> emails=new ArrayList<>();
+                ArrayList<String> phones=new ArrayList<>();
+
+                RegularContact newContact=new RegularContact();
+                newContact.setName(name);
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     System.out.println("name : " + name + ", ID : " + id);
@@ -229,10 +280,7 @@ public class ContactRetriever {
 
                         System.out.println("Email " + email + " Email Type : " + emailType);
 
-                        RegularContact newContact=new RegularContact();
-                        newContact.setName(name);
-                        newContact.setContact(email);
-                        list.add(newContact);
+                        emails.add(email);
                     }
                     emailCur.close();
 
@@ -245,12 +293,47 @@ public class ContactRetriever {
                                 pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         System.out.println("phone" + phone);
 
-                        RegularContact newContact=new RegularContact();
-                        newContact.setName(name);
-                        newContact.setContact(phone);
-                        list.add(newContact);
+                        phones.add(phone);
                     }
                     pCur.close();
+
+                    RegularContact regularContact = new RegularContact();
+                    regularContact.setName(name);
+
+                    boolean duplicate=false;
+
+                    for(RegularContact oldContact : list)
+                    {
+                        if(regularContact.getName().equals(oldContact.getName()))
+                        {
+                            duplicate=true;
+
+                            if(phones.size()>0)
+                            {
+                                for(String thisContact : phones)
+                                {
+                                    oldContact.setPhone(thisContact);
+                                }
+                            }
+                            if(emails.size()>0)
+                            {
+                                for(String thisContact : emails)
+                                {
+                                    oldContact.setEmail(thisContact);
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if(!duplicate)
+                    {
+                        if (phones.size() > 0) regularContact.setPhone(phones.get(0));
+                        if (emails.size() > 0) regularContact.setEmail(emails.get(0));
+
+                        list.add(regularContact);
+                    }
 /*
                     // Get note.......
                     String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
@@ -324,10 +407,10 @@ public class ContactRetriever {
         Collections.sort(list, new Comparator<RegularContact>() {
             public int compare(RegularContact s1, RegularContact s2) {
 
-                if(YSGUtility.isAlpha(s1.getName().substring(0, 1)) && !YSGUtility.isAlpha(s2.getName().substring(0, 1)))
+                if(Utility.isAlpha(s1.getName().substring(0, 1)) && !Utility.isAlpha(s2.getName().substring(0, 1)))
                     return -s1.getName().compareToIgnoreCase(s2.getName());;
 
-                if(YSGUtility.isAlpha(s2.getName().substring(0, 1)) && !YSGUtility.isAlpha(s1.getName().substring(0, 1)))
+                if(Utility.isAlpha(s2.getName().substring(0, 1)) && !Utility.isAlpha(s1.getName().substring(0, 1)))
                     return -s1.getName().compareToIgnoreCase(s2.getName());;
 
                 return s1.getName().compareToIgnoreCase(s2.getName());

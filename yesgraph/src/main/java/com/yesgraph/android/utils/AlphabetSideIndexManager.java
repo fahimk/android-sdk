@@ -31,7 +31,7 @@ public class AlphabetSideIndexManager {
         this.yesGraph = yesGraph;
         this.mapIndex = new LinkedHashMap<String, Integer>();
         this.sideIndexLayout = (LinearLayout) activity.findViewById(R.id.side_index);
-        this.sideIndexLayout.setBackgroundColor(yesGraph.getYsgTheme().getMainBackgroundColor());
+        this.sideIndexLayout.setBackgroundColor(yesGraph.getCustomTheme().getMainBackgroundColor());
     }
 
     public void setIndexList(ArrayList<Object> contacts, int numberOfSuggestedContacts) {
@@ -72,9 +72,9 @@ public class AlphabetSideIndexManager {
             textView.setText(index);
             textView.setOnClickListener((View.OnClickListener) activity);
             textView.setLayoutParams(new TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-            textView.setTextColor(yesGraph.getYsgTheme().getDarkFontColor());
-            textView.setBackgroundColor(yesGraph.getYsgTheme().getMainBackgroundColor());
-            if(!yesGraph.getYsgTheme().getFont().isEmpty()){
+            textView.setTextColor(yesGraph.getCustomTheme().getDarkFontColor());
+            textView.setBackgroundColor(yesGraph.getCustomTheme().getMainBackgroundColor());
+            if(!yesGraph.getCustomTheme().getFont().isEmpty()){
                 //fontManager.setFont(textView, application.getYsgTheme().getFont());
             }
             sideIndexLayout.addView(textView);

@@ -1,8 +1,6 @@
 package com.yesgraph.android.adapters;
 
-import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,14 +13,10 @@ import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
-import com.yesgraph.android.utils.YSGTheme;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by marko on 16/11/15.
@@ -66,18 +60,18 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             contactsViewHolder.name.setText(contact.getName());
             contactsViewHolder.contact.setText(contact.getContact());
 
-            if(!application.getYsgTheme().getFont().isEmpty()){
-                fontManager.setFont(contactsViewHolder.name,application.getYsgTheme().getFont());
-                fontManager.setFont(contactsViewHolder.contact,application.getYsgTheme().getFont());
+            if(!application.getCustomTheme().getFont().isEmpty()){
+                fontManager.setFont(contactsViewHolder.name,application.getCustomTheme().getFont());
+                fontManager.setFont(contactsViewHolder.contact,application.getCustomTheme().getFont());
             }
 
             if(contact.getSelected())
             {
                 contactsViewHolder.check.setBackgroundResource(R.drawable.circle);
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
-                drawable.setColor(application.getYsgTheme().getMainForegroundColor());
-                drawable.setStroke(Visual.getPixelsFromDp(context, 1), application.getYsgTheme().getMainForegroundColor());
-                contactsViewHolder.background.setBackgroundColor(application.getYsgTheme().getRowSelectedColor());
+                drawable.setColor(application.getCustomTheme().getMainForegroundColor());
+                drawable.setStroke(Visual.getPixelsFromDp(context, 1), application.getCustomTheme().getMainForegroundColor());
+                contactsViewHolder.background.setBackgroundColor(application.getCustomTheme().getRowSelectedColor());
             }
             else
             {
@@ -85,7 +79,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 GradientDrawable drawable = (GradientDrawable) contactsViewHolder.check.getBackground();
                 drawable.setColor(context.getResources().getColor(android.R.color.white));
                 drawable.setStroke(Visual.getPixelsFromDp(context, 1), context.getResources().getColor(android.R.color.darker_gray));
-                contactsViewHolder.background.setBackgroundColor(application.getYsgTheme().getRowUnselectedColor());
+                contactsViewHolder.background.setBackgroundColor(application.getCustomTheme().getRowUnselectedColor());
             }
         }
         else
@@ -93,10 +87,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             HeaderViewHolder headerViewHolder=(HeaderViewHolder)viewHolder;
             HeaderContact header=(HeaderContact)items.get(i);
             headerViewHolder.sign.setText(header.getSign());
-            if(!application.getYsgTheme().getFont().isEmpty()){
-                fontManager.setFont(headerViewHolder.sign,application.getYsgTheme().getFont());
+            if(!application.getCustomTheme().getFont().isEmpty()){
+                fontManager.setFont(headerViewHolder.sign,application.getCustomTheme().getFont());
             }
-            headerViewHolder.view.setBackgroundColor(application.getYsgTheme().getRowSelectedColor());
+            headerViewHolder.view.setBackgroundColor(application.getCustomTheme().getRowSelectedColor());
         }
     }
 

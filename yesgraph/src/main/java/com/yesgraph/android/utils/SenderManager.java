@@ -6,9 +6,9 @@ import android.content.Intent;
 import com.yesgraph.android.activity.SendEmailActivity;
 import com.yesgraph.android.activity.SendSmsActivity;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.models.YSGRankedContact;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class SenderManager {
 
-    private ArrayList<YSGContact> invitedContacts;
+    private ArrayList<Contact> invitedContacts;
     private ArrayList<Object> items;
 
 
@@ -43,7 +43,7 @@ public class SenderManager {
 
             for (int x = 0; x < checkedEmails.size(); x++) {
                 stringEmails[x] = checkedEmails.get(x).getContact();
-                YSGRankedContact ysgRankedContact = new YSGRankedContact();
+                RankedContact ysgRankedContact = new RankedContact();
                 ysgRankedContact.setName(checkedEmails.get(x).getName());
                 ysgRankedContact.setEmail(checkedEmails.get(x).getContact());
                 invitedContacts.add(ysgRankedContact);
@@ -109,7 +109,7 @@ public class SenderManager {
 
             for (int x = 0; x < checkedPhones.size(); x++) {
                 stringPhones[x] = checkedPhones.get(x).getContact();
-                YSGRankedContact ysgRankedContact = new YSGRankedContact();
+                RankedContact ysgRankedContact = new RankedContact();
                 ysgRankedContact.setName(checkedPhones.get(x).getName());
                 ysgRankedContact.setPhone(checkedPhones.get(x).getContact());
                 invitedContacts.add(ysgRankedContact);
@@ -158,7 +158,7 @@ public class SenderManager {
         return checkedPhones;
     }
 
-    public ArrayList<YSGContact> getInvitedContacts() {
+    public ArrayList<Contact> getInvitedContacts() {
         return invitedContacts;
     }
 }

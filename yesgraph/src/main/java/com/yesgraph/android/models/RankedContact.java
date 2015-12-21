@@ -8,17 +8,17 @@ import java.util.ArrayList;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGRankedContact extends YSGContact {
+public class RankedContact extends Contact {
 
     private Integer rank;
     private Double score;
 
-    public YSGRankedContact()
+    public RankedContact()
     {
 
     }
 
-    public YSGRankedContact(JSONObject json)
+    public RankedContact(JSONObject json)
     {
         try {
             ArrayList<String> email = new ArrayList<>();

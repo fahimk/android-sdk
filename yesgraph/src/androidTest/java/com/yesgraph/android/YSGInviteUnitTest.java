@@ -4,8 +4,8 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.network.YSGInvite;
+import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.network.Invite;
 
 import org.json.JSONArray;
 
@@ -28,9 +28,9 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
 
         String userID = "user123";
 
-        ArrayList<YSGContact> suggestions = getContacts();
+        ArrayList<Contact> suggestions = getContacts();
 
-        JSONArray jsonArray = new YSGInvite().generateArrayOfInviteesFromListForUser(userID, suggestions);
+        JSONArray jsonArray = new Invite().generateArrayOfInviteesFromListForUser(userID, suggestions);
 
         int jsonLength = jsonArray.length();
         int suggestionsLength = suggestions.size();
@@ -64,9 +64,9 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
 
         String userID = "user123";
 
-        ArrayList<YSGContact> suggestions = getContactsWithMissingData();
+        ArrayList<Contact> suggestions = getContactsWithMissingData();
 
-        JSONArray jsonArray = new YSGInvite().generateArrayOfInviteesFromListForUser(userID, suggestions);
+        JSONArray jsonArray = new Invite().generateArrayOfInviteesFromListForUser(userID, suggestions);
 
         int jsonLength = jsonArray.length();
         int suggestionsLength = suggestions.size();
@@ -91,13 +91,13 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
     }
 
     @NonNull
-    private ArrayList<YSGContact> getContacts() {
+    private ArrayList<Contact> getContacts() {
 
-        ArrayList<YSGContact> suggestions = new ArrayList<>();
+        ArrayList<Contact> suggestions = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
 
-            YSGContact contact = new YSGContact();
+            Contact contact = new Contact();
             contact.setName("John" + String.valueOf(i));
             contact.setPhone("123-432-453");
             contact.setEmail("john@email.com");
@@ -109,12 +109,12 @@ public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
 
 
     @NonNull
-    private ArrayList<YSGContact> getContactsWithMissingData() {
-        ArrayList<YSGContact> suggestions = new ArrayList<>();
+    private ArrayList<Contact> getContactsWithMissingData() {
+        ArrayList<Contact> suggestions = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
 
-            YSGContact contact = new YSGContact();
+            Contact contact = new Contact();
 
             if (i != 0) {
                 contact.setName("John" + String.valueOf(i));

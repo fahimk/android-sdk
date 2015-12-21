@@ -12,7 +12,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.utils.RankingContactsManager;
 
 import org.json.JSONObject;
@@ -48,7 +48,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
         RankingContactsManager rankingContactsManager = new RankingContactsManager(mockContext);
 
         // set suggested and non suggested contacts
-        ArrayList<YSGRankedContact> rankedContacts = getRankedContacts(rankedContactsCount, suggestedCount);
+        ArrayList<RankedContact> rankedContacts = getRankedContacts(rankedContactsCount, suggestedCount);
 
         //get suggested contacts on the top from ranked contacts
         ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, false);
@@ -82,7 +82,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
         RankingContactsManager rankingContactsManager = new RankingContactsManager(mockContext);
 
         // set suggested and non suggested contacts
-        ArrayList<YSGRankedContact> rankedContacts = getRankedContactsWithMissingData(rankedContactsCount, suggestedCount);
+        ArrayList<RankedContact> rankedContacts = getRankedContactsWithMissingData(rankedContactsCount, suggestedCount);
 
         //get suggested contacts on the top from ranked contacts
         ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, false);
@@ -116,7 +116,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
         RankingContactsManager rankingContactsManager = new RankingContactsManager(mockContext);
 
         // set suggested and non suggested contacts
-        ArrayList<YSGRankedContact> rankedContacts = getRankedContacts(rankedContactsCount, suggestedCount);
+        ArrayList<RankedContact> rankedContacts = getRankedContacts(rankedContactsCount, suggestedCount);
 
         //get suggested contacts on the top from ranked contacts
         ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, false);
@@ -144,9 +144,9 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
      **/
 
     @NonNull
-    private ArrayList<YSGRankedContact> getRankedContacts(Integer count, Integer suggestedCount) throws Exception {
+    private ArrayList<RankedContact> getRankedContacts(Integer count, Integer suggestedCount) throws Exception {
 
-        ArrayList<YSGRankedContact> rankedContacts = new ArrayList<>();
+        ArrayList<RankedContact> rankedContacts = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
 
@@ -156,7 +156,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
                 data.put("suggested", "true");
             }
 
-            YSGRankedContact contact = new YSGRankedContact();
+            RankedContact contact = new RankedContact();
 
             contact.setName("John" + String.valueOf(i));
             contact.setPhone("040234252" + String.valueOf(i));
@@ -180,13 +180,13 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
     }
 
     @NonNull
-    private ArrayList<YSGRankedContact> getRankedContactsWithMissingData(Integer count, Integer suggestedCount) throws Exception {
+    private ArrayList<RankedContact> getRankedContactsWithMissingData(Integer count, Integer suggestedCount) throws Exception {
 
-        ArrayList<YSGRankedContact> rankedContacts = new ArrayList<>();
+        ArrayList<RankedContact> rankedContacts = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
 
-            YSGRankedContact contact = new YSGRankedContact();
+            RankedContact contact = new RankedContact();
 
             JSONObject data = new JSONObject();
 

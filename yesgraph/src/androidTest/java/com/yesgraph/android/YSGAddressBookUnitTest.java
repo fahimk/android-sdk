@@ -4,9 +4,9 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.network.YSGAddressBook;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.network.AddressBook;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,7 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
 
         JSONObject jsonContact = getContactJsonObject();
 
-        YSGRankedContact contact = new YSGRankedContact(jsonContact);
+        RankedContact contact = new RankedContact(jsonContact);
 
         boolean emailsNotNull = contact.emails() != null;
         assertEquals(true, emailsNotNull);
@@ -67,7 +67,7 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
 
         JSONArray jsonContacts = getJsonArray();
 
-        YSGContactList ysgContactList = new YSGAddressBook().contactListFromResponse(jsonContacts);
+        ContactList ysgContactList = new AddressBook().contactListFromResponse(jsonContacts);
 
         boolean areAscOrdered = isAscOrdered(ysgContactList);
 
@@ -80,7 +80,7 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
      */
     public void testValidateMappingYSGRankedContactToJson() throws JSONException {
 
-        YSGRankedContact contact = getRankedContact();
+        RankedContact contact = getRankedContact();
 
         JSONObject jsonObject = contact.toJSONObjectExtended();
 
@@ -219,7 +219,7 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
      * @param contactsList list of asc ordered contacts
      * @return true if is asc ordered
      */
-    private boolean isAscOrdered(YSGContactList contactsList) {
+    private boolean isAscOrdered(ContactList contactsList) {
 
         boolean isOrdered = true;
 
@@ -229,8 +229,8 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
                 break;
             }
 
-            YSGRankedContact contact = contactsList.getEntries().get(i);
-            YSGRankedContact nextContact = contactsList.getEntries().get(i + 1);
+            RankedContact contact = contactsList.getEntries().get(i);
+            RankedContact nextContact = contactsList.getEntries().get(i + 1);
 
             if (contact.getRank() > nextContact.getRank()) {
                 isOrdered = false;
@@ -242,9 +242,9 @@ public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
 
 
     @NonNull
-    private YSGRankedContact getRankedContact() {
+    private RankedContact getRankedContact() {
 
-        YSGRankedContact contact = new YSGRankedContact();
+        RankedContact contact = new RankedContact();
         contact.setName("John");
         contact.setEmail("jonh@hotmail.com");
         contact.setPhone("4554-6567756");

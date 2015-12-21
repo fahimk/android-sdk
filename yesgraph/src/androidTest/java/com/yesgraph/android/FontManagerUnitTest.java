@@ -4,7 +4,7 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 
 import com.yesgraph.android.utils.FontManager;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.Utility;
 
 /**
  * Created by Klemen on 17.12.2015.

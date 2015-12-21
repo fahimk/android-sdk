@@ -17,7 +17,7 @@ import android.test.mock.MockContext;
 import android.text.TextUtils;
 
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.utils.ContactRetriever;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
      */
     public void testCheckRetrieverYSGContactsData() {
 
-        ArrayList<YSGRankedContact> contacts = ContactRetriever.readYSGContacts(getContext());
+        ArrayList<RankedContact> contacts = ContactRetriever.readYSGContacts(getContext());
 
         boolean contactNameIsEmpty = false;
 

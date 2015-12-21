@@ -4,9 +4,12 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.models.YSGSource;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Source;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Source;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,13 +33,13 @@ public class YSGContactListUnitTest extends ApplicationTestCase<Application> {
 
         String userID = "user123";
 
-        YSGContactList ysgContactList = new YSGContactList();
+        ContactList ysgContactList = new ContactList();
         ysgContactList.setUseSuggestions(true);
 
-        YSGSource ysgSource = new YSGSource();
+        Source ysgSource = new Source();
         ysgContactList.setSource(ysgSource);
 
-        ArrayList<YSGRankedContact> entries = getRankedContacts();
+        ArrayList<RankedContact> entries = getRankedContacts();
 
         ysgContactList.setEntries(entries);
 
@@ -73,13 +76,13 @@ public class YSGContactListUnitTest extends ApplicationTestCase<Application> {
      */
 
     @NonNull
-    private ArrayList<YSGRankedContact> getRankedContacts() {
+    private ArrayList<RankedContact> getRankedContacts() {
 
-        ArrayList<YSGRankedContact> entries = new ArrayList<>();
+        ArrayList<RankedContact> entries = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
 
-            YSGRankedContact contact = new YSGRankedContact();
+            RankedContact contact = new RankedContact();
             contact.setName("John");
             contact.setEmail("jonh@hotmail.com");
             contact.setPhone("4554-6567756");

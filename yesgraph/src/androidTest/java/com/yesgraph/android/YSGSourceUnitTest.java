@@ -3,8 +3,8 @@ package com.yesgraph.android;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.models.YSGSource;
+import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.models.Source;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +30,7 @@ public class YSGSourceUnitTest extends ApplicationTestCase<Application> {
         String email="jonh@email.com";
         String phone = "123-432-124";
 
-        YSGSource source = new YSGSource();
+        Source source = new Source();
         source.setName(name);
         source.setEmail(email);
         source.setPhone(phone);

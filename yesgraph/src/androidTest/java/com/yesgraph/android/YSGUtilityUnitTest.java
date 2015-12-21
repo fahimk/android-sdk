@@ -5,9 +5,9 @@ import android.test.ApplicationTestCase;
 import android.text.TextUtils;
 
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.utils.ContactRetriever;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ public class YSGUtilityUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckGenerateRandomId() {
 
-        String randomId = YSGUtility.randomUserId();
+        String randomId = Utility.randomUserId();
 
         boolean isNotNull = randomId != null;
 
@@ -39,7 +39,7 @@ public class YSGUtilityUnitTest extends ApplicationTestCase<Application> {
 
         String name = "john";
 
-        boolean isAlpha = YSGUtility.isAlpha(name);
+        boolean isAlpha = Utility.isAlpha(name);
 
         assertEquals(true, isAlpha);
 
@@ -52,7 +52,7 @@ public class YSGUtilityUnitTest extends ApplicationTestCase<Application> {
 
         String name = "john123";
 
-        boolean isAlpha = YSGUtility.isAlpha(name);
+        boolean isAlpha = Utility.isAlpha(name);
 
         assertEquals(false, isAlpha);
 
@@ -65,7 +65,7 @@ public class YSGUtilityUnitTest extends ApplicationTestCase<Application> {
 
         String numbers = "1234";
 
-        boolean isNumeric = YSGUtility.isNumeric(numbers);
+        boolean isNumeric = Utility.isNumeric(numbers);
 
         assertEquals(true, isNumeric);
 
@@ -78,7 +78,7 @@ public class YSGUtilityUnitTest extends ApplicationTestCase<Application> {
 
         String numbers = "john1234";
 
-        boolean isNumeric = YSGUtility.isNumeric(numbers);
+        boolean isNumeric = Utility.isNumeric(numbers);
 
         assertEquals(false, isNumeric);
 

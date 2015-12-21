@@ -4,10 +4,10 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.models.YSGSource;
+import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Source;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckContactDescriptionWithEmail() {
 
-        YSGContact contactWithEmail = new YSGContact();
+        Contact contactWithEmail = new Contact();
 
         ArrayList<String> emails = new ArrayList<>();
         emails.add("john@email.si");
@@ -48,7 +48,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckContactDescriptionWithPhones() {
 
-        YSGContact contactWithEmail = new YSGContact();
+        Contact contactWithEmail = new Contact();
 
         ArrayList<String> phones = new ArrayList<>();
         phones.add("123-542-433");
@@ -70,7 +70,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckContactSuggested() throws JSONException {
 
-        YSGContact contact = new YSGContact();
+        Contact contact = new Contact();
 
         JSONObject data = new JSONObject();
         data.put("suggested", "true");
@@ -92,7 +92,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckContactPhones() {
 
-        YSGContact contact = new YSGContact();
+        Contact contact = new Contact();
 
         ArrayList<String> phones = new ArrayList<>();
         phones.add("123-542-433");
@@ -110,7 +110,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckContactEmails() {
 
-        YSGContact contact = new YSGContact();
+        Contact contact = new Contact();
 
         ArrayList<String> emails = new ArrayList<>();
         emails.add("john@email.si");
@@ -128,7 +128,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckPhonesContactData() {
 
-        YSGContact contact = new YSGContact();
+        Contact contact = new Contact();
 
         ArrayList<String> phones = new ArrayList<>();
         phones.add("123-542-433");
@@ -146,7 +146,7 @@ public class YSGContactUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckEmailsContactData() throws JSONException {
 
-        YSGContact contact = new YSGContact();
+        Contact contact = new Contact();
 
         ArrayList<String> emails = new ArrayList<>();
         emails.add("john@email.si");

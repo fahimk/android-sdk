@@ -5,14 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.util.Log;
 
-import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.YSGUtility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +22,7 @@ import java.util.Comparator;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGAddressBook extends HttpMethodAbstract {
+public class AddressBook extends HttpMethod {
 
     public void fetchAddressBookForUserId(Context context, String userId, final Handler.Callback callback)
     {
@@ -40,20 +37,20 @@ public class YSGAddressBook extends HttpMethodAbstract {
                 {
                     JSONObject json = (JSONObject)msg.obj;
 
-                    YSGContactList ysgContactList = null;
+                    ContactList contactList = null;
                     try
                     {
                         if(json.has("data") && !json.isNull("data"))
                         {
                             sharedPreferences.edit().putString("contacts_cache", json.getJSONArray("data").toString()).commit();
-                            ysgContactList = contactListFromResponse(json.getJSONArray("data"));
+                            contactList = contactListFromResponse(json.getJSONArray("data"));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                     callbackMessage.what = Constants.RESULT_OK;
-                    callbackMessage.obj = ysgContactList;
+                    callbackMessage.obj = contactList;
                     callback.handleMessage(callbackMessage);
                 }
                 else
@@ -67,7 +64,7 @@ public class YSGAddressBook extends HttpMethodAbstract {
         });
     }
 
-    public void updateAddressBookWithContactListForUserId(final Context context, YSGContactList contactList, String userId, final Handler.Callback callback)
+    public void updateAddressBookWithContactListForUserId(final Context context, ContactList contactList, String userId, final Handler.Callback callback)
     {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String secretKey=sharedPreferences.getString("secret_key","");
@@ -80,21 +77,21 @@ public class YSGAddressBook extends HttpMethodAbstract {
                 {
                     JSONObject json = (JSONObject)msg.obj;
 
-                    YSGContactList ysgContactList = null;
+                    ContactList contactList = null;
                     try
                     {
                         if(json.has("data") && !json.isNull("data"))
                         {
                             sharedPreferences.edit().putString("contacts_cache", json.getJSONArray("data").toString()).commit();
                             sharedPreferences.edit().putLong("contacts_last_upload", System.currentTimeMillis()).commit();
-                            ysgContactList = contactListFromResponse(json.getJSONArray("data"));
+                            contactList = contactListFromResponse(json.getJSONArray("data"));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                     callbackMessage.what = Constants.RESULT_OK;
-                    callbackMessage.obj = ysgContactList;
+                    callbackMessage.obj = contactList;
                     callback.handleMessage(callbackMessage);
                 }
                 else
@@ -108,16 +105,16 @@ public class YSGAddressBook extends HttpMethodAbstract {
         });
     }
 
-    public YSGContactList contactListFromResponse(JSONArray jsonArray)
+    public static ContactList contactListFromResponse(JSONArray jsonArray)
     {
-        ArrayList<YSGRankedContact> contacts=new ArrayList<>();
+        ArrayList<RankedContact> contacts=new ArrayList<>();
 
         for(int i=0;i<jsonArray.length();i++)
         {
             try {
                 JSONObject json=jsonArray.getJSONObject(i);
 
-                YSGRankedContact contact = new YSGRankedContact(json);
+                RankedContact contact = new RankedContact(json);
 
                 contacts.add(contact);
 
@@ -127,11 +124,11 @@ public class YSGAddressBook extends HttpMethodAbstract {
             }
         }
 
-        YSGContactList contactList = new YSGContactList();
+        ContactList contactList = new ContactList();
 
-        Collections.sort(contacts, new Comparator<YSGRankedContact>() {
+        Collections.sort(contacts, new Comparator<RankedContact>() {
             @Override
-            public int compare(YSGRankedContact p1, YSGRankedContact p2) {
+            public int compare(RankedContact p1, RankedContact p2) {
                 return p1.getRank() - p2.getRank(); // Ascending
                 //return p2.getRank() - p1.getRank(); // Descending
             }
@@ -139,8 +136,8 @@ public class YSGAddressBook extends HttpMethodAbstract {
         });
 
 
-        /*Collections.sort(contacts, new Comparator<YSGRankedContact>() {
-            public int compare(YSGRankedContact s1, YSGRankedContact s2) {
+        /*Collections.sort(contacts, new Comparator<RankedContact>() {
+            public int compare(RankedContact s1, RankedContact s2) {
 
                 if (isAlpha(s1.name().substring(0, 1)) && !isAlpha(s2.name().substring(0, 1)))
                     return -s1.name().compareToIgnoreCase(s2.name());

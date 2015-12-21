@@ -7,7 +7,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +15,7 @@ import org.json.JSONObject;
 /**
  * Created by marko on 23/11/15.
  */
-public class YSGPrivate extends HttpMethodAbstract {
+public class Authenticate extends HttpMethod {
 
     public void fetchRandomClientKeyWithSecretKey(Context context, String secretKey, Handler.Callback callback)
     {
@@ -73,6 +73,6 @@ public class YSGPrivate extends HttpMethodAbstract {
 
     public static String randomId()
     {
-        return YSGUtility.randomUserId();
+        return Utility.randomUserId();
     }
 }

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGContact;
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.utils.SenderManager;
 
 import java.util.ArrayList;
@@ -215,7 +215,7 @@ public class SenderManagerUnitTest extends ApplicationTestCase<Application> {
         String[] contactsPhonesNumber = senderManager.getPhones();
         String[] contactsEmails = senderManager.getEmails();
 
-        ArrayList<YSGContact> invitedContacts = senderManager.getInvitedContacts();
+        ArrayList<Contact> invitedContacts = senderManager.getInvitedContacts();
 
         int expectedContacts = contactsPhonesNumber.length + contactsEmails.length;
         int actualContacts = invitedContacts.size();
@@ -250,7 +250,7 @@ public class SenderManagerUnitTest extends ApplicationTestCase<Application> {
 
             RegularContact contact = new RegularContact();
             contact.setName("John");
-            contact.setContact("john@email.com");
+            contact.setEmail("john@email.com");
             contact.setSelected(isSelected);
 
             entries.add(contact);
@@ -267,7 +267,7 @@ public class SenderManagerUnitTest extends ApplicationTestCase<Application> {
 
             RegularContact contact = new RegularContact();
             contact.setName("John");
-            contact.setContact("123-432-545");
+            contact.setPhone("123-432-545");
             contact.setSelected(isSelected);
 
             entries.add(contact);

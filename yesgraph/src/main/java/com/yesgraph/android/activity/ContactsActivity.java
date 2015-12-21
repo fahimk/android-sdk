@@ -2,6 +2,8 @@ package com.yesgraph.android.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
@@ -11,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,23 +27,26 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.adapters.ContactsAdapter;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.HeaderContact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
-import com.yesgraph.android.models.YSGContact;
-import com.yesgraph.android.models.YSGContactList;
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.models.YSGSource;
-import com.yesgraph.android.network.YSGAddressBook;
-import com.yesgraph.android.network.YSGInvite;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.Source;
+import com.yesgraph.android.network.AddressBook;
+import com.yesgraph.android.network.Invite;
+import com.yesgraph.android.network.SuggestionsShown;
 import com.yesgraph.android.utils.AlphabetSideIndexManager;
 import com.yesgraph.android.utils.CacheManager;
 import com.yesgraph.android.utils.Constants;
@@ -50,12 +56,18 @@ import com.yesgraph.android.utils.PermissionGrantedManager;
 import com.yesgraph.android.utils.RankingContactsManager;
 import com.yesgraph.android.utils.SenderManager;
 import com.yesgraph.android.utils.SharedPreferencesManager;
-import com.yesgraph.android.utils.YSGUtility;
+import com.yesgraph.android.utils.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import retrofit.http.HEAD;
 
 /**
  * Created by marko on 17/11/15.
@@ -74,9 +86,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar toolbar;
     private FontManager fontManager;
     private TextView toolbarTitle;
+    private LinearLayout indexLayout;
     private FrameLayout contactsListContent;
 
-    private YSGContactList ysgContactList;
+    private SharedPreferences sharedPreferences;
+
+    private ContactList contactList;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
@@ -111,12 +126,14 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
     private void init() {
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         application = (YesGraph) getApplication();
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
         contactsList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.content_contact_list, null);
@@ -125,19 +142,22 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         contactsList.setVerticalScrollBarEnabled(true);
         contactsListContent.addView(contactsList);
 
+        indexLayout = (LinearLayout) findViewById(R.id.side_index);
+        indexLayout.setBackgroundColor(application.getCustomTheme().getMainBackgroundColor());
+
         search = (EditText)findViewById(R.id.search);
-        search.setTextColor(application.getYsgTheme().getLightFontColor());
-        search.getBackground().setColorFilter(application.getYsgTheme().getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
-        search.setHintTextColor(application.getYsgTheme().getLightFontColor());
+        search.setTextColor(application.getCustomTheme().getLightFontColor());
+        search.getBackground().setColorFilter(application.getCustomTheme().getLightFontColor(), PorterDuff.Mode.SRC_ATOP);
+        search.setHintTextColor(application.getCustomTheme().getLightFontColor());
         searchBar = (LinearLayout)findViewById(R.id.searhBar);
-        searchBar.setBackgroundColor(application.getYsgTheme().getMainForegroundColor());
+        searchBar.setBackgroundColor(application.getCustomTheme().getMainForegroundColor());
         //contactsList = (RecyclerView)findViewById(R.id.contactsList);
-        contactsList.setBackgroundColor(application.getYsgTheme().getRowBackgroundColor());
+        contactsList.setBackgroundColor(application.getCustomTheme().getRowBackgroundColor());
 
-        ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
+        setProgressVisibility(true);
 
-        if(!application.getYsgTheme().getFont().isEmpty()){
-            fontManager.setFont(search,application.getYsgTheme().getFont());
+        if(!application.getCustomTheme().getFont().isEmpty()){
+            fontManager.setFont(search,application.getCustomTheme().getFont());
         }
 
         items = new ArrayList<>();
@@ -164,31 +184,32 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         Boolean isReadContactPermissionGranted = new PermissionGrantedManager(context).isReadContactsPermission();
         Boolean checkContactsReadPermission = new PermissionGrantedManager(context).checkContactsReadPermission();
 
-        if(!isContactCached && isReadContactPermissionGranted && checkContactsReadPermission && application.isOnline())
-        {
-            ArrayList<YSGRankedContact> list=ContactRetriever.readYSGContacts(ContactsActivity.this);
+        if(!isContactCached && isReadContactPermissionGranted && checkContactsReadPermission && application.isOnline() && !sharedPreferences.getBoolean("contacts_uploading", false))
 
-            YSGContactList contactList=new YSGContactList();
+        {
+            ArrayList<RankedContact> list=ContactRetriever.readYSGContacts(ContactsActivity.this);
+
+            ContactList contactList=new ContactList();
             contactList.setEntries(list);
-            contactList.setSource(new YSGSource());
+            contactList.setSource(new Source());
             contactList.setUseSuggestions(true);
 
-            final YSGAddressBook ysgAddressBook=new YSGAddressBook();
+            final AddressBook addressBook =new AddressBook();
 
             Log.i("#YSGCONTACTS_COUNT", "1count:" + contactList.getEntries().size());
 
             String userId = new SharedPreferencesManager(context).getString("user_id");
 
-            ysgAddressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, userId, new Handler.Callback() {
+            addressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, userId, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg)
                 {
-                    ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    sharedPreferences.edit().putBoolean("contacts_uploading", false).commit();
+
                     if(msg.what== Constants.RESULT_OK)
                     {
                         try {
-                            ysgContactList=(YSGContactList)msg.obj;
-                            Log.i("#YSGCONTACTS_COUNT", "2count:"+ysgContactList.getEntries().size());
+                            ContactsActivity.this.contactList =(ContactList)msg.obj;
                             getContacts("");
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -210,17 +231,25 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    private void setProgressVisibility(boolean visible)
+    {
+        if(visible)
+            ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.VISIBLE);
+        else
+            ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+    }
+
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbarTitle = (TextView) findViewById(R.id.toolbarTitle);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getYsgTheme().getMainForegroundColor()));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(application.getCustomTheme().getMainForegroundColor()));
         getSupportActionBar().setHomeAsUpIndicator(getColoredArrow());
         toolbarTitle.setText(getResources().getString(R.string.contacts_list));
-        toolbarTitle.setTextColor(application.getYsgTheme().getBackArrowColor());
-        if(!application.getYsgTheme().getFont().isEmpty()){
-            fontManager.setFont(toolbarTitle, application.getYsgTheme().getFont());
+        toolbarTitle.setTextColor(application.getCustomTheme().getBackArrowColor());
+        if(!application.getCustomTheme().getFont().isEmpty()){
+            fontManager.setFont(toolbarTitle, application.getCustomTheme().getFont());
         }
     }
 
@@ -231,7 +260,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         if (arrowDrawable != null && wrapped != null) {
             // This should avoid tinting all the arrows
             arrowDrawable.mutate();
-            DrawableCompat.setTint(wrapped, application.getYsgTheme().getBackArrowColor());
+            DrawableCompat.setTint(wrapped, application.getCustomTheme().getBackArrowColor());
         }
 
         return wrapped;
@@ -268,11 +297,11 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         senderManager.sendEmail(context, application);
         senderManager.sendSms(context, application);
 
-        ArrayList<YSGContact> ysgContacts = senderManager.getInvitedContacts();
+        ArrayList<Contact> contacts = senderManager.getInvitedContacts();
         String userId = new SharedPreferencesManager(context).getString("user_id");
 
-        YSGInvite ysgInvite=new YSGInvite();
-        ysgInvite.updateInvitesSentForUser(context, ysgContacts, userId, new Handler.Callback() {
+        Invite ysgInvite=new Invite();
+        ysgInvite.updateInvitesSentForUser(context, contacts, userId, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 return false;
@@ -358,7 +387,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     suggestedIndex++;
                 } else {
                     String thisSign = contact.getName().length() < 0 ? "#" : contact.getName().substring(0, 1).toUpperCase();
-                    if (!YSGUtility.isAlpha(thisSign))
+                    if (!Utility.isAlpha(thisSign))
                         thisSign = "#";
 
                     if (!lastSign.equals(thisSign)) {
@@ -371,6 +400,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
                     lastSign = thisSign;
                 }
+
+                //displayIndex();
             }
             itemsOld = (ArrayList<Object>)items.clone();
         }
@@ -399,31 +430,25 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      */
     private void setContactsFromCacheOrContactsProvider() {
 
-        if(ysgContactList==null || ysgContactList.getEntries()==null || ysgContactList.getEntries().size()==0)
+        Boolean isContactCached = !new CacheManager(context).getContactCache().equals("");
+
+        if(isContactCached)
         {
-            Boolean isContactCached = !new CacheManager(context).getContactCache().equals("");
+            try {
 
-            if(isContactCached)
-            {
-                YSGAddressBook ysgAddressBook = new YSGAddressBook();
-                try {
-
-                    String contactsCache = new CacheManager(context).getContactCache();
-                    ysgContactList = ysgAddressBook.contactListFromResponse(new JSONArray(contactsCache));
-                    contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    contacts = getContactsFromContactList();
-                }
-            }
-            else {
+                String contactsCache = new CacheManager(context).getContactCache();
+                contactList = AddressBook.contactListFromResponse(new JSONArray(contactsCache));
+                contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
+            } catch (JSONException e) {
+                e.printStackTrace();
                 contacts = getContactsFromContactList();
             }
         }
-        else if(contacts==null || contacts.size()==0)
-        {
-            contacts = rankedContactsToRegularContacts(ysgContactList.getEntries(),application.getNumberOfSuggestedContacts(), false);
+        else {
+            contacts = getContactsFromContactList();
         }
+
+        //setupRecycler();
     }
 
     private void setupRecycler() {
@@ -451,11 +476,13 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
                 //show alphabetical side index
                 alphabeticalIndexManager.displayIndex();
+
+                setProgressVisibility(false);
             }
         });
     }
 
-    private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<YSGRankedContact> ysgRankedContactArrayList, Integer suggestedCount, Boolean postSuggested)
+    private ArrayList<RegularContact> rankedContactsToRegularContacts(ArrayList<RankedContact> ysgRankedContactArrayList, Integer suggestedCount, Boolean postSuggested)
     {
         return new RankingContactsManager(context).rankedContactsToRegularContacts(ysgRankedContactArrayList,suggestedCount,postSuggested);
     }
@@ -471,21 +498,19 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                     ContactRetriever.readContacts(context);
 
                     getContactsOnThread();
-
                 } else {
                     //Set Permission Denied
                     new PermissionGrantedManager(context).setReadContactsPermission(false);
 
                     Toast.makeText(ContactsActivity.this, "READ_CONTACTS Denied", Toast.LENGTH_SHORT)
                             .show();
-                    ((LinearLayout)findViewById(R.id.progressLayout)).setVisibility(View.GONE);
+                    setProgressVisibility(false);
                 }
                 break;
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -501,11 +526,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     if(!checkIfUploadNeeded())
                     {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                ((LinearLayout) findViewById(R.id.progressLayout)).setVisibility(View.GONE);
-                            }
-                        });
                         getContacts("");
                     }
                 } catch (Exception e) {
@@ -514,7 +534,5 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             }
         };
         thread.start();
-
     }
-
 }

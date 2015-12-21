@@ -4,8 +4,8 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
-import com.yesgraph.android.models.YSGRankedContact;
-import com.yesgraph.android.network.YSGSuggestionsShown;
+import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.network.SuggestionsShown;
 
 import org.json.JSONArray;
 
@@ -28,9 +28,9 @@ public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application
 
         String userID = "user123";
 
-        ArrayList<YSGRankedContact> suggestions = getRankedContacts();
+        ArrayList<RankedContact> suggestions = getRankedContacts();
 
-        JSONArray jsonArray = new YSGSuggestionsShown().generateArrayOfSuggestionsFromListForUser(userID, suggestions);
+        JSONArray jsonArray = new SuggestionsShown().generateArrayOfSuggestionsFromListForUser(userID, suggestions);
 
         int jsonLength = jsonArray.length();
         int suggestionsLength = suggestions.size();
@@ -74,15 +74,15 @@ public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application
 
         String userID = "user123";
 
-        ArrayList<YSGRankedContact> suggestions = new ArrayList<>();
+        ArrayList<RankedContact> suggestions = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
-            YSGRankedContact contact = new YSGRankedContact();
+            RankedContact contact = new RankedContact();
             contact.setName("John" + String.valueOf(i));
             suggestions.add(contact);
         }
 
-        JSONArray jsonArray = new YSGSuggestionsShown().generateArrayOfSuggestionsFromListForUser(userID, suggestions);
+        JSONArray jsonArray = new SuggestionsShown().generateArrayOfSuggestionsFromListForUser(userID, suggestions);
 
         int jsonLength = jsonArray.length();
         int suggestionsLength = suggestions.size();
@@ -107,13 +107,13 @@ public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application
     }
 
     @NonNull
-    private ArrayList<YSGRankedContact> getRankedContacts() {
+    private ArrayList<RankedContact> getRankedContacts() {
 
-        ArrayList<YSGRankedContact> suggestions = new ArrayList<>();
+        ArrayList<RankedContact> suggestions = new ArrayList<>();
 
         for (int i = 0; i < 5; i++) {
 
-            YSGRankedContact contact = new YSGRankedContact();
+            RankedContact contact = new RankedContact();
             contact.setName("John" + String.valueOf(i));
 
             ArrayList<String> emails = new ArrayList<>();
