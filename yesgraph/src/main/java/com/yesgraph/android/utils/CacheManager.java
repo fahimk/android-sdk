@@ -8,6 +8,7 @@ import android.content.Context;
 public class CacheManager {
 
     private static final String CONTACTS_CACHE_KEY = "contacts_cache";
+    private static final String CONTACTS_UPLOADING_KEY = "contacts_uploading";
 
     private Context context;
 
@@ -21,6 +22,14 @@ public class CacheManager {
 
     public String getContactCache() {
         return new SharedPreferencesManager(context).getString(CONTACTS_CACHE_KEY);
+    }
+
+    public void setContactsUploading(boolean isUploading) {
+        new SharedPreferencesManager(context).putBoolean(CONTACTS_UPLOADING_KEY, isUploading);
+    }
+
+    public boolean isContactsUploading() {
+        return new SharedPreferencesManager(context).getBoolean(CONTACTS_UPLOADING_KEY);
     }
 
 }

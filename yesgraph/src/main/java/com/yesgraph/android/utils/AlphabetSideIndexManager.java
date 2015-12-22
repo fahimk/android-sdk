@@ -36,17 +36,20 @@ public class AlphabetSideIndexManager {
 
     public void setIndexList(ArrayList<Object> contacts, int numberOfSuggestedContacts) {
 
-        for (int i = numberOfSuggestedContacts; i < contacts.size(); i++) {
-            String stringLetter = "";
-            if (contacts.get(i) instanceof RegularContact) {
-                continue;
-            } else {
-                HeaderContact contact = (HeaderContact) contacts.get(i);
-                stringLetter = contact.getSign();
-            }
+        if (contacts != null) {
 
-            if (mapIndex.get(stringLetter) == null)
-                mapIndex.put(stringLetter, i);
+            for (int i = numberOfSuggestedContacts; i < contacts.size(); i++) {
+                String stringLetter = "";
+                if (contacts.get(i) instanceof RegularContact) {
+                    continue;
+                } else {
+                    HeaderContact contact = (HeaderContact) contacts.get(i);
+                    stringLetter = contact.getSign();
+                }
+
+                if (mapIndex.get(stringLetter) == null)
+                    mapIndex.put(stringLetter, i);
+            }
         }
     }
 

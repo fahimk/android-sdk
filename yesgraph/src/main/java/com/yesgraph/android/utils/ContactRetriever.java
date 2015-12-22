@@ -426,12 +426,13 @@ public class ContactRetriever {
      * @return true if is checked
      */
     public boolean isContactChecked(ArrayList<Object> items) {
-        for(Object contact : items)
-        {
-            if(contact instanceof RegularContact)
-            {
-                if(((RegularContact)contact).getSelected())
-                    return true;
+
+        if(items != null) {
+            for (Object contact : items) {
+                if (contact instanceof RegularContact) {
+                    if (((RegularContact) contact).getSelected())
+                        return true;
+                }
             }
         }
         return false;

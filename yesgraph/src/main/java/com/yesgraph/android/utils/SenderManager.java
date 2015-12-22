@@ -2,13 +2,16 @@ package com.yesgraph.android.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 
+import com.yesgraph.android.R;
 import com.yesgraph.android.activity.SendEmailActivity;
 import com.yesgraph.android.activity.SendSmsActivity;
-import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
+import com.yesgraph.android.network.Invite;
 
 import java.util.ArrayList;
 
@@ -56,10 +59,9 @@ public class SenderManager {
     /**
      * Send email with contacts emails
      *
-     * @param context     context
-     * @param application application
+     * @param context context
      */
-    public void sendEmail(Context context, YesGraph application) {
+    public void startSendEmailActivity(Context context) {
 
         String[] stringEmails = getEmails();
 
@@ -67,8 +69,8 @@ public class SenderManager {
 
             Intent intent = new Intent(context, SendEmailActivity.class);
             intent.putExtra("contacts", stringEmails);
-            intent.putExtra("subject", application.getEmailSubject());
-            intent.putExtra("message", application.getEmailText());
+            intent.putExtra("subject", context.getString(R.string.default_share_text));
+            intent.putExtra("message", context.getString(R.string.default_share_text));
             context.startActivity(intent);
         }
     }
@@ -122,10 +124,9 @@ public class SenderManager {
     /**
      * Send sms to checked contacts
      *
-     * @param context     context
-     * @param application application
+     * @param context context
      */
-    public void sendSms(Context context, YesGraph application) {
+    public void startSendSmsActivity(Context context) {
 
         String[] stringPhones = getPhones();
 
@@ -133,7 +134,7 @@ public class SenderManager {
 
             Intent intent = new Intent(context, SendSmsActivity.class);
             intent.putExtra("contacts", stringPhones);
-            intent.putExtra("message", application.getSmsText());
+            intent.putExtra("message", context.getString(R.string.default_share_text));
             context.startActivity(intent);
 
         }
@@ -160,5 +161,39 @@ public class SenderManager {
 
     public ArrayList<Contact> getInvitedContacts() {
         return invitedContacts;
+    }
+
+    /**
+     * Invite contacts to YesGraph SDK via sms or email
+     *
+     * @param context context
+     */
+    public boolean inviteContacts(Context context) {
+
+        boolean invitationsSent = true;
+
+        try {
+            startSendEmailActivity(context);
+
+            startSendSmsActivity(context);
+
+            ArrayList<Contact> ysgContacts = getInvitedContacts();
+            String userId = new SharedPreferencesManager(context).getString("user_id");
+
+            Invite ysgInvite = new Invite();
+            ysgInvite.updateInvitesSentForUser(context, ysgContacts, userId, new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    return false;
+                }
+            });
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            invitationsSent = false;
+        }
+
+        return invitationsSent;
+
     }
 }

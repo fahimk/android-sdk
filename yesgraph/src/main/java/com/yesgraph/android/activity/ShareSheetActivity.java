@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -36,18 +35,14 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.ContactList;
-import com.yesgraph.android.models.RankedContact;
-import com.yesgraph.android.models.Source;
 import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.network.Authenticate;
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.ContactRetriever;
+import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.Visual;
 
 import io.fabric.sdk.android.Fabric;
-
-import java.util.ArrayList;
 
 public class ShareSheetActivity extends AppCompatActivity {
 
@@ -109,12 +104,8 @@ public class ShareSheetActivity extends AppCompatActivity {
                     {
                         try {
                             sharedPreferences.edit().putBoolean("contacts_uploading", true).commit();
-                            ArrayList<RankedContact> list = ContactRetriever.readYSGContacts(context);
 
-                            ContactList contactList = new ContactList();
-                            contactList.setEntries(list);
-                            contactList.setSource(new Source());
-                            contactList.setUseSuggestions(true);
+                            ContactList contactList = new ContactManager().getContactList(context);
 
                             AddressBook addressBook = new AddressBook();
                             addressBook.updateAddressBookWithContactListForUserId(context, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
