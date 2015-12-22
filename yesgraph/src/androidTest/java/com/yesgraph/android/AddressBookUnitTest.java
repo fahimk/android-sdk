@@ -17,8 +17,8 @@ import java.util.ArrayList;
 /**
  * Created by Klemen on 9.12.2015.
  */
-public class YSGAddressBookUnitTest extends ApplicationTestCase<Application> {
-    public YSGAddressBookUnitTest() {
+public class AddressBookUnitTest extends ApplicationTestCase<Application> {
+    public AddressBookUnitTest() {
         super(Application.class);
     }
 

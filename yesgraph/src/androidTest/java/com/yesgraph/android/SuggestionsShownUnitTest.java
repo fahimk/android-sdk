@@ -14,8 +14,8 @@ import java.util.ArrayList;
 /**
  * Created by Klemen on 9.12.2015.
  */
-public class YSGSuggestionsShownUnitTest extends ApplicationTestCase<Application> {
-    public YSGSuggestionsShownUnitTest() {
+public class SuggestionsShownUnitTest extends ApplicationTestCase<Application> {
+    public SuggestionsShownUnitTest() {
         super(Application.class);
     }
 

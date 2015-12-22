@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -37,9 +36,12 @@ import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.network.Authenticate;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.FontManager;
+import com.yesgraph.android.utils.PermissionGrantedManager;
+import com.yesgraph.android.utils.SharedPreferencesManager;
 import com.yesgraph.android.utils.Visual;
 
 import io.fabric.sdk.android.Fabric;
@@ -57,16 +59,70 @@ public class ShareSheetActivity extends AppCompatActivity {
     private FontManager fontManager;
     private ShareDialog shareDialog;
     private CallbackManager callbackManager;
-    private Intent intent;
     private String TWITTER_KEY = "";
     private String TWITTER_SECRET = "";
-
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        intent = getIntent();
+
+        init();
+
+        checkIsTimeToRefreshAddressBook();
+    }
+
+    private void init() {
+
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setTwitterKeys();
+        setContentView(R.layout.activity_share_sheet);
+        FacebookSdk.sdkInitialize(this);
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
+        application = (YesGraph) getApplication();
+        fontManager = FontManager.getInstance();
+        setToolbar();
+        context = this;
+    }
+
+
+    private void checkIsTimeToRefreshAddressBook() {
+
+        new StorageKeyValueManager(context).setContactsUploading(false);
+
+        final String userID = new SharedPreferencesManager(context).getString("user_id");
+
+        Authenticate authenticate = new Authenticate();
+        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", userID/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == Constants.RESULT_OK) {
+                    boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
+                    if (timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
+                        try {
+                            new StorageKeyValueManager(context).setContactsUploading(true);
+                            ContactList contactList = new ContactManager().getContactList(context);
+                            AddressBook addressBook = new AddressBook();
+                            addressBook.updateAddressBookWithContactListForUserId(context, contactList, userID, new Handler.Callback() {
+                                @Override
+                                public boolean handleMessage(Message msg) {
+                                    new StorageKeyValueManager(context).setContactsUploading(false);
+                                    return false;
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+
+    private void setTwitterKeys() {
+        Intent intent = getIntent();
         if (intent != null) {
             TWITTER_KEY = intent.getStringExtra("twitter_key");
             TWITTER_SECRET = intent.getStringExtra("twitter_secret");
@@ -77,59 +133,12 @@ public class ShareSheetActivity extends AppCompatActivity {
                 }
             }
         }
-
-        setContentView(R.layout.activity_share_sheet);
-
-        shareDialog = new ShareDialog(this);
-        callbackManager = CallbackManager.Factory.create();
-
-        application = (YesGraph) getApplication();
-        fontManager = FontManager.getInstance();
-        setToolbar();
-        context = this;
-
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        sharedPreferences.edit().putBoolean("contacts_uploading", false).commit();
-
-        Authenticate authenticate =new Authenticate();
-        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", sharedPreferences.getString("user_id", "")/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if(msg.what== Constants.RESULT_OK)
-                {
-                    if(timeToRefreshAddressBook() && sharedPreferences.getBoolean("contacts_permision_granted", false) && application.isOnline())
-                    {
-                        try {
-                            sharedPreferences.edit().putBoolean("contacts_uploading", true).commit();
-
-                            ContactList contactList = new ContactManager().getContactList(context);
-
-                            AddressBook addressBook = new AddressBook();
-                            addressBook.updateAddressBookWithContactListForUserId(context, contactList, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
-                                @Override
-                                public boolean handleMessage(Message msg) {
-                                    sharedPreferences.edit().putBoolean("contacts_uploading", false).commit();
-                                    return false;
-                                }
-                            });
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                return false;
-            }
-        });
     }
 
     private boolean timeToRefreshAddressBook() {
-        if(sharedPreferences.getLong("contacts_last_upload", System.currentTimeMillis()) < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))
+        long lastContactsUpload = new StorageKeyValueManager(context).getContactLastUpload();
+
+        if(lastContactsUpload < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))
             return true;
         else
             return false;

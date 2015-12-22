@@ -34,7 +34,7 @@ import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.utils.AlphabetSideIndexManager;
-import com.yesgraph.android.utils.CacheManager;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.ContactRetriever;
@@ -138,11 +138,11 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
     private Boolean checkIfUploadNeeded() {
 
-        Boolean isContactCached = !new CacheManager(context).getContactCache().equals("");
+        Boolean isContactCached = !new StorageKeyValueManager(context).getContactCache().equals("");
         Boolean isReadContactPermissionGranted = new PermissionGrantedManager(context).isReadContactsPermission();
         Boolean checkContactsReadPermission = new PermissionGrantedManager(context).checkContactsReadPermission();
 
-        Boolean isContactsUploading = new CacheManager(context).isContactsUploading();
+        Boolean isContactsUploading = new StorageKeyValueManager(context).isContactsUploading();
 
         if(!isContactCached && isReadContactPermissionGranted && checkContactsReadPermission && application.isOnline() && !isContactsUploading) {
 
@@ -158,7 +158,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public boolean handleMessage(Message msg) {
 
-                    new CacheManager(context).setContactsUploading(false);
+                    new StorageKeyValueManager(context).setContactsUploading(false);
 
                     if(msg.what== Constants.RESULT_OK)
                     {
@@ -332,13 +332,13 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      */
     private void setContactsFromCacheOrContactsProvider() {
 
-        Boolean isContactCached = !new CacheManager(context).getContactCache().equals("");
+        Boolean isContactCached = !new StorageKeyValueManager(context).getContactCache().equals("");
 
         if(isContactCached)
         {
             try {
 
-                String contactsCache = new CacheManager(context).getContactCache();
+                String contactsCache = new StorageKeyValueManager(context).getContactCache();
                 contactList = AddressBook.contactListFromResponse(new JSONArray(contactsCache));
                 contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
             } catch (JSONException e) {
