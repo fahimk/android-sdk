@@ -16,10 +16,13 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -358,6 +361,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 adapter = new ContactsAdapter(items, ContactsActivity.this, application);
 
                 setOnItemClickListener();
+                setOnTouchListener();
 
                 contactsList.setAdapter(adapter);
 
@@ -367,6 +371,17 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 alphabeticalIndexManager.displayIndex();
 
                 setProgressVisibility(false);
+            }
+        });
+    }
+
+    private void setOnTouchListener()
+    {
+        contactsList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeyboard();
+                return false;
             }
         });
     }
@@ -448,5 +463,19 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void afterSearchTextChanged(String searchText) {
         getContacts(searchText);
+    }
+
+    public void hideKeyboard() {
+        try {
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }
