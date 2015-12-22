@@ -14,8 +14,8 @@ import java.util.ArrayList;
 /**
  * Created by Klemen on 9.12.2015.
  */
-public class YSGInviteUnitTest extends ApplicationTestCase<Application> {
-    public YSGInviteUnitTest() {
+public class InviteUnitTest extends ApplicationTestCase<Application> {
+    public InviteUnitTest() {
         super(Application.class);
     }
 

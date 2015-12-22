@@ -10,8 +10,8 @@ import com.yesgraph.android.utils.Utility;
 /**
  * Created by Klemen on 17.12.2015.
  */
-public class YSGThemeUnitTest extends ApplicationTestCase<Application> {
-    public YSGThemeUnitTest() {
+public class ThemeUnitTest extends ApplicationTestCase<Application> {
+    public ThemeUnitTest() {
         super(Application.class);
     }
 

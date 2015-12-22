@@ -33,4 +33,12 @@ public class SharedPreferencesManager {
         return sharedPreferences.getString(key, "");
     }
 
+    public void putLong(String key,long value){
+        sharedPreferences.edit().putLong(key, value).apply();
+    }
+
+    public long getLong(String key){
+        return sharedPreferences.getLong(key, System.currentTimeMillis());
+    }
+
 }
