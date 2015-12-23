@@ -1,16 +1,15 @@
 package com.yesgraph.android;
 
-import android.content.Intent;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
-
+import android.support.test.runner.AndroidJUnit4;
 import com.yesgraph.android.activity.ContactsActivity;
-import com.yesgraph.android.activity.SendEmailActivity;
 import com.yesgraph.android.application.YesGraph;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -21,6 +20,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 /**
  * Created by Klemen on 21.12.2015.
  */
+@RunWith(AndroidJUnit4.class)
 public class ContactsActivityEspressoTests {
 
     @Rule
@@ -96,6 +96,8 @@ public class ContactsActivityEspressoTests {
 
         //click on dialog cancel button
         onView(withId(android.R.id.button2)).perform(ViewActions.click());
+
+        onView(withId(R.id.contactsList)).check(matches(isDisplayed()));
     }
 
     private void delay(long time) {

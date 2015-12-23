@@ -1,7 +1,10 @@
 package com.yesgraph.android;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+import android.test.ActivityInstrumentationTestCase2;
 import android.widget.LinearLayout;
 
 import com.yesgraph.android.activity.ShareSheetActivity;
@@ -10,23 +13,43 @@ import com.yesgraph.android.utils.CustomTheme;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  * Created by Dean Bozinoski on 11/30/2015.
  */
-public class ShareSheetActivityTest {
+@RunWith(AndroidJUnit4.class)
+public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<ShareSheetActivity> {
+
+    private YesGraph yesGraph;
+
+    public ShareSheetActivityTest() {
+        super(ShareSheetActivity.class);
+    }
 
     @Rule
     public ActivityTestRule<ShareSheetActivity> activityTestRule =
             new ActivityTestRule<>(ShareSheetActivity.class);
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        injectInstrumentation(InstrumentationRegistry.getInstrumentation());
+
+        yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
+    }
 
     @Test
     public void validateLayoutsAreShown() {
@@ -78,9 +101,42 @@ public class ShareSheetActivityTest {
     public void checkCopyButtonTextChange() {
 
         onView(withId(R.id.textCopyButton)).perform(ViewActions.click());
-
         //check is button text set to copied
         onView(withId(R.id.textCopyButton)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.button_copied_text))));
 
+    }
+
+    @Test
+    public void checkCopyToClickBoard() {
+
+        onView(withId(R.id.copyLinkLayout)).perform(ViewActions.click());
+
+        //check is toast with text is shown
+        onView(withText(R.string.copy_to_clipboard)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+
+    }
+
+    /**
+     * Check if share button shape is square
+     */
+    @Test
+    public void testCheckShareButtonShapeIsSquare() {
+
+        CustomTheme customTheme = new CustomTheme();
+        customTheme.setShareButtonsShape("square");
+        yesGraph.setCustomTheme(customTheme);
+        assertEquals("square", yesGraph.getCustomTheme().getShareButtonsShape());
+    }
+
+    /**
+     * Check if share button shape is rounded square
+     */
+    @Test
+    public void testCheckShareButtonShapeIsRoundedSquare() {
+
+        CustomTheme customTheme = new CustomTheme();
+        customTheme.setShareButtonsShape("rounded_square");
+        yesGraph.setCustomTheme(customTheme);
+        assertEquals("rounded_square", yesGraph.getCustomTheme().getShareButtonsShape());
     }
 }
