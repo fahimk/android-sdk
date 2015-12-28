@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
 
@@ -97,46 +98,12 @@ public class ContactRetriever {
                     RankedContact ysgRankedContact = new RankedContact();
                     ysgRankedContact.setName(name);
 
-                    boolean duplicate=false;
+                    RankedContact currentContact = new RankedContact();
+                    currentContact.setName(name);
+                    currentContact.setEmails(emails);
+                    currentContact.setPhones(phones);
 
-                    for(RankedContact oldYsgRankedContact : list)
-                    {
-                        if(ysgRankedContact.name().equals(oldYsgRankedContact.name()))
-                        {
-                            duplicate=true;
-
-                            if(phones.size()>0)
-                            {
-                                for(String thisContact : phones)
-                                {
-                                    if(oldYsgRankedContact.phones()==null)
-                                        oldYsgRankedContact.setPhones(new ArrayList<String>());
-
-                                    oldYsgRankedContact.phones().add(thisContact);
-                                }
-                            }
-                            if(emails.size()>0)
-                            {
-                                for(String thisContact : emails)
-                                {
-                                    if(oldYsgRankedContact.emails()==null)
-                                        oldYsgRankedContact.setEmails(new ArrayList<String>());
-
-                                    oldYsgRankedContact.emails().add(thisContact);
-                                }
-                            }
-                            if(phones.size()>0 && (oldYsgRankedContact.phone()==null || oldYsgRankedContact.phone().length()==0))
-                            {
-                                oldYsgRankedContact.setPhone(phones.get(0));
-                            }
-                            if(emails.size()>0 && (oldYsgRankedContact.email()==null || oldYsgRankedContact.email().length()==0))
-                            {
-                                oldYsgRankedContact.setEmail(emails.get(0));
-                            }
-
-                            break;
-                        }
-                    }
+                    boolean duplicate = isDuplicateRankedContact(currentContact, list);
 
                     if(!duplicate)
                     {
@@ -220,6 +187,49 @@ public class ContactRetriever {
         return list;
     }
 
+    /**
+     * Check if contact existed int the list then update it
+     * @param currentContact current contact data
+     * @param list list of contacts
+     * @return true if contact existed otherwise return false
+     */
+    public static boolean isDuplicateRankedContact(RankedContact currentContact, ArrayList<RankedContact> list) {
+
+        boolean duplicate = false;
+
+        for (RankedContact oldYsgRankedContact : list) {
+            if (currentContact.name().equals(oldYsgRankedContact.name())) {
+                duplicate = true;
+
+                if (currentContact.phones().size() > 0) {
+                    for (String thisContact : currentContact.phones()) {
+                        if (oldYsgRankedContact.phones() == null)
+                            oldYsgRankedContact.setPhones(new ArrayList<String>());
+
+                        oldYsgRankedContact.phones().add(thisContact);
+                    }
+                }
+                if (currentContact.emails().size() > 0) {
+                    for (String thisContact : currentContact.emails()) {
+                        if (oldYsgRankedContact.emails() == null)
+                            oldYsgRankedContact.setEmails(new ArrayList<String>());
+
+                        oldYsgRankedContact.emails().add(thisContact);
+                    }
+                }
+                if (currentContact.phones().size() > 0 && (oldYsgRankedContact.phone() == null || oldYsgRankedContact.phone().length() == 0)) {
+                    oldYsgRankedContact.setPhone(currentContact.phones().get(0));
+                }
+                if (currentContact.emails().size() > 0 && (oldYsgRankedContact.email() == null || oldYsgRankedContact.email().length() == 0)) {
+                    oldYsgRankedContact.setEmail(currentContact.emails().get(0));
+                }
+
+                break;
+            }
+        }
+        return duplicate;
+    }
+
     public static ArrayList<RegularContact> readContacts(Context context){
 
         ArrayList<RegularContact> list=new ArrayList<>();
@@ -300,32 +310,7 @@ public class ContactRetriever {
                     RegularContact regularContact = new RegularContact();
                     regularContact.setName(name);
 
-                    boolean duplicate=false;
-
-                    for(RegularContact oldContact : list)
-                    {
-                        if(regularContact.getName().equals(oldContact.getName()))
-                        {
-                            duplicate=true;
-
-                            if(phones.size()>0)
-                            {
-                                for(String thisContact : phones)
-                                {
-                                    oldContact.setPhone(thisContact);
-                                }
-                            }
-                            if(emails.size()>0)
-                            {
-                                for(String thisContact : emails)
-                                {
-                                    oldContact.setEmail(thisContact);
-                                }
-                            }
-
-                            break;
-                        }
-                    }
+                    boolean duplicate = isDuplicateContact(list, emails, phones, regularContact);
 
                     if(!duplicate)
                     {
@@ -418,6 +403,37 @@ public class ContactRetriever {
         });
 
         return list;
+    }
+
+    public static boolean isDuplicateContact(ArrayList<RegularContact> list, ArrayList<String> emails, ArrayList<String> phones, RegularContact regularContact) {
+
+        boolean duplicate=false;
+
+        for(RegularContact oldContact : list)
+        {
+            if(regularContact.getName().equals(oldContact.getName()))
+            {
+                duplicate=true;
+
+                if(phones.size()>0)
+                {
+                    for(String thisContact : phones)
+                    {
+                        oldContact.setPhone(thisContact);
+                    }
+                }
+                if(emails.size()>0)
+                {
+                    for(String thisContact : emails)
+                    {
+                        oldContact.setEmail(thisContact);
+                    }
+                }
+
+                break;
+            }
+        }
+        return duplicate;
     }
 
     /**

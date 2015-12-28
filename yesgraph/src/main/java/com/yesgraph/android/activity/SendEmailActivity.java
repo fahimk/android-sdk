@@ -41,7 +41,9 @@ public class SendEmailActivity extends AppCompatActivity {
         String message = getIntent().getStringExtra("message");
 
         try {
+
             sendEmailManager = new SendEmailManager(this, message, subject, contacts_emails);
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(context, context.getResources().getString(R.string.no_selected_contacts_email), Toast.LENGTH_LONG).show();

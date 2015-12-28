@@ -1,11 +1,13 @@
 package com.yesgraph.android;
 
+import android.graphics.Typeface;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
@@ -34,6 +36,7 @@ import static org.hamcrest.core.IsNot.not;
 public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<ShareSheetActivity> {
 
     private YesGraph yesGraph;
+    private static final String FONT_TYPE_FACE = "Pacifico.ttf";
 
     public ShareSheetActivityTest() {
         super(ShareSheetActivity.class);
@@ -49,6 +52,12 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
 
         yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
+
+        //set custom text font
+        CustomTheme customTheme = new CustomTheme();
+        customTheme.setFonts(FONT_TYPE_FACE);
+        yesGraph.setCustomTheme(customTheme);
+
     }
 
     @Test
@@ -138,5 +147,21 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         customTheme.setShareButtonsShape("rounded_square");
         yesGraph.setCustomTheme(customTheme);
         assertEquals("rounded_square", yesGraph.getCustomTheme().getShareButtonsShape());
+    }
+
+    @Test
+    public void testClickOnContactsButton() {
+
+        onView(withId(R.id.layoutContacts)).perform(ViewActions.click());
+
+        onView(withId(R.id.toolbarTitle)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testCheckCustomFontType() {
+
+        String customTypeFace = yesGraph.getCustomTheme().getFont();
+
+        assertEquals(customTypeFace, FONT_TYPE_FACE);
     }
 }
