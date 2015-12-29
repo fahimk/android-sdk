@@ -4,7 +4,9 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.HeaderContact;
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.utils.ContactManager;
 
@@ -103,9 +105,64 @@ public class ContactsManagerUnitTest extends ApplicationTestCase<Application> {
         return contacts;
     }
 
+    /**
+     * Check if contacts are sorted by alphabet
+     */
+    public void testCheckSortContactsByAlphabet() {
+
+        int numberOfSuggestedContacts = 2;
+        ArrayList<RegularContact> contacts = getContacts();
+
+        ArrayList<Object> sortedContacts = new ContactManager().getContactsByAlphabetSections(getContext(), contacts, numberOfSuggestedContacts);
+
+        boolean isSortedAlphabet = true;
+        boolean areSuggestionsOnTheTop = true;
+
+        for (int i = 0; i < sortedContacts.size(); i++) {
+
+            if ((i + 2) > sortedContacts.size()) {
+                break;
+            }
+
+            Object currentContact = sortedContacts.get(i);
+            Object nextContact = sortedContacts.get(i + 1);
+
+            if (i == 0) {
+
+                if (currentContact instanceof HeaderContact) {
+                    if (!((HeaderContact) currentContact).getSign().equals(getContext().getString(R.string.suggested))) {
+                        areSuggestionsOnTheTop = false;
+                        break;
+                    }
+                }
+            }
+
+            if (i > numberOfSuggestedContacts) {
+
+                if (currentContact instanceof RegularContact && nextContact instanceof RegularContact) {
+
+                    RegularContact current = (RegularContact) currentContact;
+                    RegularContact next = (RegularContact) nextContact;
+
+                    int asciiNameValue = (int) current.getName().charAt(0);
+                    int asciiNextNameValue = (int) next.getName().charAt(0);
+
+                    if (asciiNextNameValue <= asciiNameValue) {
+                        isSortedAlphabet = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        assertEquals(true, areSuggestionsOnTheTop);
+        assertEquals(true, isSortedAlphabet);
+    }
+
+
     @NonNull
     private String[] getNames() {
-        return new String[]{"Adam", "Eva", "John", "Michael", "Jenni", "Alma", "Lucky"};
+        return new String[]{"Adam", "Eva", "John", "Michael", "Jenni", "Alma", "Lucky", "Maria"};
     }
 
 }
