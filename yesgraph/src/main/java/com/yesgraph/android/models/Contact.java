@@ -18,6 +18,17 @@ public class Contact {
     private String phone;
     private ArrayList<String> emails;
     private ArrayList<String> phones;
+    private String nickname;
+    private String title;
+    private String company;
+    private String is_favorite;
+    private Integer pinned;
+    private Long times_contacted;
+    private Long last_message_sent_date;
+    private Long last_message_received_date;
+    private ArrayList<Address> addresses;
+    private ArrayList<Website> websites;
+    private ArrayList<Ims> ims;
     private JSONObject data;
 
     public ArrayList<String> emails()
@@ -126,6 +137,102 @@ public class Contact {
         this.data = data;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getIs_favorite() {
+        return is_favorite;
+    }
+
+    public void setIs_favorite(String is_favorite) {
+        this.is_favorite = is_favorite;
+    }
+
+    public Integer getPinned() {
+        return pinned;
+    }
+
+    public void setPinned(Integer pinned) {
+        this.pinned = pinned;
+    }
+
+    public Long getTimes_contacted() {
+        return times_contacted;
+    }
+
+    public void setTimes_contacted(Long times_contacted) {
+        this.times_contacted = times_contacted;
+    }
+
+    public Long getLast_message_sent_date() {
+        return last_message_sent_date;
+    }
+
+    public void setLast_message_sent_date(Long last_message_sent_date) {
+        this.last_message_sent_date = last_message_sent_date;
+    }
+
+    public Long getLast_message_received_date() {
+        return last_message_received_date;
+    }
+
+    public void setLast_message_received_date(Long last_message_received_date) {
+        this.last_message_received_date = last_message_received_date;
+    }
+
+    public ArrayList<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(ArrayList<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public ArrayList<Website> getWebsites() {
+        return websites;
+    }
+
+    public void setWebsites(ArrayList<Website> websites) {
+        this.websites = websites;
+    }
+
+    public ArrayList<Ims> getIms() {
+        return ims;
+    }
+
+    public void setIms(ArrayList<Ims> ims) {
+        this.ims = ims;
+    }
+
     public JSONObject toJSONObject() {
         JSONObject jsonContact=new JSONObject();
         JSONArray jsonEmail=new JSONArray();
@@ -154,17 +261,52 @@ public class Contact {
                 jsonContact.put("phones",jsonPhones);
             if(data!=null)
                 jsonContact.put("data",data);
+            if(nickname!=null)
+                jsonContact.put("nickname",nickname);
+            if(title!=null)
+                jsonContact.put("title",title);
+            if(company!=null)
+                jsonContact.put("company",company);
+            if(is_favorite!=null)
+                jsonContact.put("is_favorite",is_favorite);
+            if(pinned!=null)
+                jsonContact.put("pinned",pinned);
+            if(times_contacted!=null)
+                jsonContact.put("times_contacted",times_contacted);
+            if(last_message_sent_date!=null)
+                jsonContact.put("last_message_sent_date",last_message_sent_date);
+            if(last_message_received_date!=null)
+                jsonContact.put("last_message_received_date",last_message_received_date);
+            if(addresses!=null)
+            {
+                JSONArray jsonAddresses=new JSONArray();
+                for(Address address : addresses)
+                {
+                    jsonAddresses.put(address.toJSONObject());
+                }
+                jsonContact.put("addresses",jsonAddresses);
+            }
+            if(websites!=null)
+            {
+                JSONArray jsonWebsites=new JSONArray();
+                for(Website website : websites)
+                {
+                    jsonWebsites.put(website.toJSONObject());
+                }
+                jsonContact.put("websites",jsonWebsites);
+            }
+            if(ims!=null)
+            {
+                JSONArray jsonIms=new JSONArray();
+                for(Ims imsItem : ims)
+                {
+                    jsonIms.put(imsItem.toJSONObject());
+                }
+                jsonContact.put("ims",jsonIms);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return jsonContact;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }
