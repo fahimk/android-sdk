@@ -4,6 +4,8 @@
 
     <string name="facebook_app_id">1530095620635011</string>
 
+    <string name="error_not_initialized_with_secret_key">YesGraph is not initialized with \'secret key\'. Call setSecretKey function.</string>
+
     <!--SendSmsActivity-->
     <string name="alert_send_sms_title">Send sms</string>
     <string name="alert_send_sms_message">Are you sure you want to send sms to</string>

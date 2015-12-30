@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         yesGraphApplication = (YesGraph) getApplicationContext();
-
+        yesGraphApplication.setSecretKey("live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8");
 //        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
         initUI();

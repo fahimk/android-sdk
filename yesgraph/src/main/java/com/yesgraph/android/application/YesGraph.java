@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.yesgraph.android.R;
 import com.yesgraph.android.models.ContactList;
@@ -29,6 +30,35 @@ public class YesGraph extends Application {
     public void onCreate() {
         super.onCreate();
         checkIsTimeToRefreshAddressBook();
+    }
+
+    public void onCreate(String secretKey) {
+        super.onCreate();
+        setSecretKey(secretKey);
+        checkIsTimeToRefreshAddressBook();
+    }
+
+    public void setSecretKey(String secretKey)
+    {
+        new StorageKeyValueManager(getApplicationContext()).setSecretKey(secretKey);
+
+        final String userID = new StorageKeyValueManager(getApplicationContext()).getUserId();
+
+        Authenticate authenticate = new Authenticate();
+        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey/*"live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8"*/, userID, new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == Constants.RESULT_OK)
+                {
+
+                }
+                else
+                {
+
+                }
+                return false;
+            }
+        });
     }
 
     public boolean isOnline() {
@@ -89,6 +119,11 @@ public class YesGraph extends Application {
                 }
             });
         }
+        else
+        {
+            Toast.makeText(getApplicationContext(), R.string.error_not_initialized_with_secret_key,Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void setCustomTheme(CustomTheme customTheme) {
