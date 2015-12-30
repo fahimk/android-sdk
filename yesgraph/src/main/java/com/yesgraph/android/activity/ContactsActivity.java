@@ -155,7 +155,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
             Log.i("#YSGCONTACTS_COUNT", "1count:" + contactList.getEntries().size());
 
-            String userId = new SharedPreferencesManager(context).getString("user_id");
+            String userId = new StorageKeyValueManager(context).getUserId();
 
             addressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, userId, new Handler.Callback() {
                 @Override

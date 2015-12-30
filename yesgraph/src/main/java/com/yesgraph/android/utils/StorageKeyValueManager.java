@@ -10,11 +10,29 @@ public class StorageKeyValueManager {
     private static final String CONTACTS_CACHE_KEY = "contacts_cache";
     private static final String CONTACTS_UPLOADING_KEY = "contacts_uploading";
     private static final String CONTACTS_LAST_UPLOADING_KEY = "contacts_last_upload";
+    private static final String SECRET_KEY = "secret_key";
+    private static final String USER_ID = "user_id";
 
     private Context context;
 
     public StorageKeyValueManager(Context context) {
         this.context = context;
+    }
+
+    public void setUserId(String userId) {
+        new SharedPreferencesManager(context).putString(USER_ID, userId);
+    }
+
+    public String getUserId() {
+        return new SharedPreferencesManager(context).getString(USER_ID);
+    }
+
+    public void setSecretKey(String secretKey) {
+        new SharedPreferencesManager(context).putString(SECRET_KEY, secretKey);
+    }
+
+    public String getSecretKey() {
+        return new SharedPreferencesManager(context).getString(SECRET_KEY);
     }
 
     public void setContactCache(String contacts) {
