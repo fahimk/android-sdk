@@ -7,6 +7,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 
 import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Utility;
 
 import org.json.JSONException;
@@ -27,9 +28,8 @@ public class Authenticate extends HttpMethod {
         if(userId.equals("")) {
             userId = randomId();
 
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             try {
-                sharedPreferences.edit().putString("user_id",userId).commit();
+                new StorageKeyValueManager(context).setUserId(userId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -50,8 +50,8 @@ public class Authenticate extends HttpMethod {
                 {
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
                     try {
-                        sharedPreferences.edit().putString("secret_key",((JSONObject)msg.obj).getString("client_key")).commit();
-                        sharedPreferences.edit().putString("user_id",((JSONObject)msg.obj).getString("user_id")).commit();
+                        new StorageKeyValueManager(context).setSecretKey(((JSONObject) msg.obj).getString("client_key"));
+                        new StorageKeyValueManager(context).setUserId(((JSONObject)msg.obj).getString("user_id"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

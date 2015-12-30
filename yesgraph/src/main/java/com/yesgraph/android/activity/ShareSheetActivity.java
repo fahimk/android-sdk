@@ -67,8 +67,6 @@ public class ShareSheetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         init();
-
-        checkIsTimeToRefreshAddressBook();
     }
 
     private void init() {
@@ -85,42 +83,6 @@ public class ShareSheetActivity extends AppCompatActivity {
         context = this;
     }
 
-
-    private void checkIsTimeToRefreshAddressBook() {
-
-        new StorageKeyValueManager(context).setContactsUploading(false);
-
-        final String userID = new SharedPreferencesManager(context).getString("user_id");
-
-        Authenticate authenticate = new Authenticate();
-        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", userID/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.what == Constants.RESULT_OK) {
-                    boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
-                    if (timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
-                        try {
-                            new StorageKeyValueManager(context).setContactsUploading(true);
-                            ContactList contactList = new ContactManager().getContactList(context);
-                            AddressBook addressBook = new AddressBook();
-                            addressBook.updateAddressBookWithContactListForUserId(context, contactList, userID, new Handler.Callback() {
-                                @Override
-                                public boolean handleMessage(Message msg) {
-                                    new StorageKeyValueManager(context).setContactsUploading(false);
-                                    return false;
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                return false;
-            }
-        });
-    }
-
-
     private void setTwitterKeys() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -133,15 +95,6 @@ public class ShareSheetActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private boolean timeToRefreshAddressBook() {
-        long lastContactsUpload = new StorageKeyValueManager(context).getContactLastUpload();
-
-        if(lastContactsUpload < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))
-            return true;
-        else
-            return false;
     }
 
     private void setToolbar(){
