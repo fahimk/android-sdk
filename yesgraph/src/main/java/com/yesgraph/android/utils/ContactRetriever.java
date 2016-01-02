@@ -25,6 +25,15 @@ import java.util.Comparator;
 public class ContactRetriever {
     public static ArrayList<RankedContact> readYSGContacts(Context context){
 
+        //just the time to get the loader spinner going
+        try {
+            Thread.sleep(Long.valueOf(50));
+        }
+        catch (Exception e)
+        {
+
+        }
+
         ArrayList<RankedContact> list=new ArrayList<>();
 
         String permission = Manifest.permission.READ_CONTACTS;
@@ -39,6 +48,16 @@ public class ContactRetriever {
 
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
+
+                //just for testing ui thread hijacking
+                /*try {
+                    Thread.sleep(Long.valueOf(100));
+                }
+                catch (Exception e)
+                {
+
+                }*/
+
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
                 String starred = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.STARRED));
@@ -71,7 +90,6 @@ public class ContactRetriever {
                 ArrayList<Ims> imses=new ArrayList<>();
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    System.out.println("name : " + name + ", ID : " + id);
 
                     // get email and type
                     Cursor emailCur = cr.query(
@@ -87,8 +105,6 @@ public class ContactRetriever {
                         String emailType = emailCur.getString(
                                 emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 
-                        System.out.println("Email " + email + " Email Type : " + emailType);
-
                         emails.add(email);
                     }
                     emailCur.close();
@@ -100,7 +116,6 @@ public class ContactRetriever {
                     while (pCur.moveToNext()) {
                         String phone = pCur.getString(
                                 pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        System.out.println("phone" + phone);
 
                         phones.add(phone);
                     }
@@ -424,7 +439,6 @@ public class ContactRetriever {
                 newContact.setName(name);
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    System.out.println("name : " + name + ", ID : " + id);
 
                     // get email and type
                     Cursor emailCur = cr.query(
@@ -440,8 +454,6 @@ public class ContactRetriever {
                         String emailType = emailCur.getString(
                                 emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 
-                        System.out.println("Email " + email + " Email Type : " + emailType);
-
                         emails.add(email);
                     }
                     emailCur.close();
@@ -453,7 +465,6 @@ public class ContactRetriever {
                     while (pCur.moveToNext()) {
                         String phone = pCur.getString(
                                 pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        System.out.println("phone" + phone);
 
                         phones.add(phone);
                     }

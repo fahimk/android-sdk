@@ -52,6 +52,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by marko on 17/11/15.
@@ -208,6 +210,19 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         if(!application.getCustomTheme().getFont().isEmpty()){
             fontManager.setFont(toolbarTitle, application.getCustomTheme().getFont());
         }
+
+        //just for testing ui thread hijacking
+                /*new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        toolbarTitle.setText(System.currentTimeMillis() + "");
+                    }
+                });
+
+            }
+        }, 0, 100);*/
     }
 
     private Drawable getColoredArrow() {
