@@ -28,8 +28,17 @@ public class ContactManager {
         ArrayList<RankedContact> list = ContactRetriever.readYSGContacts(context);
 
         ContactList contactList = new ContactList();
+
+        Source source = new Source();
+        if(new StorageKeyValueManager(context).getUserName().length()>0)
+            source.setName(new StorageKeyValueManager(context).getUserName());
+        if(new StorageKeyValueManager(context).getUserPhone().length()>0)
+            source.setName(new StorageKeyValueManager(context).getUserPhone());
+        if(new StorageKeyValueManager(context).getUserEmail().length()>0)
+            source.setName(new StorageKeyValueManager(context).getUserEmail());
+
         contactList.setEntries(list);
-        contactList.setSource(new Source());
+        contactList.setSource(source);
         contactList.setUseSuggestions(true);
 
         return contactList;

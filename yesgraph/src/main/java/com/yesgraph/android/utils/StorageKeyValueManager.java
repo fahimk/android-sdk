@@ -12,11 +12,38 @@ public class StorageKeyValueManager {
     private static final String CONTACTS_LAST_UPLOADING_KEY = "contacts_last_upload";
     private static final String SECRET_KEY = "secret_key";
     private static final String USER_ID = "user_id";
+    private static final String USER_NAME = "user_name";
+    private static final String USER_PHONE = "user_phone";
+    private static final String USER_EMAIL = "user_email";
 
     private Context context;
 
     public StorageKeyValueManager(Context context) {
         this.context = context;
+    }
+
+    public void setUserName(String useruserName) {
+        new SharedPreferencesManager(context).putString(USER_NAME, useruserName);
+    }
+
+    public String getUserName() {
+        return new SharedPreferencesManager(context).getString(USER_NAME);
+    }
+
+    public void setUserPhone(String useruserPhone) {
+        new SharedPreferencesManager(context).putString(USER_PHONE, useruserPhone);
+    }
+
+    public String getUserPhone() {
+        return new SharedPreferencesManager(context).getString(USER_PHONE);
+    }
+
+    public void setUserEmail(String userEmail) {
+        new SharedPreferencesManager(context).putString(USER_EMAIL, userEmail);
+    }
+
+    public String getUserEmail() {
+        return new SharedPreferencesManager(context).getString(USER_EMAIL);
     }
 
     public void setUserId(String userId) {

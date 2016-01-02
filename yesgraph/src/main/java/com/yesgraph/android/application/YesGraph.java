@@ -48,12 +48,9 @@ public class YesGraph extends Application {
         authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey/*"live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8"*/, userID, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                if (msg.what == Constants.RESULT_OK)
-                {
+                if (msg.what == Constants.RESULT_OK) {
 
-                }
-                else
-                {
+                } else {
 
                 }
                 return false;
@@ -64,6 +61,13 @@ public class YesGraph extends Application {
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public void setSource(String userName, String userPhone, String userEmail)
+    {
+        new StorageKeyValueManager(getApplicationContext()).setUserName(userName);
+        new StorageKeyValueManager(getApplicationContext()).setUserPhone(userPhone);
+        new StorageKeyValueManager(getApplicationContext()).setUserEmail(userEmail);
     }
 
     public CustomTheme getCustomTheme() {
