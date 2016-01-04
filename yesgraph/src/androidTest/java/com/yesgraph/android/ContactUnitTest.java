@@ -73,13 +73,11 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
         Contact contact = new Contact();
 
         JSONObject data = new JSONObject();
-        data.put("suggested", "true");
+        data.put("suggested", "false");
 
         contact.setData(data);
 
-        Boolean wasSuggested = false;
-
-        contact.setSuggested(wasSuggested);
+        contact.setSuggested(false);
 
         boolean isNotSuggested = !contact.wasSuggested();
 
@@ -158,5 +156,41 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
         assertEquals(true, contactNotNull);
 
     }
+
+    /**
+     * Check sanitized name
+     */
+    public void testSanitizedName(){
+
+        Contact contact = new Contact();
+
+        contact.setName("John");
+
+        String sanitizedName = contact.sanitizedName();
+
+        assertEquals(true,!sanitizedName.isEmpty());
+
+    }
+
+
+    /**
+     * Check if set suggested flag to contact
+     * @throws JSONException
+     */
+    public void testCheckWasSuggestedContact() throws JSONException {
+
+        Contact contact = new Contact();
+
+        JSONObject data = new JSONObject();
+        data.put("suggested", "true");
+        contact.setData(data);
+        contact.setSuggested(true);
+
+        boolean isSuggested = contact.wasSuggested();
+
+        assertEquals(true, isSuggested);
+
+    }
+
 
 }

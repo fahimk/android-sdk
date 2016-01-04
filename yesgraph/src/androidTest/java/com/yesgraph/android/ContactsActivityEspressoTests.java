@@ -1,12 +1,15 @@
 package com.yesgraph.android;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import com.yesgraph.android.activity.ContactsActivity;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.utils.CustomTheme;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +19,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.assertEquals;
 
 /**
  * Created by Klemen on 21.12.2015.
@@ -23,9 +27,25 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class ContactsActivityEspressoTests {
 
+    private  YesGraph yesGraph;
+    private static final String FONT_TYPE_FACE = "Pacifico.ttf";
+
     @Rule
     public ActivityTestRule<ContactsActivity> activityTestRule =
             new ActivityTestRule<>(ContactsActivity.class);
+
+
+    @Before
+    public void setUp() throws Exception {
+
+        yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
+
+        //set custom text font
+        CustomTheme customTheme = new CustomTheme();
+        customTheme.setFonts(FONT_TYPE_FACE);
+        yesGraph.setCustomTheme(customTheme);
+
+    }
 
     @Test
     public void validateLayoutsAreShown() {
@@ -106,5 +126,12 @@ public class ContactsActivityEspressoTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testCheckCustomFontType() {
+
+        String customTypeFace = yesGraph.getCustomTheme().getFont();
+        assertEquals(customTypeFace, FONT_TYPE_FACE);
     }
 }

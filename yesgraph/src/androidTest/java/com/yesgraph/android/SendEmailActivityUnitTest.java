@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.yesgraph.android.activity.SendEmailActivity;
+import com.yesgraph.android.utils.PermissionGrantedManager;
 
 /**
  * Created by Klemen on 28.12.2015.

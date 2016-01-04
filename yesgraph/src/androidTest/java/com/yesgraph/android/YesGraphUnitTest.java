@@ -71,4 +71,14 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
         assertEquals(true, !shareText.isEmpty());
 
     }
+
+    /**
+     * Check if connectivity manager is online
+     */
+    public void testCheckInternetConnection() {
+
+        boolean isOnline = yesGraph.isOnline();
+
+        assertTrue(isOnline);
+    }
 }
