@@ -9,15 +9,22 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.network.Authenticate;
+import com.yesgraph.android.network.Invite;
+import com.yesgraph.android.network.SuggestionsShown;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
+import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.PermissionGrantedManager;
 import com.yesgraph.android.utils.SharedPreferencesManager;
 import com.yesgraph.android.utils.StorageKeyValueManager;
+
+import java.util.ArrayList;
 
 /**
  * Created by Dean Bozinoski on 11/13/2015.
@@ -68,6 +75,30 @@ public class YesGraph extends Application {
         new StorageKeyValueManager(getApplicationContext()).setUserName(userName);
         new StorageKeyValueManager(getApplicationContext()).setUserPhone(userPhone);
         new StorageKeyValueManager(getApplicationContext()).setUserEmail(userEmail);
+    }
+
+    public ArrayList<RankedContact> readContactsFromPhone()
+    {
+        return ContactRetriever.readYSGContacts(getApplicationContext());
+    }
+
+    public void updateContactsFromPhone(Handler.Callback callback)
+    {
+        AddressBook addressBook =new AddressBook();
+        ContactList contacts=new ContactManager().getContactList(getApplicationContext());
+        addressBook.updateAddressBookWithContactListForUserId(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
+    }
+
+    public void updateSuggestionsSeen(ArrayList<RankedContact> contacts, Handler.Callback callback)
+    {
+        SuggestionsShown ysgSuggestionsShown = new SuggestionsShown();
+        ysgSuggestionsShown.updateSuggestionsSeen(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
+    }
+
+    public void inviteSentForUsers(ArrayList<Contact> contacts, Handler.Callback callback)
+    {
+        Invite ysgInvite = new Invite();
+        ysgInvite.updateInvitesSentForUser(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
     }
 
     public CustomTheme getCustomTheme() {
