@@ -33,7 +33,7 @@ public class Authenticate extends HttpMethod {
                 Message callbackMessage = new Message();
 
                 if (msg.what == Constants.RESULT_OK) {
-                    setClientKeyAndUserId(context,msg);
+                    setClientKeyAndUserId(context, msg);
                     callbackMessage.what = Constants.RESULT_OK;
                     callbackMessage.obj = msg.obj;
                     callback.handleMessage(callbackMessage);

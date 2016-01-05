@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.util.Log;
+
 import com.yesgraph.android.R;
 import com.yesgraph.android.models.Address;
 import com.yesgraph.android.models.Ims;
@@ -62,6 +64,10 @@ public class ContactRetriever {
                 Long lastContacted = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
                 Long timesContacted = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts.TIMES_CONTACTED));
                 //Integer pinned = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PINNED));
+
+                if(lastContacted>0)
+                    lastContacted=lastContacted/1000;
+
                 name = name!=null ? name.trim() : "";
 
                 for(int i=0;i<name.length();i++)
