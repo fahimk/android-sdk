@@ -11,6 +11,7 @@ public class StorageKeyValueManager {
     private static final String CONTACTS_UPLOADING_KEY = "contacts_uploading";
     private static final String CONTACTS_LAST_UPLOADING_KEY = "contacts_last_upload";
 
+    private static final String API_KEY = "api_key";
     private static final String SECRET_KEY = "secret_key";
     private static final String USER_ID = "user_id";
     private static final String USER_NAME = "user_name";
@@ -54,6 +55,14 @@ public class StorageKeyValueManager {
 
     public String getUserId() {
         return new SharedPreferencesManager(context).getString(USER_ID);
+    }
+
+    public void setApiKey(String apiKey) {
+        new SharedPreferencesManager(context).putString(API_KEY, apiKey);
+    }
+
+    public String getApiKey() {
+        return new SharedPreferencesManager(context).getString(API_KEY);
     }
 
     public void setSecretKey(String secretKey) {
