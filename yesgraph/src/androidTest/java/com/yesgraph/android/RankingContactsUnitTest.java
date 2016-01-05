@@ -1,22 +1,16 @@
 package com.yesgraph.android;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
-import android.test.mock.MockApplication;
 import android.test.mock.MockContext;
 import android.text.TextUtils;
-import android.util.Log;
-
-import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.utils.RankingContactsManager;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**
@@ -55,7 +49,41 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
 
         boolean emptyDataExist = false;
 
-        for (int i = 0; i < suggestedCount; i++) {
+        for (int i = 0; i < regularContacts.size(); i++) {
+
+            String name = regularContacts.get(i).getName();
+            String contact = regularContacts.get(i).getContact();
+
+            if (TextUtils.isEmpty(name) || TextUtils.isEmpty(contact)) {
+                emptyDataExist = true;
+                break;
+            }
+        }
+
+        assertEquals(false, emptyDataExist);
+    }
+
+    /**
+     * Check if contacts data existed (name and phone contact)
+     *
+     * @throws Exception
+     */
+    public void testCheckPhonesContactsData() throws Exception {
+
+        Integer rankedContactsCount = 10;
+        Integer suggestedCount = 5;
+
+        RankingContactsManager rankingContactsManager = new RankingContactsManager(mockContext);
+
+        // set suggested and non suggested contacts
+        ArrayList<RankedContact> rankedContacts = getRankedContactsWithPhonesData(rankedContactsCount, suggestedCount);
+
+        //get suggested contacts on the top from ranked contacts
+        ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, false);
+
+        boolean emptyDataExist = false;
+
+        for (int i = 0; i < regularContacts.size(); i++) {
 
             String name = regularContacts.get(i).getName();
             String contact = regularContacts.get(i).getContact();
@@ -89,7 +117,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
 
         boolean emptyDataExist = false;
 
-        for (int i = 0; i < suggestedCount; i++) {
+        for (int i = 0; i < regularContacts.size(); i++) {
 
             String name = regularContacts.get(i).getName();
             String contact = regularContacts.get(i).getContact();
@@ -119,7 +147,7 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
         ArrayList<RankedContact> rankedContacts = getRankedContacts(rankedContactsCount, suggestedCount);
 
         //get suggested contacts on the top from ranked contacts
-        ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, false);
+        ArrayList<RegularContact> regularContacts = rankingContactsManager.rankedContactsToRegularContacts(rankedContacts, suggestedCount, true);
 
         boolean suggestedAreCorrect = true;
 
@@ -136,7 +164,6 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
 
         assertEquals(true, suggestedAreCorrect);
     }
-
 
 
     /**
@@ -167,6 +194,35 @@ public class RankingContactsUnitTest extends ApplicationTestCase<Application> {
             emails.add("john@gmail.com" + String.valueOf(i));
             emails.add("john@email.com" + String.valueOf(i));
             contact.setEmails(emails);
+
+            ArrayList<String> phones = new ArrayList<>();
+            phones.add("333-456-434" + String.valueOf(i));
+            phones.add("123-232-542" + String.valueOf(i));
+            contact.setPhones(phones);
+
+            contact.setData(data);
+            rankedContacts.add(contact);
+        }
+        return rankedContacts;
+    }
+
+    @NonNull
+    private ArrayList<RankedContact> getRankedContactsWithPhonesData(Integer count, Integer suggestedCount) throws Exception {
+
+        ArrayList<RankedContact> rankedContacts = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+
+            JSONObject data = new JSONObject();
+
+            if (i < suggestedCount) {
+                data.put("suggested", "true");
+            }
+
+            RankedContact contact = new RankedContact();
+
+            contact.setName("John" + String.valueOf(i));
+            contact.setPhone("040234252" + String.valueOf(i));
 
             ArrayList<String> phones = new ArrayList<>();
             phones.add("333-456-434" + String.valueOf(i));

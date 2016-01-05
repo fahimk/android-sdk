@@ -8,6 +8,7 @@ import android.os.Message;
 import com.yesgraph.android.R;
 import com.yesgraph.android.activity.SendEmailActivity;
 import com.yesgraph.android.activity.SendSmsActivity;
+import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RegularContact;
@@ -135,8 +136,8 @@ public class SenderManager {
             Intent intent = new Intent(context, SendSmsActivity.class);
             intent.putExtra("contacts", stringPhones);
             intent.putExtra("message", context.getString(R.string.default_share_text));
+            intent.putExtra("isMarshmallow", YesGraph.isMarshmallow());
             context.startActivity(intent);
-
         }
     }
 

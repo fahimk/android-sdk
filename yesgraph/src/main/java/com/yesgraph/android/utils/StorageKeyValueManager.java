@@ -10,11 +10,13 @@ public class StorageKeyValueManager {
     private static final String CONTACTS_CACHE_KEY = "contacts_cache";
     private static final String CONTACTS_UPLOADING_KEY = "contacts_uploading";
     private static final String CONTACTS_LAST_UPLOADING_KEY = "contacts_last_upload";
+
     private static final String SECRET_KEY = "secret_key";
     private static final String USER_ID = "user_id";
     private static final String USER_NAME = "user_name";
     private static final String USER_PHONE = "user_phone";
     private static final String USER_EMAIL = "user_email";
+
 
     private Context context;
 
@@ -79,11 +81,12 @@ public class StorageKeyValueManager {
     }
 
     public void setContactLastUpload(long time) {
-        new SharedPreferencesManager(context).putLong(CONTACTS_LAST_UPLOADING_KEY,time);
+        new SharedPreferencesManager(context).putLong(CONTACTS_LAST_UPLOADING_KEY, time);
     }
 
     public long getContactLastUpload() {
         return new SharedPreferencesManager(context).getLong(CONTACTS_LAST_UPLOADING_KEY);
     }
+
 
 }

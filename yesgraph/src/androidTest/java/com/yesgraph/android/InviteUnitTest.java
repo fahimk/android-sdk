@@ -1,6 +1,7 @@
 package com.yesgraph.android;
 
 import android.app.Application;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
@@ -8,6 +9,8 @@ import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.network.Invite;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 
@@ -18,6 +21,7 @@ public class InviteUnitTest extends ApplicationTestCase<Application> {
     public InviteUnitTest() {
         super(Application.class);
     }
+
 
     /**
      * Validate generated JSON array from invite contacts list
@@ -89,6 +93,26 @@ public class InviteUnitTest extends ApplicationTestCase<Application> {
         assertEquals(false, hasEmail);
 
     }
+
+
+    /**
+     * Validate json object from invites contacts list
+     */
+    public void testCheckJsonObjectFromInvitesContacts(){
+
+        String userId = "12345";
+        ArrayList<Contact> invites = getContacts();
+
+        JSONObject jsonObject = new Invite().getJsonObjectFromInvitesContacts(invites, userId);
+
+        boolean hasEntriesTag = jsonObject.has("entries");
+        assertTrue(hasEntriesTag);
+
+        boolean entriesNotNull = !jsonObject.isNull("entries");
+        assertTrue(entriesNotNull);
+
+    }
+
 
     @NonNull
     private ArrayList<Contact> getContacts() {

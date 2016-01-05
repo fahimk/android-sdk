@@ -1,7 +1,13 @@
 package com.yesgraph.android.utils;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
+
+import com.yesgraph.android.R;
+import com.yesgraph.android.callbacks.IPermissionGrantedListener;
 
 /**
  * Created by Klemen on 17.12.2015.
@@ -49,4 +55,5 @@ public class SendSmsManager {
     public String[] getContacts() {
         return contacts;
     }
+
 }

@@ -29,37 +29,28 @@ import java.util.Iterator;
  */
 abstract class HttpMethod {
 
-    private static String getParametersString(JSONObject parameters)
-    {
-        try
-        {
-            if(parameters!=null)
-            {
-                String stringParameters="?";
-                int i=0;
-                Iterator<?> keys=parameters.keys();
-                while( keys.hasNext() )
-                {
-                    if(i!=0)
-                        stringParameters+="&";
+    public static String getParametersString(JSONObject parameters) {
+        try {
+            if (parameters != null) {
+                String stringParameters = "?";
+                int i = 0;
+                Iterator<?> keys = parameters.keys();
+                while (keys.hasNext()) {
+                    if (i != 0)
+                        stringParameters += "&";
 
-                    String key = (String)keys.next();
+                    String key = (String) keys.next();
 
-                    if( parameters.get(key) instanceof String){
-                        stringParameters+=URLEncoder.encode(key, "utf-8") + "=" + URLEncoder.encode(parameters.getString(key), "utf-8");
+                    if (parameters.get(key) instanceof String) {
+                        stringParameters += URLEncoder.encode(key, "utf-8") + "=" + URLEncoder.encode(parameters.getString(key), "utf-8");
                         i++;
                     }
                 }
-
                 return stringParameters;
-            }
-            else
-            {
+            } else {
                 return "";
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }

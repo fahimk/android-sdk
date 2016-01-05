@@ -19,18 +19,16 @@ import java.util.Comparator;
  */
 public class RankingContactsManager {
 
-    private SharedPreferences sharedPreferences;
     private Context context;
 
     public RankingContactsManager(Context context) {
         this.context = context;
-        this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /**
      * Add suggested contacts on the top of list
      *
-     * @param ysgRankedContactArrayList list of ranked contats
+     * @param ysgRankedContactArrayList list of ranked contacts
      * @param suggestedCount            number of suggested contacts
      * @param postSuggested             http post flag
      * @return list of regular contacts
@@ -93,7 +91,7 @@ public class RankingContactsManager {
 
         postSuggestedContacts(postSuggested, ysgRankedContacts);
 
-        sharedPreferences.edit().putString("contacts_cache", jsonArrayCached.toString()).commit();
+        new StorageKeyValueManager(context).setContactCache(jsonArrayCached.toString());
 
         sortRegularContacts(regularContacts);
 
@@ -136,10 +134,10 @@ public class RankingContactsManager {
         if (postSuggested) {
 
             SuggestionsShown ysgSuggestionsShown = new SuggestionsShown();
-            ysgSuggestionsShown.updateSuggestionsSeen(context, ysgRankedContacts, sharedPreferences.getString("user_id", ""), new Handler.Callback() {
+            String userId = new SharedPreferencesManager(context).getString("user_id");
+            ysgSuggestionsShown.updateSuggestionsSeen(context, ysgRankedContacts, userId, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
-                    Message callbackMessage = new Message();
                     if (msg.what == Constants.RESULT_OK) {
                     }
                     return false;

@@ -55,7 +55,7 @@ public class PermissionGrantedManager {
         return new SharedPreferencesManager(context).getBoolean(SEND_SMS_PERMISSION);
     }
 
-    public void putSendSmsPermission(boolean value) {
+    public void setSendSmsPermission(boolean value) {
         new SharedPreferencesManager(context).putBoolean(SEND_SMS_PERMISSION, value);
     }
 

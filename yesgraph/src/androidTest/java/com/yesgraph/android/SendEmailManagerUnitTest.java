@@ -18,13 +18,22 @@ public class SendEmailManagerUnitTest extends ApplicationTestCase<Application> {
         super(Application.class);
     }
 
+
+    private Context mockContext;
+
+    @Override
+    protected void setUp() throws Exception {
+        mockContext = new DelegatedMockContext(getContext());
+    }
+
     /**
      * Validate email data not null
+     *
      * @throws Exception
      */
     public void testEmailDataNotNull() throws Exception {
 
-        String[] contacts = {"123-431-233", "998-323-434", "655-434-655"};
+        String[] contacts = {"john@email.com", "david@email.com", "hulk@email.com"};
         String message = "message";
         String subject = "subject";
 
@@ -63,18 +72,19 @@ public class SendEmailManagerUnitTest extends ApplicationTestCase<Application> {
 
     /**
      * Check if message and subject are set
+     *
      * @throws Exception
      */
     public void testValidateEmailMessageAndSubject() throws Exception {
 
-        String[] contacts = {"123-431-233", "998-323-434", "655-434-655"};
+        String[] contacts = {"john@email.com", "david@email.com", "hulk@email.com"};
         String message = "message";
         String subject = "subject";
 
-        SendEmailManager sendSmsManager = new SendEmailManager(getContext(), message, subject, contacts);
+        SendEmailManager sendEmailManager = new SendEmailManager(getContext(), message, subject, contacts);
 
-        String actualMessage = sendSmsManager.getMessage();
-        String actualSubject = sendSmsManager.getSubject();
+        String actualMessage = sendEmailManager.getMessage();
+        String actualSubject = sendEmailManager.getSubject();
 
         boolean equalMessage = (message.equals(actualMessage));
         assertEquals(true, equalMessage);
@@ -86,17 +96,18 @@ public class SendEmailManagerUnitTest extends ApplicationTestCase<Application> {
 
     /**
      * Check if contacts are equals
+     *
      * @throws Exception
      */
     public void testValidateEmailContacts() throws Exception {
 
-        String[] contacts = {"123-431-233", "998-323-434", "655-434-655"};
+        String[] contacts = {"john@email.com", "david@email.com", "hulk@email.com"};
         String message = "message";
         String subject = "subject";
 
-        SendEmailManager sendSmsManager = new SendEmailManager(getContext(), message, subject, contacts);
+        SendEmailManager sendEmailManager = new SendEmailManager(getContext(), message, subject, contacts);
 
-        String[] actualContacts = sendSmsManager.getContacts_emails();
+        String[] actualContacts = sendEmailManager.getContacts_emails();
 
         boolean equalCount = actualContacts.length == contacts.length;
         assertEquals(true, equalCount);
@@ -113,5 +124,48 @@ public class SendEmailManagerUnitTest extends ApplicationTestCase<Application> {
         }
 
         assertEquals(true, areEqualContacts);
+    }
+
+    /**
+     * Check if method to sent email correctly executed
+     */
+    public void testCheckSendEmail() {
+
+        String[] contacts = {"john@xmail.com", "david@xmail.com", "hulk@xmail.com"};
+        String message = "message";
+        String subject = "subject";
+
+        SendEmailManager sendEmailManager = null;
+        try {
+            sendEmailManager = new SendEmailManager(mockContext, message, subject, contacts);
+            sendEmailManager.sendEmail();
+            assertTrue(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /**
+     * Mocking class
+     */
+    private class DelegatedMockContext extends MockContext {
+
+        private Context mDelegatedContext;
+        private static final String PREFIX = "test.";
+
+        public DelegatedMockContext(Context context) {
+            mDelegatedContext = context;
+        }
+
+        @Override
+        public String getPackageName() {
+            return PREFIX;
+        }
+
+        @Override
+        public SharedPreferences getSharedPreferences(String name, int mode) {
+            return mDelegatedContext.getSharedPreferences(name, mode);
+        }
     }
 }
