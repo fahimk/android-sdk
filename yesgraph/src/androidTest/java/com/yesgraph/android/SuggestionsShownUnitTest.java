@@ -4,10 +4,13 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.network.Invite;
 import com.yesgraph.android.network.SuggestionsShown;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -103,6 +106,21 @@ public class SuggestionsShownUnitTest extends ApplicationTestCase<Application> {
 
         boolean hasEmails = jsonArray.getJSONObject(0).has("emails");
         assertEquals(true, hasEmails);
+
+    }
+
+    public void testCheckJsonObjectFromRankedInvitesContacts(){
+
+        String userId = "12345";
+        ArrayList<RankedContact> invites = getRankedContacts();
+
+        JSONObject jsonObject = new SuggestionsShown().getJsonObjectFromRankedInvitesContacts(invites, userId);
+
+        boolean hasEntriesTag = jsonObject.has("entries");
+        assertTrue(hasEntriesTag);
+
+        boolean entriesNotNull = !jsonObject.isNull("entries");
+        assertTrue(entriesNotNull);
 
     }
 

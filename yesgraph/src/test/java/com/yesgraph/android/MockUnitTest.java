@@ -79,10 +79,9 @@ public class MockUnitTest {
             }
         };
 
-        mock.fetchAddressBookForUserId(context, userID, callback);
-
+        /*mock.fetchAddressBookForUserId(context, userID, callback);
         verify(mock, atLeastOnce()).fetchAddressBookForUserId(context, userID, callback);
-        doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
+        doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);*/
     }
 
     @Test

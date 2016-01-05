@@ -65,7 +65,7 @@ public class MockUnitTest {
 
     }
 
-    @Test
+   /* @Test
     public void testFetchAddressBookForUser() {
 
         String userID = "1234";
@@ -80,10 +80,9 @@ public class MockUnitTest {
         };
 
         mock.fetchAddressBookForUserId(context, userID, callback);
-
         verify(mock, atLeastOnce()).fetchAddressBookForUserId(context, userID, callback);
         doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
-    }
+    }*/
 
     @Test
     public void testUpdateAddressBookWithContactListForUserId() {

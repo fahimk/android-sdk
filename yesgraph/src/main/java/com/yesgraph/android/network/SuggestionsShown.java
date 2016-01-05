@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Utility;
 
 import org.json.JSONArray;
@@ -71,18 +73,11 @@ public class SuggestionsShown extends HttpMethod {
         return json;
     }
 
-    public void updateSuggestionsSeen(Context context, ArrayList<RankedContact> invites, String userId, final Handler.Callback callback)
-    {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String secretKey=sharedPreferences.getString("secret_key", "");
+    public void updateSuggestionsSeen(Context context, ArrayList<RankedContact> invites, String userId, final Handler.Callback callback) {
 
-        JSONObject json=new JSONObject();
-        try {
-            json.put("entries", generateArrayOfSuggestionsFromListForUser(userId, invites));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        super.httpAsync(secretKey, "POST", "suggested-seen", null, json, new Handler.Callback() {
+        JSONObject json = getJsonObjectFromRankedInvitesContacts(invites, userId);
+
+        super.httpAsync(new StorageKeyValueManager(context).getSecretKey(), "POST", "suggested-seen", null, json, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 Message callbackMessage = new Message();
@@ -101,5 +96,16 @@ public class SuggestionsShown extends HttpMethod {
                 return false;
             }
         });
+    }
+
+    @NonNull
+    public JSONObject getJsonObjectFromRankedInvitesContacts(ArrayList<RankedContact> invites, String userId) {
+        JSONObject json=new JSONObject();
+        try {
+            json.put("entries", generateArrayOfSuggestionsFromListForUser(userId, invites));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 }

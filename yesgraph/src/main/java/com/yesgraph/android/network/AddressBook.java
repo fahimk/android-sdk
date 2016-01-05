@@ -5,11 +5,13 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,37 +26,37 @@ import java.util.Comparator;
  */
 public class AddressBook extends HttpMethod {
 
-    public void fetchAddressBookForUserId(Context context, String userId, final Handler.Callback callback)
-    {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String secretKey=sharedPreferences.getString("secret_key","");
 
-        super.httpAsync(secretKey, Constants.HTTP_METHOD_GET, "address-book/"+userId, null, null, new Handler.Callback() {
+    /*public void fetchAddressBookForUserId(final Context context, String userId, final Handler.Callback callback) {
+        super.httpAsync(new StorageKeyValueManager(context).getSecretKey(), Constants.HTTP_METHOD_GET, "address-book/" + userId, null, null, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 Message callbackMessage = new Message();
-                if(msg.what == Constants.RESULT_OK)
-                {
-                    JSONObject json = (JSONObject)msg.obj;
-
-                    ContactList contactList = null;
-                    try
-                    {
-                        if(json.has("data") && !json.isNull("data"))
-                        {
-                            sharedPreferences.edit().putString("contacts_cache", json.getJSONArray("data").toString()).commit();
-                            contactList = contactListFromResponse(json.getJSONArray("data"));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                if (msg.what == Constants.RESULT_OK) {
                     callbackMessage.what = Constants.RESULT_OK;
-                    callbackMessage.obj = contactList;
+                    callbackMessage.obj = getContactList(context, msg);
+                    callback.handleMessage(callbackMessage);
+                } else {
+                    callbackMessage.what = msg.what;
+                    callbackMessage.obj = msg.obj;
                     callback.handleMessage(callbackMessage);
                 }
-                else
-                {
+                return false;
+            }
+        });
+    }*/
+
+
+    public void updateAddressBookWithContactListForUserId(final Context context, ContactList contactList, String userId, final Handler.Callback callback) {
+        super.httpAsync(new StorageKeyValueManager(context).getSecretKey(), Constants.HTTP_METHOD_POST, "address-book", null, contactList.toJSONObject(userId), new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                Message callbackMessage = new Message();
+                if (msg.what == Constants.RESULT_OK) {
+                    callbackMessage.what = Constants.RESULT_OK;
+                    callbackMessage.obj = getContactList(context, msg);
+                    callback.handleMessage(callbackMessage);
+                } else {
                     callbackMessage.what = msg.what;
                     callbackMessage.obj = msg.obj;
                     callback.handleMessage(callbackMessage);
@@ -64,45 +66,29 @@ public class AddressBook extends HttpMethod {
         });
     }
 
-    public void updateAddressBookWithContactListForUserId(final Context context, ContactList contactList, String userId, final Handler.Callback callback)
-    {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String secretKey=sharedPreferences.getString("secret_key","");
+    /**
+     * Get contact list from server response
+     * @param context context
+     * @param msg callback message
+     * @return contact list object
+     */
+    public ContactList getContactList(Context context,Message msg) {
 
-        super.httpAsync(secretKey, Constants.HTTP_METHOD_POST, "address-book", null, contactList.toJSONObject(userId), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                Message callbackMessage = new Message();
-                if(msg.what == Constants.RESULT_OK)
-                {
-                    JSONObject json = (JSONObject)msg.obj;
+        JSONObject json = (JSONObject)msg.obj;
 
-                    ContactList contactList = null;
-                    try
-                    {
-                        if(json.has("data") && !json.isNull("data"))
-                        {
-                            sharedPreferences.edit().putString("contacts_cache", json.getJSONArray("data").toString()).commit();
-                            sharedPreferences.edit().putLong("contacts_last_upload", System.currentTimeMillis()).commit();
-                            contactList = contactListFromResponse(json.getJSONArray("data"));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    callbackMessage.what = Constants.RESULT_OK;
-                    callbackMessage.obj = contactList;
-                    callback.handleMessage(callbackMessage);
-                }
-                else
-                {
-                    callbackMessage.what = msg.what;
-                    callbackMessage.obj = msg.obj;
-                    callback.handleMessage(callbackMessage);
-                }
-                return false;
+        ContactList contactList = null;
+        try
+        {
+            if(json.has("data") && !json.isNull("data"))
+            {
+                new StorageKeyValueManager(context).setContactCache(json.getJSONArray("data").toString());
+                new StorageKeyValueManager(context).setContactLastUpload(System.currentTimeMillis());
+                contactList = contactListFromResponse(json.getJSONArray("data"));
             }
-        });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return contactList;
     }
 
     public static ContactList contactListFromResponse(JSONArray jsonArray)

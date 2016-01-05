@@ -1,9 +1,12 @@
 package com.yesgraph.android;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
+import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.network.AddressBook;
@@ -11,6 +14,7 @@ import com.yesgraph.android.network.AddressBook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 
@@ -21,6 +25,15 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
     public AddressBookUnitTest() {
         super(Application.class);
     }
+
+    @Mock
+    private Context mockContext;
+
+    @Override
+    protected void setUp() throws Exception {
+        mockContext = new MockDelegatedContext(getContext());
+    }
+
 
     /**
      * Validate mapping data between JSON object and YSGRankedContact object
@@ -265,5 +278,32 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
         contact.setScore(54.2);
 
         return contact;
+    }
+
+    /**
+     * Validate contact list from json object (server response)
+     * @throws JSONException
+     */
+    public void testGetContactListFromJSONArray() throws JSONException {
+
+        JSONObject jsonContactOne = getContactJsonObject();
+        JSONObject jsonContactTwo = getContactJsonObject();
+        JSONObject jsonContactThree = getContactJsonObject();
+
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(0,jsonContactOne);
+        jsonArray.put(1,jsonContactTwo);
+        jsonArray.put(2,jsonContactThree);
+
+        JSONObject data = new JSONObject();
+        data.put("data", jsonArray);
+
+        Message message = new Message();
+        message.obj = data;
+
+        ContactList contactList = new AddressBook().getContactList(mockContext, message);
+
+        assertTrue(contactList!=null);
+
     }
 }

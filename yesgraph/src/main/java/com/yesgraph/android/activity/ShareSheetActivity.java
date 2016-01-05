@@ -101,9 +101,7 @@ public class ShareSheetActivity extends AppCompatActivity {
                     if (timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
                         try {
                             new StorageKeyValueManager(context).setContactsUploading(true);
-                            ContactList contactList = new ContactManager().getContactList(context);
-                            AddressBook addressBook = new AddressBook();
-                            addressBook.updateAddressBookWithContactListForUserId(context, contactList, userID, new Handler.Callback() {
+                            new AddressBook().updateAddressBookWithContactListForUserId(context, new ContactManager().getContactList(context), userID, new Handler.Callback() {
                                 @Override
                                 public boolean handleMessage(Message msg) {
                                     new StorageKeyValueManager(context).setContactsUploading(false);
