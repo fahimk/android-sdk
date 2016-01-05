@@ -5,9 +5,12 @@ import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 import android.text.TextUtils;
 
+import com.yesgraph.android.models.Address;
 import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.models.Ims;
 import com.yesgraph.android.models.RegularContact;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Website;
 import com.yesgraph.android.utils.ContactRetriever;
 
 import java.util.ArrayList;
@@ -199,6 +202,85 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
 
         assertEquals(true, isNotDuplicated);
     }
+
+    public void testValidateWebsiteData() {
+
+        String url = "www.myurl.com";
+        Integer homePage = 1;
+        Integer blog = 2;
+        Integer profile = 3;
+        Integer home = 4;
+        Integer work = 5;
+
+        Website homePageWebsite = ContactRetriever.getWebsite(url, homePage);
+        assertEquals(url, homePageWebsite.getUrl());
+        assertEquals("homepage", homePageWebsite.getType());
+
+        Website blogWebSite = ContactRetriever.getWebsite(url, blog);
+        assertEquals("blog", blogWebSite.getType());
+
+        Website profileWebSite = ContactRetriever.getWebsite(url, profile);
+        assertEquals("profile", profileWebSite.getType());
+
+        Website homeWebSite = ContactRetriever.getWebsite(url, home);
+        assertEquals("home", homeWebSite.getType());
+
+        Website workWebSite = ContactRetriever.getWebsite(url, work);
+        assertEquals("work", workWebSite.getType());
+
+    }
+
+    public void testValidateCompanyNameAndTitle() {
+
+        String company = "povioLabs";
+        String title = "title";
+        RankedContact rankedContact = new RankedContact();
+
+        ContactRetriever.setCompanyAndTitle(rankedContact, company, title);
+
+        assertEquals(company, rankedContact.getCompany());
+        assertEquals(title, rankedContact.getTitle());
+
+    }
+
+    public void testValidateIms() {
+
+        String imsName = "ims";
+        Integer typeCode = 2;
+        Integer protocolCode = 3;
+
+        Ims ims = ContactRetriever.getIms(imsName, typeCode, protocolCode);
+
+        assertEquals(imsName, ims.getName());
+        assertEquals("work", ims.getType());
+        assertEquals("skype", ims.getProtocol());
+
+    }
+
+
+    public void testValidateAddress() {
+
+        String poBox = "poBox";
+        String street = "street";
+        String city = "city";
+        String state = "state";
+        String postalCode = "postalCode";
+        String country = "country";
+        Integer type = 2;
+
+        Address address = ContactRetriever.getAddress(poBox,street,city,state,postalCode,country,type);
+
+        assertEquals(poBox,address.getPo_box());
+        assertEquals(street,address.getStreet());
+        assertEquals(city,address.getCity());
+        assertEquals(state,address.getState());
+        assertEquals(postalCode,address.getPostal_code());
+        assertEquals(country,address.getCountry());
+        assertEquals("work",address.getType());
+
+
+    }
+
 
 
     @NonNull
