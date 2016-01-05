@@ -340,7 +340,7 @@ public class ContactRetriever {
                         if (emails.size() > 0) ysgRankedContact.setEmails(emails);
                         if (phones.size() > 0) ysgRankedContact.setPhone(phones.get(0));
                         if (emails.size() > 0) ysgRankedContact.setEmail(emails.get(0));
-                        if (starred.equals("1")) ysgRankedContact.setIs_favorite("true");
+                        if (starred.equals("1")) ysgRankedContact.setIs_favorite(true);
                         if (lastContacted > 0) ysgRankedContact.setLast_message_sent_date(lastContacted);
                         if (timesContacted > 0) ysgRankedContact.setTimes_contacted(timesContacted);
                         if (websites.size() > 0) ysgRankedContact.setWebsites(websites);

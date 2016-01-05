@@ -21,7 +21,7 @@ public class Contact {
     private String nickname;
     private String title;
     private String company;
-    private String is_favorite;
+    private Boolean is_favorite;
     private Integer pinned;
     private Long times_contacted;
     private Long last_message_sent_date;
@@ -169,11 +169,11 @@ public class Contact {
         this.company = company;
     }
 
-    public String getIs_favorite() {
+    public Boolean getIs_favorite() {
         return is_favorite;
     }
 
-    public void setIs_favorite(String is_favorite) {
+    public void setIs_favorite(Boolean is_favorite) {
         this.is_favorite = is_favorite;
     }
 
