@@ -103,4 +103,28 @@ public class TestUtils {
         return contact;
     }
 
+    @NonNull
+    public ArrayList<RankedContact> getRankedContacts() {
+
+        ArrayList<RankedContact> contacts = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            contacts.add(getRankedContact());
+        }
+
+        return contacts;
+    }
+
+    @NonNull
+    public ArrayList<Contact> getContacts() {
+
+        ArrayList<Contact> contacts = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            contacts.add(getContact());
+        }
+
+        return contacts;
+    }
+
 }

@@ -211,6 +211,7 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
         Integer profile = 3;
         Integer home = 4;
         Integer work = 5;
+        Integer ftp = 6;
 
         Website homePageWebsite = ContactRetriever.getWebsite(url, homePage);
         assertEquals(url, homePageWebsite.getUrl());
@@ -227,6 +228,9 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
 
         Website workWebSite = ContactRetriever.getWebsite(url, work);
         assertEquals("work", workWebSite.getType());
+
+        Website ftpWebsite = ContactRetriever.getWebsite(url, ftp);
+        assertEquals("ftp", ftpWebsite.getType());
 
     }
 
@@ -246,14 +250,70 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
     public void testValidateIms() {
 
         String imsName = "ims";
-        Integer typeCode = 2;
-        Integer protocolCode = 3;
+        Integer typeHome = 1;
+        Integer typeWork = 2;
+        Integer typeOther = 3;
 
-        Ims ims = ContactRetriever.getIms(imsName, typeCode, protocolCode);
+        Integer protocolCustom = -1;
+        Integer protocolAim = 0;
+        Integer protocolMsn = 1;
+        Integer protocolYahoo = 2;
+        Integer protocolSkype = 3;
+        Integer protocolQq = 4;
+        Integer protocolGoogleTalk = 5;
+        Integer protocolIcq = 6;
+        Integer protocolJabber = 7;
+        Integer protocolNetMeeting = 8;
 
+        Ims ims = ContactRetriever.getIms(imsName, typeHome, protocolCustom);
         assertEquals(imsName, ims.getName());
-        assertEquals("work", ims.getType());
-        assertEquals("skype", ims.getProtocol());
+        assertEquals("home", ims.getType());
+        assertEquals("custom", ims.getProtocol());
+
+        Ims imsAim = ContactRetriever.getIms(imsName, typeWork, protocolAim);
+        assertEquals(imsName, imsAim.getName());
+        assertEquals("work", imsAim.getType());
+        assertEquals("aim", imsAim.getProtocol());
+
+        Ims imsMsn = ContactRetriever.getIms(imsName, typeOther, protocolMsn);
+        assertEquals(imsName, imsMsn.getName());
+        assertEquals("other", imsMsn.getType());
+        assertEquals("msn", imsMsn.getProtocol());
+
+        Ims imsYahoo = ContactRetriever.getIms(imsName, typeOther, protocolYahoo);
+        assertEquals(imsName, imsYahoo.getName());
+        assertEquals("other", imsYahoo.getType());
+        assertEquals("yahoo", imsYahoo.getProtocol());
+
+        Ims imsSkype = ContactRetriever.getIms(imsName, typeOther, protocolSkype);
+        assertEquals(imsName, imsSkype.getName());
+        assertEquals("other", imsSkype.getType());
+        assertEquals("skype", imsSkype.getProtocol());
+
+        Ims imsQq = ContactRetriever.getIms(imsName, typeOther, protocolQq);
+        assertEquals(imsName, imsQq.getName());
+        assertEquals("other", imsQq.getType());
+        assertEquals("qq", imsQq.getProtocol());
+
+        Ims imsGTalk = ContactRetriever.getIms(imsName, typeOther, protocolGoogleTalk);
+        assertEquals(imsName, imsGTalk.getName());
+        assertEquals("other", imsGTalk.getType());
+        assertEquals("googletalk", imsGTalk.getProtocol());
+
+        Ims imsIcq = ContactRetriever.getIms(imsName, typeOther, protocolIcq);
+        assertEquals(imsName, imsIcq.getName());
+        assertEquals("other", imsIcq.getType());
+        assertEquals("icq", imsIcq.getProtocol());
+
+        Ims imsJabber = ContactRetriever.getIms(imsName, typeOther, protocolJabber);
+        assertEquals(imsName, imsJabber.getName());
+        assertEquals("other", imsJabber.getType());
+        assertEquals("jabber", imsJabber.getProtocol());
+
+        Ims imsNetMeeting = ContactRetriever.getIms(imsName, typeOther, protocolNetMeeting);
+        assertEquals(imsName, imsNetMeeting.getName());
+        assertEquals("other", imsNetMeeting.getType());
+        assertEquals("netmeeting", imsNetMeeting.getProtocol());
 
     }
 
