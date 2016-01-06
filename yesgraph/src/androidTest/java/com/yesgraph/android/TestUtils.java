@@ -25,7 +25,7 @@ public class TestUtils {
         contact.setNickname("j-on");
         contact.setTitle("title");
         contact.setCompany("ItCom");
-        contact.setIs_favorite("true");
+        contact.setIs_favorite(true);
         contact.setPinned(2);
         contact.setTimes_contacted((long) 1);
         contact.setLast_message_sent_date((long) 2);
@@ -69,7 +69,7 @@ public class TestUtils {
         contact.setNickname("j-on");
         contact.setTitle("title");
         contact.setCompany("ItCom");
-        contact.setIs_favorite("true");
+        contact.setIs_favorite(true);
         contact.setPinned(2);
         contact.setTimes_contacted((long) 1);
         contact.setLast_message_sent_date((long) 2);

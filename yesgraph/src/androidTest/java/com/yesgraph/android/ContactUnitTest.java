@@ -39,7 +39,7 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
 
         assertTrue(!contact.getTitle().isEmpty());
         assertTrue(!contact.getCompany().isEmpty());
-        assertTrue(!contact.getIs_favorite().isEmpty());
+        assertTrue(contact.getIs_favorite());
 
         assertTrue(contact.getTimes_contacted() != null);
         assertTrue(contact.getLast_message_received_date() != null);

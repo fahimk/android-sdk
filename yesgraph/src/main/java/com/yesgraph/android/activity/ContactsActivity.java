@@ -16,7 +16,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +26,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.yesgraph.android.R;
 import com.yesgraph.android.adapters.ContactsAdapter;
 import com.yesgraph.android.application.YesGraph;
@@ -41,19 +39,17 @@ import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.ContactRetriever;
+import com.yesgraph.android.utils.ContactsFilterManager;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.PermissionGrantedManager;
 import com.yesgraph.android.utils.RankingContactsManager;
 import com.yesgraph.android.utils.SearchBarManager;
 import com.yesgraph.android.utils.SenderManager;
-import com.yesgraph.android.utils.SharedPreferencesManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by marko on 17/11/15.
@@ -115,7 +111,6 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         context = this;
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
         contactsList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.content_contact_list, null);
         contactsList.setLayoutManager(new GridLayoutManager(ContactsActivity.this, 1, GridLayoutManager.VERTICAL, false));
@@ -288,9 +283,12 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
             {
                 setContactsFromCacheOrContactsProvider();
 
+                // show contacts by selected filter (only emails, only phones or all)
+                fillContactsByFilter();
+
                 if(filter.length()>0)
                 {
-                    setContactsByFilter(filter);
+                    setContactsBySearchFilter(filter);
                 }
                 else
                 {
@@ -323,7 +321,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void setContactsByFilter(String filter) {
+    private void setContactsBySearchFilter(String filter) {
 
         resetItems();
 
@@ -468,6 +466,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         getContacts(searchText);
     }
 
+
     public void hideKeyboard() {
         try {
             View view = this.getCurrentFocus();
@@ -475,10 +474,23 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    /**
+     * Set contacts by selected filter
+     */
+    private void fillContactsByFilter(){
+
+        int contactsFilterType = application.getCustomTheme().getContactsFilterType();
+
+        try {
+            contacts = new ContactsFilterManager(contacts).getByFilterType(contactsFilterType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.i("Type",String.valueOf(contactsFilterType));
     }
 }

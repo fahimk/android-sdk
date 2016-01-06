@@ -66,6 +66,16 @@ public class CustomTheme {
 
     }
 
+    public void setContactsFilterType(int filterType) {
+        if (filterType >= 0 && filterType <= 2) {
+            constants.setCONTACTS_FILTER_TYPE(filterType);
+        }
+    }
+
+    public int getContactsFilterType() {
+        return constants.getCONTACTS_FILTER_TYPE();
+    }
+
     public int getMainForegroundColor() {
         return constants.getMAIN_FOREGROUND_COLOR();
     }
