@@ -109,7 +109,7 @@ public class YesGraph extends Application {
         }
     }
 
-    private boolean timeToRefreshAddressBook() {
+    public boolean timeToRefreshAddressBook() {
         long lastContactsUpload = new StorageKeyValueManager(getApplicationContext()).getContactLastUpload();
 
         if(lastContactsUpload < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))

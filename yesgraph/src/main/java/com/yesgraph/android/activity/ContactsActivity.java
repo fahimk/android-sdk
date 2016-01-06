@@ -146,37 +146,27 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         Boolean isContactCached = !new StorageKeyValueManager(context).getContactCache().equals("");
         Boolean isReadContactPermissionGranted = new PermissionGrantedManager(context).isReadContactsPermission();
         Boolean checkContactsReadPermission = new PermissionGrantedManager(context).checkContactsReadPermission();
-
         Boolean isContactsUploading = new StorageKeyValueManager(context).isContactsUploading();
 
         if(!isContactCached && isReadContactPermissionGranted && checkContactsReadPermission && application.isOnline() && !isContactsUploading) {
 
-            ContactList contactList = new ContactManager().getContactList(context);
+            new AddressBook().updateAddressBookWithContactListForUserId(ContactsActivity.this, new ContactManager().getContactList(context),
+                    new StorageKeyValueManager(context).getUserId(), new Handler.Callback() {
 
-            final AddressBook addressBook =new AddressBook();
-
-            Log.i("#YSGCONTACTS_COUNT", "1count:" + contactList.getEntries().size());
-
-            String userId = new StorageKeyValueManager(context).getUserId();
-
-            addressBook.updateAddressBookWithContactListForUserId(ContactsActivity.this, contactList, userId, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
 
                     new StorageKeyValueManager(context).setContactsUploading(false);
 
-                    if(msg.what== Constants.RESULT_OK)
-                    {
+                    if (msg.what == Constants.RESULT_OK) {
                         try {
-                            ContactsActivity.this.contactList =(ContactList)msg.obj;
+                            ContactsActivity.this.contactList = (ContactList) msg.obj;
                             getContacts("");
                         } catch (Exception e) {
                             e.printStackTrace();
                             getContacts("");
                         }
-                    }
-                    else
-                    {
+                    } else {
                         getContacts("");
                     }
                     return false;
@@ -355,9 +345,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         if(isContactCached)
         {
             try {
-
-                String contactsCache = new StorageKeyValueManager(context).getContactCache();
-                contactList = AddressBook.contactListFromResponse(new JSONArray(contactsCache));
+                contactList = AddressBook.contactListFromResponse(new JSONArray(new StorageKeyValueManager(context).getContactCache()));
                 contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
             } catch (JSONException e) {
                 e.printStackTrace();

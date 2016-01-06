@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+
 import com.yesgraph.android.R;
 import com.yesgraph.android.models.Address;
 import com.yesgraph.android.models.Ims;
@@ -80,12 +82,9 @@ public class ContactRetriever {
                     name=context.getString(R.string.no_contact_name);
                 }
 
-                RankedContact ysgRankedContact = new RankedContact();
+
                 ArrayList<String> emails=new ArrayList<>();
                 ArrayList<String> phones=new ArrayList<>();
-                ArrayList<Address> addresses=new ArrayList<>();
-                ArrayList<Website> websites=new ArrayList<>();
-                ArrayList<Ims> imses=new ArrayList<>();
 
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
 
@@ -120,139 +119,13 @@ public class ContactRetriever {
                     pCur.close();
 
                     //Get Postal Address....
-                    String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] addrWhereParams = new String[]{id,
-                            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
-                    Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, addrWhere, addrWhereParams, null);
-                    while(addrCur.moveToNext()) {
-                        String poBox = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
-                        String street = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
-                        String city = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
-                        String state = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
-                        String postalCode = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
-                        String country = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
-                        Integer typeCode = addrCur.getInt(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
-
-                        String type="";
-
-                        switch(typeCode)
-                        {
-                            case 1: type="home";
-                                break;
-                            case 3: type="other";
-                                break;
-                            case 2: type="work";
-                                break;
-                        }
-
-                        Address address=new Address();
-                        if(poBox!=null && poBox.length()>0)
-                            address.setPo_box(poBox);
-                        if(city!=null && city.length()>0)
-                            address.setCity(city);
-                        if(country!=null && country.length()>0)
-                            address.setCountry(country);
-                        if(postalCode!=null && postalCode.length()>0)
-                            address.setPostal_code(postalCode);
-                        if(state!=null && state.length()>0)
-                            address.setState(state);
-                        if(street!=null && street.length()>0)
-                            address.setStreet(street);
-                        if(type!=null && type.length()>0)
-                            address.setType(type);
-
-                        addresses.add(address);
-                    }
-                    addrCur.close();
+                    ArrayList<Address> addresses = getPostalAddresses(cr, id);
 
                     // Get Instant Messenger.........
-                    String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] imWhereParams = new String[]{id,
-                            ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
-                    Cursor imCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, imWhere, imWhereParams, null);
-                    if (imCur.moveToFirst()) {
-                        String imName = imCur.getString(
-                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
-                        Integer imTypeCode = imCur.getInt(
-                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
-                        Integer imProtocolCode = imCur.getInt(
-                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
-
-                        String imType="";
-
-                        switch(imTypeCode)
-                        {
-                            case 1: imType="home";
-                                break;
-                            case 3: imType="other";
-                                break;
-                            case 2: imType="work";
-                                break;
-                        }
-
-                        String imProtocol="";
-
-                        switch(imProtocolCode)
-                        {
-                            case 0: imProtocol="aim";
-                                break;
-                            case -1: imProtocol="custom";
-                                break;
-                            case 5: imProtocol="googletalk";
-                                break;
-                            case 6: imProtocol="icq";
-                                break;
-                            case 7: imProtocol="jabber";
-                            break;
-                            case 1: imProtocol="msn";
-                            break;
-                            case 8: imProtocol="netmeeting";
-                            break;
-                            case 4: imProtocol="qq";
-                            break;
-                            case 3: imProtocol="skype";
-                            break;
-                            case 2: imProtocol="yahoo";
-                            break;
-                        }
-
-                        Ims ims=new Ims();
-                        if(imType!=null && imType.length()>0)
-                            ims.setType(imType);
-                        if(imName!=null && imName.length()>0)
-                            ims.setName(imName);
-                        if(imProtocol!=null && imProtocol.length()>0)
-                            ims.setProtocol(imProtocol);
-
-                        imses.add(ims);
-                    }
-                    imCur.close();
+                    ArrayList<Ims> imses=getInstantMessenger(cr, id);
 
                     // Get Organizations.........
-                    String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] orgWhereParams = new String[]{id,
-                            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE};
-                    Cursor orgCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, orgWhere, orgWhereParams, null);
-                    if (orgCur.moveToFirst()) {
-                        String company = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
-                        String title = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
-
-                        if(company!=null && company.length()>0)
-                            ysgRankedContact.setCompany(company);
-                        if(title!=null && title.length()>0)
-                            ysgRankedContact.setTitle(title);
-                    }
-                    orgCur.close();
+                    RankedContact ysgRankedContact = getOrganizations(cr, id);
 
                     // Get nickname.........
                     String nicknameWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
@@ -267,44 +140,7 @@ public class ContactRetriever {
                     nicknameCur.close();
 
                     // Get Websites.........
-                    String webWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] webWhereParams = new String[]{id,
-                            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE};
-                    Cursor webCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, webWhere, webWhereParams, null);
-                    if (webCur.moveToFirst()) {
-                        String webUrl = webCur.getString(webCur.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
-                        Integer webTypeCode = webCur.getInt(webCur.getColumnIndex(ContactsContract.CommonDataKinds.Website.TYPE));
-
-                        String webType="";
-
-                        switch(webTypeCode)
-                        {
-                            case 2: webType="blog";
-                                break;
-                            case 6: webType="ftp";
-                                break;
-                            case 4: webType="home";
-                                break;
-                            case 1: webType="homepage";
-                                break;
-                            case 7: webType="other";
-                                break;
-                            case 3: webType="profile";
-                                break;
-                            case 5: webType="work";
-                                break;
-                        }
-
-                        Website website=new Website();
-                        if(webUrl!=null && webUrl.length()>0)
-                        website.setUrl(webUrl);
-                        if(webType!=null && webType.length()>0)
-                        website.setType(webType);
-
-                        websites.add(website);
-                    }
-                    webCur.close();
+                    ArrayList<Website> websites=getWebsites(cr, id);
 
                     // Get Pinned.........
                     /*String pinnedWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
@@ -346,8 +182,229 @@ public class ContactRetriever {
                 }
             }
         }
-
         return list;
+    }
+
+    private static ArrayList<Website> getWebsites(ContentResolver cr, String id) {
+
+        ArrayList<Website> websites=new ArrayList<>();
+
+        String webWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] webWhereParams = new String[]{id,
+                ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE};
+        Cursor webCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                null, webWhere, webWhereParams, null);
+        if (webCur.moveToFirst()) {
+            String webUrl = webCur.getString(webCur.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
+            Integer webTypeCode = webCur.getInt(webCur.getColumnIndex(ContactsContract.CommonDataKinds.Website.TYPE));
+
+            Website website = getWebsite(webUrl, webTypeCode);
+
+            websites.add(website);
+        }
+        webCur.close();
+
+        return websites;
+    }
+
+    private static RankedContact getOrganizations(ContentResolver cr, String id) {
+
+        RankedContact ysgRankedContact = new RankedContact();
+
+        String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] orgWhereParams = new String[]{id,
+                ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE};
+        Cursor orgCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                null, orgWhere, orgWhereParams, null);
+        if (orgCur.moveToFirst()) {
+            String company = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
+            String title = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
+
+            setCompanyAndTitle(ysgRankedContact, company, title);
+        }
+        orgCur.close();
+
+        return ysgRankedContact;
+    }
+
+    private static ArrayList<Ims> getInstantMessenger(ContentResolver cr, String id) {
+
+        ArrayList<Ims> imses = new ArrayList<>();
+
+        String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] imWhereParams = new String[]{id,
+                ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
+        Cursor imCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                null, imWhere, imWhereParams, null);
+        if (imCur.moveToFirst()) {
+            String imName = imCur.getString(
+                    imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+            Integer imTypeCode = imCur.getInt(
+                    imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
+            Integer imProtocolCode = imCur.getInt(
+                    imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
+
+            Ims ims = getIms(imName, imTypeCode, imProtocolCode);
+
+            imses.add(ims);
+        }
+        imCur.close();
+
+        return imses;
+    }
+
+    private static ArrayList<Address> getPostalAddresses(ContentResolver cr, String id) {
+
+        ArrayList<Address> addresses = new ArrayList<>();
+
+        String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+        String[] addrWhereParams = new String[]{id,
+                ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
+        Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                null, addrWhere, addrWhereParams, null);
+
+        while(addrCur.moveToNext()) {
+            String poBox = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
+            String street = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
+            String city = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
+            String state = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
+            String postalCode = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
+            String country = addrCur.getString(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
+            Integer typeCode = addrCur.getInt(
+                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
+
+            Address address = getAddress(poBox, street, city, state, postalCode, country, typeCode);
+
+            addresses.add(address);
+        }
+        addrCur.close();
+
+        return addresses;
+    }
+
+    @NonNull
+    public static Website getWebsite(String webUrl, Integer webTypeCode) {
+        String webType="";
+
+        switch(webTypeCode)
+        {
+            case 2: webType="blog";
+                break;
+            case 6: webType="ftp";
+                break;
+            case 4: webType="home";
+                break;
+            case 1: webType="homepage";
+                break;
+            case 7: webType="other";
+                break;
+            case 3: webType="profile";
+                break;
+            case 5: webType="work";
+                break;
+        }
+
+        Website website=new Website();
+        if(webUrl!=null && webUrl.length()>0)
+        website.setUrl(webUrl);
+        if(webType!=null && webType.length()>0)
+        website.setType(webType);
+        return website;
+    }
+
+    public static void setCompanyAndTitle(RankedContact ysgRankedContact, String company, String title) {
+        if(company!=null && company.length()>0)
+            ysgRankedContact.setCompany(company);
+        if(title!=null && title.length()>0)
+            ysgRankedContact.setTitle(title);
+    }
+
+    @NonNull
+    public static Ims getIms(String imName, Integer imTypeCode, Integer imProtocolCode) {
+        String imType="";
+
+        switch(imTypeCode)
+        {
+            case 1: imType="home";
+                break;
+            case 3: imType="other";
+                break;
+            case 2: imType="work";
+                break;
+        }
+
+        String imProtocol="";
+
+        switch(imProtocolCode)
+        {
+            case 0: imProtocol="aim";
+                break;
+            case -1: imProtocol="custom";
+                break;
+            case 5: imProtocol="googletalk";
+                break;
+            case 6: imProtocol="icq";
+                break;
+            case 7: imProtocol="jabber";
+            break;
+            case 1: imProtocol="msn";
+            break;
+            case 8: imProtocol="netmeeting";
+            break;
+            case 4: imProtocol="qq";
+            break;
+            case 3: imProtocol="skype";
+            break;
+            case 2: imProtocol="yahoo";
+            break;
+        }
+
+        Ims ims=new Ims();
+        if(imType!=null && imType.length()>0)
+            ims.setType(imType);
+        if(imName!=null && imName.length()>0)
+            ims.setName(imName);
+        if(imProtocol!=null && imProtocol.length()>0)
+            ims.setProtocol(imProtocol);
+        return ims;
+    }
+
+    @NonNull
+    public static Address getAddress(String poBox, String street, String city, String state, String postalCode, String country, Integer typeCode) {
+        String type="";
+
+        switch(typeCode)
+        {
+            case 1: type="home";
+                break;
+            case 3: type="other";
+                break;
+            case 2: type="work";
+                break;
+        }
+
+        Address address=new Address();
+        if(poBox!=null && poBox.length()>0)
+            address.setPo_box(poBox);
+        if(city!=null && city.length()>0)
+            address.setCity(city);
+        if(country!=null && country.length()>0)
+            address.setCountry(country);
+        if(postalCode!=null && postalCode.length()>0)
+            address.setPostal_code(postalCode);
+        if(state!=null && state.length()>0)
+            address.setState(state);
+        if(street!=null && street.length()>0)
+            address.setStreet(street);
+        if(type!=null && type.length()>0)
+            address.setType(type);
+        return address;
     }
 
     /**
