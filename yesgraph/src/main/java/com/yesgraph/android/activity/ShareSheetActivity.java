@@ -91,30 +91,23 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         final String userID = new SharedPreferencesManager(context).getString("user_id");
 
-        Authenticate authenticate = new Authenticate();
-        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), "live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8", userID/*"YW5vbl8xNDQ4MjI3OTExXzM2OTk5OTk2"*/, new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.what == Constants.RESULT_OK) {
-                    boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
-                    if (timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
-                        try {
-                            new StorageKeyValueManager(context).setContactsUploading(true);
-                            new AddressBook().updateAddressBookWithContactListForUserId(context, new ContactManager().getContactList(context), userID, new Handler.Callback() {
-                                @Override
-                                public boolean handleMessage(Message msg) {
-                                    new StorageKeyValueManager(context).setContactsUploading(false);
-                                    return false;
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        Boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
+        Boolean isContactsUploading =new StorageKeyValueManager(context).isContactsUploading();
+
+        if (!isContactsUploading && timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
+            try {
+                new StorageKeyValueManager(context).setContactsUploading(true);
+                new AddressBook().updateAddressBookWithContactListForUserId(context, new ContactManager().getContactList(context), userID, new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        new StorageKeyValueManager(context).setContactsUploading(false);
+                        return false;
                     }
-                }
-                return false;
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
     private boolean timeToRefreshAddressBook() {

@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-
 import com.yesgraph.android.R;
 import com.yesgraph.android.models.Address;
 import com.yesgraph.android.models.Ims;
@@ -64,6 +63,10 @@ public class ContactRetriever {
                 Long lastContacted = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
                 Long timesContacted = cur.getLong(cur.getColumnIndex(ContactsContract.Contacts.TIMES_CONTACTED));
                 //Integer pinned = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PINNED));
+
+                if(lastContacted>0)
+                    lastContacted=lastContacted/1000;
+
                 name = name!=null ? name.trim() : "";
 
                 for(int i=0;i<name.length();i++)
@@ -170,7 +173,7 @@ public class ContactRetriever {
                         if (emails.size() > 0) ysgRankedContact.setEmails(emails);
                         if (phones.size() > 0) ysgRankedContact.setPhone(phones.get(0));
                         if (emails.size() > 0) ysgRankedContact.setEmail(emails.get(0));
-                        if (starred.equals("1")) ysgRankedContact.setIs_favorite("true");
+                        if (starred.equals("1")) ysgRankedContact.setIs_favorite(true);
                         if (lastContacted > 0) ysgRankedContact.setLast_message_sent_date(lastContacted);
                         if (timesContacted > 0) ysgRankedContact.setTimes_contacted(timesContacted);
                         if (websites.size() > 0) ysgRankedContact.setWebsites(websites);

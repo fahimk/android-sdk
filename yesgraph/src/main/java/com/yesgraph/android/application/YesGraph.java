@@ -36,27 +36,25 @@ public class YesGraph extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        checkIsTimeToRefreshAddressBook();
     }
 
     public void onCreate(String secretKey) {
         super.onCreate();
         setSecretKey(secretKey);
-        checkIsTimeToRefreshAddressBook();
     }
 
     public void setSecretKey(String secretKey)
     {
-        new StorageKeyValueManager(getApplicationContext()).setSecretKey(secretKey);
+        new StorageKeyValueManager(getApplicationContext()).setApiKey(secretKey);
 
         final String userID = new StorageKeyValueManager(getApplicationContext()).getUserId();
 
         Authenticate authenticate = new Authenticate();
-        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey/*"live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8"*/, userID, new Handler.Callback() {
+        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey, userID, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 if (msg.what == Constants.RESULT_OK) {
-
+                    checkIsTimeToRefreshAddressBook();
                 } else {
 
                 }
@@ -127,32 +125,23 @@ public class YesGraph extends Application {
 
         if(secretKey.length()>0)
         {
-            Authenticate authenticate = new Authenticate();
-            authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey/*"live-WzEsMCwieWVzZ3JhcGhfc2RrX3Rlc3QiXQ.COM_zw.A76PgpT7is1P8nneuSg-49y4nW8"*/, userID, new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    if (msg.what == Constants.RESULT_OK) {
-                        boolean isReadContactsPermission = new PermissionGrantedManager(getApplicationContext()).isReadContactsPermission();
-                        if (timeToRefreshAddressBook() && isReadContactsPermission && isOnline()) {
-                            try {
-                                new StorageKeyValueManager(getApplicationContext()).setContactsUploading(true);
-                                ContactList contactList = new ContactManager().getContactList(getApplicationContext());
-                                AddressBook addressBook = new AddressBook();
-                                addressBook.updateAddressBookWithContactListForUserId(getApplicationContext(), contactList, userID, new Handler.Callback() {
-                                    @Override
-                                    public boolean handleMessage(Message msg) {
-                                        new StorageKeyValueManager(getApplicationContext()).setContactsUploading(false);
-                                        return false;
-                                    }
-                                });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+            boolean isReadContactsPermission = new PermissionGrantedManager(getApplicationContext()).isReadContactsPermission();
+            if (timeToRefreshAddressBook() && isReadContactsPermission && isOnline()) {
+                try {
+                    new StorageKeyValueManager(getApplicationContext()).setContactsUploading(true);
+                    ContactList contactList = new ContactManager().getContactList(getApplicationContext());
+                    AddressBook addressBook = new AddressBook();
+                    addressBook.updateAddressBookWithContactListForUserId(getApplicationContext(), contactList, userID, new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(Message msg) {
+                            new StorageKeyValueManager(getApplicationContext()).setContactsUploading(false);
+                            return false;
                         }
-                    }
-                    return false;
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
         }
         else
         {
