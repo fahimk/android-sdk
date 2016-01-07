@@ -39,6 +39,8 @@ public class Constants {
 
     private String FONT = "";
 
+    private int CONTACTS_FILTER_TYPE = FilterType.ALL_CONTACTS.ordinal();
+
     public int getMAIN_FOREGROUND_COLOR() {
         return MAIN_FOREGROUND_COLOR;
     }
@@ -141,5 +143,13 @@ public class Constants {
 
     public void setFONT(String FONT) {
         this.FONT = FONT;
+    }
+
+    public int getCONTACTS_FILTER_TYPE() {
+        return CONTACTS_FILTER_TYPE;
+    }
+
+    public void setCONTACTS_FILTER_TYPE(int CONTACTS_FILTER_TYPE) {
+        this.CONTACTS_FILTER_TYPE = CONTACTS_FILTER_TYPE;
     }
 }

@@ -5,6 +5,8 @@ import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.WindowManager;
+
 import com.yesgraph.android.activity.ContactsActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.utils.CustomTheme;
@@ -15,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -134,4 +138,15 @@ public class ContactsActivityEspressoTests {
         String customTypeFace = yesGraph.getCustomTheme().getFont();
         assertEquals(customTypeFace, FONT_TYPE_FACE);
     }
+
+    @Test
+    public void testEnterTextToSearchBox() {
+        delay(500);
+        onView(withId(R.id.search)).perform(click());
+        delay(500);
+        onView(withId(R.id.search)).perform(typeText("a"));
+        delay(500);
+
+    }
+
 }

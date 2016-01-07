@@ -40,7 +40,7 @@ public class AuthenticateUnitTest extends ApplicationTestCase<Application> {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("client_key", "123456");
-        jsonObject.put("userId", "98765");
+        jsonObject.put("user_id", "98765");
 
         Message message = new Message();
         message.obj = jsonObject;
@@ -61,7 +61,7 @@ public class AuthenticateUnitTest extends ApplicationTestCase<Application> {
      */
     public void testCheckUserIdJsonObject() {
 
-        String userId = "1234";
+        String userId = "";
 
         Message message = new Message();
         message.obj = null;
@@ -98,6 +98,11 @@ public class AuthenticateUnitTest extends ApplicationTestCase<Application> {
         assertTrue(hasCity);
         assertTrue(hasCountry);
         assertTrue(hasWeatherKey);
+
+        JSONObject emptyParameters = null;
+        String emptyParameter = Authenticate.getParametersString(emptyParameters);
+
+        assertTrue(emptyParameter.equals(""));
 
     }
 }

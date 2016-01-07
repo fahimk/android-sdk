@@ -4,10 +4,15 @@ import android.app.Application;
 import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
+import com.yesgraph.android.models.Address;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.models.Ims;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.Source;
+import com.yesgraph.android.models.Website;
+
+import junit.framework.Test;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +26,41 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
     public ContactUnitTest() {
         super(Application.class);
     }
+
+
+    public void testContactModelData() {
+
+        Contact contact = new TestUtils().getContact();
+
+        assertTrue(!contact.name().isEmpty());
+        assertTrue(!contact.phone().isEmpty());
+        assertTrue(!contact.getNickname().isEmpty());
+        assertEquals(contact.getPinned(), (Integer) 2);
+
+        assertTrue(!contact.getTitle().isEmpty());
+        assertTrue(!contact.getCompany().isEmpty());
+        assertTrue(contact.getIs_favorite());
+
+        assertTrue(contact.getTimes_contacted() != null);
+        assertTrue(contact.getLast_message_received_date() != null);
+        assertTrue(contact.getLast_message_sent_date() != null);
+
+        assertTrue(contact.getAddresses() != null);
+        assertTrue(contact.getWebsites() != null);
+        assertTrue(contact.getIms() != null);
+
+    }
+
+    public void testConvertContactToJson() {
+
+        Contact contact = new TestUtils().getContact();
+
+        JSONObject jsonObject = contact.toJSONObject();
+
+        assertTrue(jsonObject != null);
+
+    }
+
 
 
     /**
@@ -160,7 +200,7 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
     /**
      * Check sanitized name
      */
-    public void testSanitizedName(){
+    public void testSanitizedName() {
 
         Contact contact = new Contact();
 
@@ -168,13 +208,14 @@ public class ContactUnitTest extends ApplicationTestCase<Application> {
 
         String sanitizedName = contact.sanitizedName();
 
-        assertEquals(true,!sanitizedName.isEmpty());
+        assertEquals(true, !sanitizedName.isEmpty());
 
     }
 
 
     /**
      * Check if set suggested flag to contact
+     *
      * @throws JSONException
      */
     public void testCheckWasSuggestedContact() throws JSONException {
