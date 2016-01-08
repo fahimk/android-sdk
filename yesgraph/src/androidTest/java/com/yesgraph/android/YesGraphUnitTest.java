@@ -75,23 +75,23 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
 
         YesGraph yesGraph = (YesGraph) mainActivity.getApplication();
 
-        String smsText = yesGraph.getSmsText();
+        String smsText = yesGraph.getCustomTheme().getSmsText(context);
 
         assertEquals(true, !smsText.isEmpty());
 
-        String emailText = yesGraph.getEmailText();
+        String emailText = yesGraph.getCustomTheme().getEmailText(context);
         assertEquals(true, !emailText.isEmpty());
 
-        String emailSubject = yesGraph.getEmailSubject();
+        String emailSubject = yesGraph.getCustomTheme().getEmailSubject(context);
         assertEquals(true, !emailSubject.isEmpty());
 
-        String copyLinkText = yesGraph.getCopyLinkText();
+        String copyLinkText = yesGraph.getCustomTheme().getCopyLinkText(context);
         assertEquals(true, !copyLinkText.isEmpty());
 
-        String copyButtonText = yesGraph.getCopyButtonText();
+        String copyButtonText = yesGraph.getCustomTheme().getCopyButtonText(context);
         assertEquals(true, !copyButtonText.isEmpty());
 
-        String shareText = yesGraph.getShareText();
+        String shareText = yesGraph.getCustomTheme().getShareText(context);
         assertEquals(true, !shareText.isEmpty());
 
     }
