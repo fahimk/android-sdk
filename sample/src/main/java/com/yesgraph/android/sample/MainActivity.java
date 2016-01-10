@@ -31,7 +31,6 @@ import com.yesgraph.android.models.FavouriteContacts;
 import com.yesgraph.android.models.FullDetailsContact;
 import com.yesgraph.android.models.RecentlyContactedContact;
 import com.yesgraph.android.utils.CustomTheme;
-import com.yesgraph.android.utils.FilterType;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         yesGraphApplication = (YesGraph) getApplicationContext();
 
-        yesGraphApplication.setSecretKey("live-WzEsMCwic2FtcGxlX2FuZHJvaWRfMyJd.CTO9TA.FNjfXP89EMykC-t20NytFVJv-Zg");
+        yesGraphApplication.configureWithClientKey("live-WzEsMCwic2FtcGxlX2FuZHJvaWRfMyJd.CTO9TA.FNjfXP89EMykC-t20NytFVJv-Zg");
 
 //        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
 
