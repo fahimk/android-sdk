@@ -163,40 +163,4 @@ public class YesGraph extends Application {
         }
     }
 
-    public static Integer getNumberOfSuggestedContacts()
-    {
-        return 5;
-    }
-
-    public static boolean isFacebookSignedIn() {
-        return true;
-    }
-
-    public static boolean isTwitterSignedIn() {
-        return true;
-    }
-
-    public String getCopyLinkText() {
-        return getString(R.string.default_share_link);
-    }
-
-    public String getCopyButtonText(){
-        return getString(R.string.button_copy_text);
-    }
-
-    public String getShareText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getSmsText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getEmailText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getEmailSubject() {
-        return getString(R.string.default_share_text);
-    }
 }

@@ -1,5 +1,8 @@
 package com.yesgraph.android.utils;
 
+import android.content.Context;
+
+import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
 
 /**
@@ -71,6 +74,121 @@ public class CustomTheme {
             constants.setCONTACTS_FILTER_TYPE(filterType);
         }
     }
+
+    public void setNumberOfSuggestedContacts(Integer numberOfSuggestedContacts){
+        constants.setNUMBER_OF_SUGGESTED_CONTACTS(numberOfSuggestedContacts);
+    }
+
+    public int getNumberOfSuggestedContacts() {
+        return constants.getNUMBER_OF_SUGGESTED_CONTACTS();
+    }
+
+    public void setIsFacebookSignedIn(boolean isFacebookSignedIn){
+        constants.setIS_FACEBOOK_SIGNED_IN(isFacebookSignedIn);
+    }
+
+    public boolean isFacebookSignedIn(){
+        return constants.IS_FACEBOOK_SIGNED_IN();
+    }
+
+    public void setIsTwitterSignedIn(boolean isTwitterSignedIn){
+        constants.setIS_TWITTER_SIGNED_IN(isTwitterSignedIn);
+    }
+
+    public boolean isTwitterSignedIn(){
+        return constants.IS_TWITTER_SIGNED_IN();
+    }
+
+    public String getCopyLinkText(Context context) {
+
+        String copyLinkText = constants.getCOPY_LINK_TEXT();
+
+        if (copyLinkText.equals("")) {
+            copyLinkText = context.getString(R.string.default_share_link);
+        }
+
+        return copyLinkText;
+    }
+
+    public void setCopyLinkText(String copyLinkText){
+        constants.setCOPY_LINK_TEXT(copyLinkText);
+    }
+
+    public void setCopyButtonText(String copyButtonText){
+        constants.setCOPY_BUTTON_TEXT(copyButtonText);
+    }
+
+    public String getCopyButtonText(Context context) {
+
+        String text = constants.getCOPY_BUTTON_TEXT();
+
+        if (text.equals("")) {
+            text = context.getString(R.string.button_copy_text);
+        }
+
+        return text;
+    }
+
+    public void setShareText(String shareText){
+        constants.setSHARE_TEXT(shareText);
+    }
+
+    public String getShareText(Context context) {
+
+        String text = constants.getSHARE_TEXT();
+
+        if (text.equals("")) {
+            text = context.getString(R.string.default_share_text);
+        }
+
+        return text;
+    }
+
+    public void setSmsText(String smsTest){
+        constants.setSHARE_SMS_TEXT(smsTest);
+    }
+
+    public String getSmsText(Context context) {
+
+        String text = constants.getSHARE_SMS_TEXT();
+
+        if (text.equals("")) {
+            text = context.getString(R.string.default_share_text);
+        }
+        return text;
+    }
+
+
+    public void setEmailText(String emailText){
+        constants.setSHARE_EMAIL_TEXT(emailText);
+    }
+
+    public String getEmailText(Context context) {
+
+        String text = constants.getSHARE_EMAIL_TEXT();
+
+        if (text.equals("")) {
+            text = context.getString(R.string.default_share_text);
+        }
+        return text;
+
+    }
+
+    public void setEmailSubject(String emailSubject){
+        constants.setSHARE_EMAIL_SUBJECT(emailSubject);
+    }
+
+    public String getEmailSubject(Context context) {
+
+        String text = constants.getSHARE_EMAIL_SUBJECT();
+
+        if (text.equals("")) {
+            text = context.getString(R.string.default_share_text);
+        }
+        return text;
+
+    }
+
 
     public int getContactsFilterType() {
         return constants.getCONTACTS_FILTER_TYPE();

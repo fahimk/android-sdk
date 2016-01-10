@@ -41,6 +41,17 @@ public class Constants {
 
     private int CONTACTS_FILTER_TYPE = FilterType.ALL_CONTACTS.ordinal();
 
+    private Integer NUMBER_OF_SUGGESTED_CONTACTS = 5;
+    private boolean IS_FACEBOOK_SIGNED_IN = true;
+    private boolean IS_TWITTER_SIGNED_IN = true;
+    private String COPY_LINK_TEXT = "";
+    private String COPY_BUTTON_TEXT = "";
+    private String SHARE_TEXT = "";
+    private String SHARE_SMS_TEXT = "";
+    private String SHARE_EMAIL_TEXT = "";
+    private String SHARE_EMAIL_SUBJECT = "";
+
+
     public int getMAIN_FOREGROUND_COLOR() {
         return MAIN_FOREGROUND_COLOR;
     }
@@ -151,5 +162,77 @@ public class Constants {
 
     public void setCONTACTS_FILTER_TYPE(int CONTACTS_FILTER_TYPE) {
         this.CONTACTS_FILTER_TYPE = CONTACTS_FILTER_TYPE;
+    }
+
+    public Integer getNUMBER_OF_SUGGESTED_CONTACTS() {
+        return NUMBER_OF_SUGGESTED_CONTACTS;
+    }
+
+    public void setNUMBER_OF_SUGGESTED_CONTACTS(Integer NUMBER_OF_SUGGESTED_CONTACTS) {
+        this.NUMBER_OF_SUGGESTED_CONTACTS = NUMBER_OF_SUGGESTED_CONTACTS;
+    }
+
+    public boolean IS_FACEBOOK_SIGNED_IN() {
+        return IS_FACEBOOK_SIGNED_IN;
+    }
+
+    public void setIS_FACEBOOK_SIGNED_IN(boolean IS_FACEBOOK_SIGNED_IN) {
+        this.IS_FACEBOOK_SIGNED_IN = IS_FACEBOOK_SIGNED_IN;
+    }
+
+    public boolean IS_TWITTER_SIGNED_IN() {
+        return IS_TWITTER_SIGNED_IN;
+    }
+
+    public void setIS_TWITTER_SIGNED_IN(boolean IS_TWITTER_SIGNED_IN) {
+        this.IS_TWITTER_SIGNED_IN = IS_TWITTER_SIGNED_IN;
+    }
+
+    public String getCOPY_LINK_TEXT() {
+        return COPY_LINK_TEXT;
+    }
+
+    public void setCOPY_LINK_TEXT(String COPY_LINK_TEXT) {
+        this.COPY_LINK_TEXT = COPY_LINK_TEXT;
+    }
+
+    public String getCOPY_BUTTON_TEXT() {
+        return COPY_BUTTON_TEXT;
+    }
+
+    public void setCOPY_BUTTON_TEXT(String COPY_BUTTON_TEXT) {
+        this.COPY_BUTTON_TEXT = COPY_BUTTON_TEXT;
+    }
+
+    public String getSHARE_TEXT() {
+        return SHARE_TEXT;
+    }
+
+    public void setSHARE_TEXT(String SHARE_TEXT) {
+        this.SHARE_TEXT = SHARE_TEXT;
+    }
+
+    public String getSHARE_SMS_TEXT() {
+        return SHARE_SMS_TEXT;
+    }
+
+    public void setSHARE_SMS_TEXT(String SHARE_SMS_TEXT) {
+        this.SHARE_SMS_TEXT = SHARE_SMS_TEXT;
+    }
+
+    public String getSHARE_EMAIL_TEXT() {
+        return SHARE_EMAIL_TEXT;
+    }
+
+    public void setSHARE_EMAIL_TEXT(String SHARE_EMAIL_TEXT) {
+        this.SHARE_EMAIL_TEXT = SHARE_EMAIL_TEXT;
+    }
+
+    public String getSHARE_EMAIL_SUBJECT() {
+        return SHARE_EMAIL_SUBJECT;
+    }
+
+    public void setSHARE_EMAIL_SUBJECT(String SHARE_EMAIL_SUBJECT) {
+        this.SHARE_EMAIL_SUBJECT = SHARE_EMAIL_SUBJECT;
     }
 }
