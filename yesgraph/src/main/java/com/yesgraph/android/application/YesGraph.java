@@ -86,9 +86,8 @@ public class YesGraph extends Application {
 
     public void updateContactsFromPhone(Handler.Callback callback)
     {
-        AddressBook addressBook =new AddressBook();
-        ContactList contacts=new ContactManager().getContactList(getApplicationContext());
-        addressBook.updateAddressBookWithContactListForUserId(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
+        AddressBook addressBook = new AddressBook();
+        addressBook.updateAddressBookWithLimitedContacts(getApplicationContext(), callback);
     }
 
     public void updateSuggestionsSeen(ArrayList<RankedContact> contacts, Handler.Callback callback)
@@ -123,8 +122,6 @@ public class YesGraph extends Application {
     public void checkIsTimeToRefreshAddressBook() {
 
         new StorageKeyValueManager(this).setContactsUploading(false);
-
-        final String userID = new StorageKeyValueManager(getApplicationContext()).getUserId();
         final String secretKey = new StorageKeyValueManager(getApplicationContext()).getSecretKey();
 
         if(secretKey.length()>0)
@@ -133,9 +130,8 @@ public class YesGraph extends Application {
             if (timeToRefreshAddressBook() && isReadContactsPermission && isOnline()) {
                 try {
                     new StorageKeyValueManager(getApplicationContext()).setContactsUploading(true);
-                    ContactList contactList = new ContactManager().getContactList(getApplicationContext());
                     AddressBook addressBook = new AddressBook();
-                    addressBook.updateAddressBookWithContactListForUserId(getApplicationContext(), contactList, userID, new Handler.Callback() {
+                    addressBook.updateAddressBookWithLimitedContacts(getApplicationContext(), new Handler.Callback() {
                         @Override
                         public boolean handleMessage(Message msg) {
                             new StorageKeyValueManager(getApplicationContext()).setContactsUploading(false);

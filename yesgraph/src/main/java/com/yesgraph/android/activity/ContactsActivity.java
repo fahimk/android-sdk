@@ -145,12 +145,10 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
         if(!isContactCached && isReadContactPermissionGranted && checkContactsReadPermission && application.isOnline() && !isContactsUploading) {
 
-            new AddressBook().updateAddressBookWithContactListForUserId(ContactsActivity.this, new ContactManager().getContactList(context),
-                    new StorageKeyValueManager(context).getUserId(), new Handler.Callback() {
+            new AddressBook().updateAddressBookWithLimitedContacts(ContactsActivity.this, new Handler.Callback() {
 
                 @Override
                 public boolean handleMessage(Message msg) {
-
                     new StorageKeyValueManager(context).setContactsUploading(false);
 
                     if (msg.what == Constants.RESULT_OK) {
