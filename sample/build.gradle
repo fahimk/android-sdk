@@ -32,38 +32,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
-
-    productFlavors {
-
-        core {
-            applicationId "com.yesgraph.android.sample.core"
-            versionCode 1
-            versionName "1.0.0"
-            ext.enableCrashlytics = false
-        }
-
-        faceBookIntegration {
-            applicationId "com.yesgraph.android.sample.fbintegration"
-            versionCode 1
-            versionName "1.0.0"
-            ext.enableCrashlytics = false
-        }
-
-        twitterIntegration {
-            applicationId "com.yesgraph.android.sample.twitterintegration"
-            versionCode 1
-            versionName "1.0.0"
-            ext.enableCrashlytics = false
-        }
-
-        allIntegration {
-            applicationId "com.yesgraph.android.sample.allintegration"
-            versionCode 1
-            versionName "1.0.0"
-            ext.enableCrashlytics = false
-        }
-    }
 }
 
 dependencies {
@@ -72,16 +40,7 @@ dependencies {
     compile project(':yesgraph')
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
-
-
-    faceBookIntegrationCompile 'com.facebook.android:facebook-android-sdk:4.7.0'
-
-    twitterIntegrationCompile('com.twitter.sdk.android:tweet-composer:1.0.2@aar') {
-        transitive = true;
-    }
-
-    allIntegrationCompile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    allIntegrationCompile('com.twitter.sdk.android:tweet-composer:1.0.2@aar') {
+    compile('com.twitter.sdk.android:twitter:1.10.0@aar') {
         transitive = true;
     }
 }

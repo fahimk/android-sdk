@@ -22,6 +22,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.FavouriteContacts;
 import com.yesgraph.android.models.FullDetailsContact;
@@ -63,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private List<FavouriteContacts> favs = null;
     private AppCompatActivity activity;
 
+    private CallbackManager callbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +78,12 @@ public class MainActivity extends AppCompatActivity {
         activity = this;
         context = this;
 
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
 
         yesGraphApplication = (YesGraph) getApplicationContext();
         yesGraphApplication.configureWithUserId("<USER_ID>");
@@ -152,28 +163,28 @@ public class MainActivity extends AppCompatActivity {
         btn_tryYesGraph.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, com.yesgraph.android.sample.ShareSheetActivity.class);
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
         });
         btn_tryYesGraph2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, com.yesgraph.android.sample.ShareSheetActivity.class);
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
         });
         btn_tryYesGraph3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, com.yesgraph.android.sample.ShareSheetActivity.class);
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
         });
         btn_tryYesGraph4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, com.yesgraph.android.sample.ShareSheetActivity.class);
+                Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
                 startActivity(intent);
             }
         });

@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
 //                customTheme.setShareButtonsShape("rounded_square");
 //                customTheme.setFonts("Pacifico.ttf");
 //                app.setCustomTheme(customTheme);
-                /*Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(context,com.yesgraph.android.activity.ShareSheetActivity.class);
+                startActivity(intent);
             }
         });
     }

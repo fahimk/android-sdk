@@ -1,4 +1,4 @@
-package com.yesgraph.android.sample;
+package com.yesgraph.android.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,11 +23,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.yesgraph.android.R;
-import com.yesgraph.android.activity.ContactsActivity;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.models.ContactList;
+import com.yesgraph.android.network.AddressBook;
+import com.yesgraph.android.network.Authenticate;
+import com.yesgraph.android.utils.StorageKeyValueManager;
+import com.yesgraph.android.utils.Constants;
+import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.FontManager;
+import com.yesgraph.android.utils.PermissionGrantedManager;
+import com.yesgraph.android.utils.SharedPreferencesManager;
 import com.yesgraph.android.utils.Visual;
+
+import io.fabric.sdk.android.Fabric;
 
 public class ShareSheetActivity extends AppCompatActivity {
 
@@ -37,24 +57,81 @@ public class ShareSheetActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TextView shareText, facebookText, twitterText, contactsText, toolbarTitle;
     private FontManager fontManager;
+    private ShareDialog shareDialog;
+    private CallbackManager callbackManager;
+    private String TWITTER_KEY = "";
+    private String TWITTER_SECRET = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         init();
+
+        checkIsTimeToRefreshAddressBook();
     }
 
     private void init() {
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setTwitterKeys();
         setContentView(R.layout.activity_share_sheet);
+        FacebookSdk.sdkInitialize(this);
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
         application = (YesGraph) getApplication();
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
     }
 
+    private void checkIsTimeToRefreshAddressBook() {
+
+        new StorageKeyValueManager(context).setContactsUploading(false);
+
+        final String userID = new SharedPreferencesManager(context).getString("user_id");
+
+        Boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
+        Boolean isContactsUploading =new StorageKeyValueManager(context).isContactsUploading();
+
+        if (!isContactsUploading && timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
+            try {
+                new StorageKeyValueManager(context).setContactsUploading(true);
+                new AddressBook().updateAddressBookWithContactListForUserId(context, new ContactManager().getContactList(context), userID, new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        new StorageKeyValueManager(context).setContactsUploading(false);
+                        return false;
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean timeToRefreshAddressBook() {
+        long lastContactsUpload = new StorageKeyValueManager(context).getContactLastUpload();
+
+        if(lastContactsUpload < System.currentTimeMillis() - (Constants.HOURS_BETWEEN_UPLOAD * 60 * 60 * 1000))
+            return true;
+        else
+            return false;
+    }
+
+    private void setTwitterKeys() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            TWITTER_KEY = intent.getStringExtra("twitter_key");
+            TWITTER_SECRET = intent.getStringExtra("twitter_secret");
+            if (TWITTER_KEY != null && TWITTER_SECRET != null) {
+                if (!TWITTER_KEY.isEmpty() && !TWITTER_SECRET.isEmpty()) {
+                    TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                    Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
+                }
+            }
+        }
+    }
 
     private void setToolbar(){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -107,7 +184,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
     private void setShareText() {
         shareText = (TextView) findViewById(R.id.shareText);
-        shareText.setText(application.getShareText());
+        shareText.setText(application.getCustomTheme().getShareText(context));
         shareText.setTextColor(application.getCustomTheme().getDarkFontColor());
         if (!application.getCustomTheme().getFont().isEmpty()) {
             fontManager.setFont(shareText, application.getCustomTheme().getFont());
@@ -176,7 +253,19 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterLayout.setClickable(true);
         contactsLayout.setClickable(true);
 
-
+        facebookLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToFacebook();
+            }
+        });
+        twitterLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TweetComposer.Builder builder = new TweetComposer.Builder(context).text(application.getCustomTheme().getCopyLinkText(context));
+                builder.show();
+            }
+        });
         contactsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,11 +274,11 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
 
-        if (!application.isFacebookSignedIn()) {
+        if (!application.getCustomTheme().isFacebookSignedIn()) {
             facebookLayout.setVisibility(View.GONE);
         }
 
-        if (!application.isTwitterSignedIn()) {
+        if (!application.getCustomTheme().isTwitterSignedIn()) {
             twitterLayout.setVisibility(View.GONE);
         }
     }
@@ -205,7 +294,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         drawable.setStroke(Visual.getPixelsFromDp(context, 3), application.getCustomTheme().getMainForegroundColor());
         drawable.setColor(application.getCustomTheme().getReferralBunnerBackgroundColor());
 
-        copyLinkText.setText(application.getCopyLinkText());
+        copyLinkText.setText(application.getCustomTheme().getCopyLinkText(context));
         copyLinkText.setTextColor(application.getCustomTheme().getDarkFontColor());
         copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getCustomTheme().getReferralTextSize());
         copyLinkText.setClickable(true);
@@ -218,7 +307,7 @@ public class ShareSheetActivity extends AppCompatActivity {
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
             }
         });
-        copyButtonText.setText(application.getCopyButtonText());
+        copyButtonText.setText(application.getCustomTheme().getCopyButtonText(context));
         if (application.getCustomTheme().getCopyButtonColor() != 0) {
             copyButtonText.setTextColor(application.getCustomTheme().getCopyButtonColor());
         } else {
@@ -246,5 +335,34 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void setBackground() {
         RelativeLayout masterLayout = (RelativeLayout) findViewById(R.id.layoutMaster);
         masterLayout.setBackgroundColor(application.getCustomTheme().getMainBackgroundColor());
+    }
+
+    private void shareToFacebook() {
+        try {
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        //.setContentTitle("Content Title")
+                        //.setContentDescription("Content Description")
+                        .setContentUrl(Uri.parse(application.getCustomTheme().getCopyLinkText(context)))
+                        .build();
+
+                shareDialog.show(linkContent);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, context.getResources().getString(R.string.initialize_facebook_sdk), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 64207) {
+            if (resultCode == RESULT_OK)
+                Toast.makeText(context, context.getResources().getString(R.string.facebook_share_success), Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, context.getResources().getString(R.string.facebook_share_failure), Toast.LENGTH_SHORT).show();
+        }
     }
 }
