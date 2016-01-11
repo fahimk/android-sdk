@@ -69,6 +69,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         init();
 
         checkIsTimeToRefreshAddressBook();
+
     }
 
     private void init() {
@@ -88,16 +89,13 @@ public class ShareSheetActivity extends AppCompatActivity {
     private void checkIsTimeToRefreshAddressBook() {
 
         new StorageKeyValueManager(context).setContactsUploading(false);
-
-        final String userID = new SharedPreferencesManager(context).getString("user_id");
-
         Boolean isReadContactsPermission = new PermissionGrantedManager(context).isReadContactsPermission();
         Boolean isContactsUploading =new StorageKeyValueManager(context).isContactsUploading();
 
         if (!isContactsUploading && timeToRefreshAddressBook() && isReadContactsPermission && application.isOnline()) {
             try {
                 new StorageKeyValueManager(context).setContactsUploading(true);
-                new AddressBook().updateAddressBookWithContactListForUserId(context, new ContactManager().getContactList(context), userID, new Handler.Callback() {
+                new AddressBook().updateAddressBookWithLimitedContacts(context, new Handler.Callback() {
                     @Override
                     public boolean handleMessage(Message msg) {
                         new StorageKeyValueManager(context).setContactsUploading(false);
