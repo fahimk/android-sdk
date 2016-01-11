@@ -1,5 +1,6 @@
 package com.yesgraph.android;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
@@ -36,6 +37,7 @@ import static org.hamcrest.core.IsNot.not;
 public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<ShareSheetActivity> {
 
     private YesGraph yesGraph;
+    private Context context;
     private static final String FONT_TYPE_FACE = "Pacifico.ttf";
 
     public ShareSheetActivityTest() {
@@ -52,6 +54,7 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
 
         yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
+        context = yesGraph.getBaseContext();
 
         //set custom text font
         CustomTheme customTheme = new CustomTheme();
@@ -98,12 +101,12 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     public void checkTextViewHaveRightStrings() {
         YesGraph application = (YesGraph) activityTestRule.getActivity().getApplication();
         onView(withId(R.id.toolbarTitle)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.share_sheet))));
-        onView(withId(R.id.shareText)).check(matches(withText(application.getShareText())));
+        onView(withId(R.id.shareText)).check(matches(withText(application.getCustomTheme().getShareText(context))));
         onView(withId(R.id.textFacebook)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.facebook))));
         onView(withId(R.id.textTwitter)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.twitter))));
         onView(withId(R.id.textContacts)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.contacts))));
-        onView(withId(R.id.textCopyLink)).check(matches(withText(application.getCopyLinkText())));
-        onView(withId(R.id.textCopyButton)).check(matches(withText(application.getCopyButtonText())));
+        onView(withId(R.id.textCopyLink)).check(matches(withText(application.getCustomTheme().getCopyLinkText(context))));
+        onView(withId(R.id.textCopyButton)).check(matches(withText(application.getCustomTheme().getCopyButtonText(context))));
     }
 
     @Test

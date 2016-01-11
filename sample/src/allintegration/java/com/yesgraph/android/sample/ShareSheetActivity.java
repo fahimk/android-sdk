@@ -186,7 +186,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
     private void setShareText() {
         shareText = (TextView) findViewById(R.id.shareText);
-        shareText.setText(application.getShareText());
+        shareText.setText(application.getCustomTheme().getShareText(context));
         shareText.setTextColor(application.getCustomTheme().getDarkFontColor());
         if (!application.getCustomTheme().getFont().isEmpty()) {
             fontManager.setFont(shareText, application.getCustomTheme().getFont());
@@ -264,7 +264,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         twitterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TweetComposer.Builder builder = new TweetComposer.Builder(context).text(application.getCopyLinkText());
+                TweetComposer.Builder builder = new TweetComposer.Builder(context).text(application.getCustomTheme().getCopyLinkText(context));
                 builder.show();
             }
         });
@@ -276,11 +276,11 @@ public class ShareSheetActivity extends AppCompatActivity {
             }
         });
 
-        if (!application.isFacebookSignedIn()) {
+        if (!application.getCustomTheme().isFacebookSignedIn()) {
             facebookLayout.setVisibility(View.GONE);
         }
 
-        if (!application.isTwitterSignedIn()) {
+        if (!application.getCustomTheme().isTwitterSignedIn()) {
             twitterLayout.setVisibility(View.GONE);
         }
     }
@@ -296,7 +296,7 @@ public class ShareSheetActivity extends AppCompatActivity {
         drawable.setStroke(Visual.getPixelsFromDp(context, 3), application.getCustomTheme().getMainForegroundColor());
         drawable.setColor(application.getCustomTheme().getReferralBunnerBackgroundColor());
 
-        copyLinkText.setText(application.getCopyLinkText());
+        copyLinkText.setText(application.getCustomTheme().getCopyLinkText(context));
         copyLinkText.setTextColor(application.getCustomTheme().getDarkFontColor());
         copyLinkText.setTextSize(TypedValue.COMPLEX_UNIT_SP, application.getCustomTheme().getReferralTextSize());
         copyLinkText.setClickable(true);
@@ -309,7 +309,7 @@ public class ShareSheetActivity extends AppCompatActivity {
                 Toast.makeText(context, R.string.copy_to_clipboard, Toast.LENGTH_SHORT).show();
             }
         });
-        copyButtonText.setText(application.getCopyButtonText());
+        copyButtonText.setText(application.getCustomTheme().getCopyButtonText(context));
         if (application.getCustomTheme().getCopyButtonColor() != 0) {
             copyButtonText.setTextColor(application.getCustomTheme().getCopyButtonColor());
         } else {
@@ -345,7 +345,7 @@ public class ShareSheetActivity extends AppCompatActivity {
                 ShareLinkContent linkContent = new ShareLinkContent.Builder()
                         //.setContentTitle("Content Title")
                         //.setContentDescription("Content Description")
-                        .setContentUrl(Uri.parse(application.getCopyLinkText()))
+                        .setContentUrl(Uri.parse(application.getCustomTheme().getCopyLinkText(context)))
                         .build();
 
                 shareDialog.show(linkContent);

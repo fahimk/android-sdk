@@ -21,7 +21,6 @@ import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.PermissionGrantedManager;
-import com.yesgraph.android.utils.SharedPreferencesManager;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 
 import java.util.ArrayList;
@@ -40,17 +39,22 @@ public class YesGraph extends Application {
 
     public void onCreate(String secretKey) {
         super.onCreate();
-        setSecretKey(secretKey);
+        configureWithClientKey(secretKey);
     }
 
-    public void setSecretKey(String secretKey)
+    public void configureWithUserId(String userId)
     {
-        new StorageKeyValueManager(getApplicationContext()).setApiKey(secretKey);
+        new StorageKeyValueManager(getApplicationContext()).setUserId(userId);
+    }
+
+    public void configureWithClientKey(String clientKey)
+    {
+        new StorageKeyValueManager(getApplicationContext()).setApiKey(clientKey);
 
         final String userID = new StorageKeyValueManager(getApplicationContext()).getUserId();
 
         Authenticate authenticate = new Authenticate();
-        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), secretKey, userID, new Handler.Callback() {
+        authenticate.fetchClientKeyWithSecretKey(getApplicationContext(), clientKey, userID, new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 if (msg.what == Constants.RESULT_OK) {
@@ -163,40 +167,4 @@ public class YesGraph extends Application {
         }
     }
 
-    public static Integer getNumberOfSuggestedContacts()
-    {
-        return 5;
-    }
-
-    public static boolean isFacebookSignedIn() {
-        return true;
-    }
-
-    public static boolean isTwitterSignedIn() {
-        return true;
-    }
-
-    public String getCopyLinkText() {
-        return getString(R.string.default_share_link);
-    }
-
-    public String getCopyButtonText(){
-        return getString(R.string.button_copy_text);
-    }
-
-    public String getShareText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getSmsText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getEmailText() {
-        return getString(R.string.default_share_text);
-    }
-
-    public String getEmailSubject() {
-        return getString(R.string.default_share_text);
-    }
 }

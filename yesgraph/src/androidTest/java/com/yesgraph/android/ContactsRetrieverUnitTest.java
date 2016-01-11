@@ -203,7 +203,7 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
         assertEquals(true, isNotDuplicated);
     }
 
-    public void testValidateWebsiteData() {
+    /*public void testValidateWebsiteData() {
 
         String url = "www.myurl.com";
         Integer homePage = 1;
@@ -341,7 +341,7 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
 
     }
 
-
+*/
 
     @NonNull
     private ArrayList<RankedContact> getRankedContacts(Integer count) {

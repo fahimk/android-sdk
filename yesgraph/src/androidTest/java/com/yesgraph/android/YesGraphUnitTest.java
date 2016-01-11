@@ -1,21 +1,17 @@
 package com.yesgraph.android;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.TextUtils;
-import android.view.ContextThemeWrapper;
 
 import com.yesgraph.android.activity.MainActivity;
-import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.ContactRetriever;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 
@@ -23,8 +19,6 @@ import org.junit.Before;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
-
-import javax.xml.transform.Result;
 
 /**
  * Created by Klemen on 23.12.2015.
@@ -75,23 +69,23 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
 
         YesGraph yesGraph = (YesGraph) mainActivity.getApplication();
 
-        String smsText = yesGraph.getSmsText();
+        String smsText = yesGraph.getCustomTheme().getSmsText(context);
 
         assertEquals(true, !smsText.isEmpty());
 
-        String emailText = yesGraph.getEmailText();
+        String emailText = yesGraph.getCustomTheme().getEmailText(context);
         assertEquals(true, !emailText.isEmpty());
 
-        String emailSubject = yesGraph.getEmailSubject();
+        String emailSubject = yesGraph.getCustomTheme().getEmailSubject(context);
         assertEquals(true, !emailSubject.isEmpty());
 
-        String copyLinkText = yesGraph.getCopyLinkText();
+        String copyLinkText = yesGraph.getCustomTheme().getCopyLinkText(context);
         assertEquals(true, !copyLinkText.isEmpty());
 
-        String copyButtonText = yesGraph.getCopyButtonText();
+        String copyButtonText = yesGraph.getCustomTheme().getCopyButtonText(context);
         assertEquals(true, !copyButtonText.isEmpty());
 
-        String shareText = yesGraph.getShareText();
+        String shareText = yesGraph.getCustomTheme().getShareText(context);
         assertEquals(true, !shareText.isEmpty());
 
     }
@@ -110,7 +104,7 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
 
         String secretKey = "secretKey";
 
-        yesGraph.setSecretKey(secretKey);
+        yesGraph.configureWithClientKey(secretKey);
 
         String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
 
@@ -224,7 +218,7 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
     public void testCheckIsTimeToRefresh() {
 
         String secretKey = "secretKey";
-        yesGraph.setSecretKey(secretKey);
+        yesGraph.configureWithClientKey(secretKey);
 
         yesGraph.checkIsTimeToRefreshAddressBook();
     }

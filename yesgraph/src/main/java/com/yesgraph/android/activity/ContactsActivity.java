@@ -311,7 +311,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
             resetItems();
 
-            items = new ContactManager().getContactsByAlphabetSections(context,contacts,application.getNumberOfSuggestedContacts());
+            items = new ContactManager().getContactsByAlphabetSections(context,contacts,application.getCustomTheme().getNumberOfSuggestedContacts());
 
             itemsOld = (ArrayList<Object>)items.clone();
         }
@@ -344,7 +344,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         {
             try {
                 contactList = AddressBook.contactListFromResponse(new JSONArray(new StorageKeyValueManager(context).getContactCache()));
-                contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getNumberOfSuggestedContacts(), true);
+                contacts = rankedContactsToRegularContacts(contactList.getEntries(),application.getCustomTheme().getNumberOfSuggestedContacts(), true);
             } catch (JSONException e) {
                 e.printStackTrace();
                 contacts = getContactsFromContactList();
@@ -366,7 +366,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
 
                 contactsList.setAdapter(adapter);
 
-                alphabeticalIndexManager.setIndexList(items,YesGraph.getNumberOfSuggestedContacts());
+                alphabeticalIndexManager.setIndexList(items,application.getCustomTheme().getNumberOfSuggestedContacts());
 
                 //show alphabetical side index
                 alphabeticalIndexManager.displayIndex();
