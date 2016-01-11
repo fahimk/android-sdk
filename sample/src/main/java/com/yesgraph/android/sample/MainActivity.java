@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
@@ -27,10 +30,16 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.models.Contact;
+import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.models.FavouriteContacts;
 import com.yesgraph.android.models.FullDetailsContact;
+import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.RecentlyContactedContact;
+import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.CustomTheme;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -74,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+//        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
         setContentView(R.layout.activity_main);
         activity = this;
         context = this;
@@ -90,24 +100,81 @@ public class MainActivity extends AppCompatActivity {
         yesGraphApplication.configureWithClientKey("live-WzEsMCwic2FtcGxlX2FuZHJvaWRfMyJd.CTO9TA.FNjfXP89EMykC-t20NytFVJv-Zg");
 
         yesGraphApplication.setSource("Name", "+1 123 123 123", "Email");
+
         CustomTheme customTheme=new CustomTheme();
+
         customTheme.setNumberOfSuggestedContacts(5);
         customTheme.setCopyLinkText("www.yesgraph.com/#android");
         customTheme.setEmailSubject("We should check out YesGraph");
         customTheme.setEmailText("Check out YesGraph, they help apps grow: www.yesgraph.com/#android");
         customTheme.setSmsText("Check out YesGraph, they help apps grow: www.yesgraph.com/#android");
 
+        int mainForegroundColor=Color.parseColor("#0078BD");
+        int mainBackgroundColor=Color.parseColor("#F5F5F5");
+        int darkFontColor=Color.parseColor("#212121");
+        int lightFontColor=Color.parseColor("#FFFFFF");
+        int rowSelectedColor=Color.parseColor("#AAAAAA");
+        int rowUnselectedColor=Color.parseColor("#F5F5F5");
+        int rowBackgroundColor=Color.parseColor("#F5F5F5");
+        int backArrowColor=Color.parseColor("#FFFFFF");
+        int copyButtonColor=Color.parseColor("#F5F5F5");
+        int referralBannerBackgroundColor=Color.parseColor("#F5F5F5");
+
+        customTheme.setThemeColor(
+                mainForegroundColor,
+                mainBackgroundColor,
+                darkFontColor,
+                lightFontColor,
+                rowSelectedColor,
+                rowUnselectedColor,
+                rowBackgroundColor,
+                backArrowColor,
+                copyButtonColor,
+                referralBannerBackgroundColor);
+
+        customTheme.setShareButtonsShape("square");
+
+        customTheme.setFonts("Pacifico.ttf");
+
         yesGraphApplication.setCustomTheme(customTheme);
-//        Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
+
+        /*yesGraphApplication.updateContactsFromPhone(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if (msg.what == Constants.RESULT_OK) {
+                    //handle the response that is represented as a ContactsList and is ready to use in a RecyclerView or any other way
+                    ContactList contactList = (ContactList) msg.obj;
+                } else {
+                    if (msg.obj instanceof JSONObject) {
+                        //handle the JSON error object
+                        JSONObject jsonObject = (JSONObject) msg.obj;
+                    } else {
+                        //handle the error that is not in JSON format
+                    }
+                }
+                return false;
+            }
+        });
+
+        ArrayList<RankedContact> rankedContacts = new ArrayList<>();
+
+        yesGraphApplication.updateSuggestionsSeen(rankedContacts, new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                return false;
+            }
+        });
+
+        ArrayList<Contact> contacts = new ArrayList<>();
+
+        yesGraphApplication.inviteSentForUsers(contacts, new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                return false;
+            }
+        });*/
 
         initUI();
-
-//        customTheme = new CustomTheme();
-//        customTheme.setThemeColor(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-//        customTheme.setReferralTextSize(14);
-//        customTheme.setShareButtonsShape("rounded_square");
-//        customTheme.setFonts("Pacifico.ttf");
-//        yesGraphApplication.setCustomTheme(customTheme);
     }
 
     private void initUI() {
