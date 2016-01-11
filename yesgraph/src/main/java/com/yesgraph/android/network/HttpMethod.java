@@ -86,7 +86,7 @@ abstract class HttpMethod {
                     if(method.equals(Constants.HTTP_METHOD_POST) && parameters!=null)
                     {
 
-                        Log.i("WEB POST", "JSON:" + parameters.toString());
+                        //Log.i("WEB POST", "JSON:" + parameters.toString());
 
                         conn.setDoInput(true);
                         conn.setDoOutput(true);
@@ -115,7 +115,7 @@ abstract class HttpMethod {
 
                             String sResponse = (in!=null ? org.apache.commons.io.IOUtils.toString(in, "UTF-8") : "{}");
 
-                            Log.i("WEB RESPONSE", "CODE:" + responseCode + " MESSAGE:" + sResponse.toString());
+                            //Log.i("WEB RESPONSE", "CODE:" + responseCode + " MESSAGE:" + sResponse.toString());
                             JSONObject jsonResponse = new JSONObject(sResponse);
 
                             if (responseCode < 200 || responseCode > 399){
