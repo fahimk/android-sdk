@@ -79,6 +79,11 @@ public class YesGraph extends Application {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+    public Long getLastInvitedContactsNumber()
+    {
+        return new StorageKeyValueManager(getApplicationContext()).getInviteNumber();
+    }
+
     public void setSource(String userName, String userPhone, String userEmail)
     {
         new StorageKeyValueManager(getApplicationContext()).setUserName(userName);

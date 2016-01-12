@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     private CallbackManager callbackManager;
 
+    private static int REQUEST_CODE_SHARE_SHEET=111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,30 +232,40 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_SHARE_SHEET);
             }
         });
         btn_tryYesGraph2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_SHARE_SHEET);
             }
         });
         btn_tryYesGraph3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_SHARE_SHEET);
             }
         });
         btn_tryYesGraph4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, com.yesgraph.android.activity.ShareSheetActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_SHARE_SHEET);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SHARE_SHEET) {
+            if (resultCode == RESULT_OK)
+                Toast.makeText(context, "Invited " + yesGraphApplication.getLastInvitedContactsNumber() + " contacts.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

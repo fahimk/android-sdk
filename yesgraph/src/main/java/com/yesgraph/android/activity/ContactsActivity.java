@@ -1,6 +1,7 @@
 package com.yesgraph.android.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -109,6 +110,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
+
+        new StorageKeyValueManager(context).setInviteNumber(0L);
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
@@ -246,7 +249,16 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      * Send emails and sms to contacts
      */
     private void inviteContacts() {
-        new SenderManager(items).inviteContacts(this);
+        Long invites=0L;
+        for (Object contact : items) {
+            if (contact instanceof RegularContact) {
+                if (((RegularContact) contact).getSelected())
+                    invites++;
+            }
+        }
+        new StorageKeyValueManager(context).setInviteNumber(invites);
+
+        new SenderManager(items).inviteContacts((Activity)context);
     }
 
     @Override
