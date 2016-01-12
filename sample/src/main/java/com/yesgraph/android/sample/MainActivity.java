@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         //shareservices.add(myShareService);
 
         yesGraphApplication.configureWithUserId("<USER_ID>");
-        yesGraphApplication.configureWithClientKey("live-WzEsMCwic2FtcGxlX2FuZHJvaWRfMyJd.CTO9TA.FNjfXP89EMykC-t20NytFVJv-Zg");
+        yesGraphApplication.configureWithClientKey("<SECRET_KEY>");
 
         yesGraphApplication.setSource("Name", "+1 123 123 123", "Email");
 
