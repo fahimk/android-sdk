@@ -104,7 +104,7 @@ public class YesGraph extends Application {
         ysgSuggestionsShown.updateSuggestionsSeen(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
     }
 
-    private ArrayList<RankedContact> getContactsFromCache()
+    public ArrayList<RankedContact> getContactsFromCache()
     {
         Boolean isContactCached = !new StorageKeyValueManager(getApplicationContext()).getContactCache().equals("");
 
@@ -158,8 +158,7 @@ public class YesGraph extends Application {
             if (timeToRefreshAddressBook() && isReadContactsPermission && isOnline()) {
                 try {
                     new StorageKeyValueManager(getApplicationContext()).setContactsUploading(true);
-                    AddressBook addressBook = new AddressBook();
-                    addressBook.updateAddressBookWithLimitedContacts(getApplicationContext(), new Handler.Callback() {
+                    new AddressBook().updateAddressBookWithLimitedContacts(getApplicationContext(), new Handler.Callback() {
                         @Override
                         public boolean handleMessage(Message msg) {
                             new StorageKeyValueManager(getApplicationContext()).setContactsUploading(false);

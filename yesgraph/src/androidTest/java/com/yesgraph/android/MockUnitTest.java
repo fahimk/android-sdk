@@ -84,27 +84,6 @@ public class MockUnitTest {
         doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
     }*/
 
-    @Test
-    public void testUpdateAddressBookWithContactListForUserId() {
-
-        String userID = "1234";
-
-        AddressBook mock = Mockito.mock(AddressBook.class);
-
-        final Handler.Callback callback = new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                return false;
-            }
-        };
-
-        ContactList contactList = Mockito.mock(ContactList.class);
-
-        mock.updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
-
-        verify(mock, atLeastOnce()).updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
-        doNothing().when(mock).updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
-    }
 
     @Test
     public void testFetchClientKeyWithSecretKey() {

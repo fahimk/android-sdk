@@ -7,7 +7,7 @@ import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.TextUtils;
 
-import com.yesgraph.android.activity.MainActivity;
+import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
@@ -15,6 +15,8 @@ import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Before;
 import org.mockito.Mock;
 
@@ -23,18 +25,15 @@ import java.util.ArrayList;
 /**
  * Created by Klemen on 23.12.2015.
  */
-public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareSheetActivity> {
 
-    private MainActivity mainActivity;
+    private ShareSheetActivity mainActivity;
     private YesGraph yesGraph;
-
-    @Mock
-    private Context mockContext;
 
     private Context context;
 
     public YesGraphUnitTest() {
-        super(MainActivity.class);
+        super(ShareSheetActivity.class);
     }
 
     @Before
@@ -43,8 +42,6 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         mainActivity = getActivity();
         yesGraph = (YesGraph) mainActivity.getApplication();
-        mockContext = new MockDelegatedContext(mainActivity.getBaseContext());
-
         context = mainActivity.getApplicationContext();
     }
 
@@ -100,15 +97,17 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
         assertTrue(isOnline);
     }
 
-    public void testCheckSetSecretKey() {
+    public void testCheckConfigureClientKey() {
 
-        String secretKey = "secretKey";
+        String apiKey = "apiKey";
 
-        yesGraph.configureWithClientKey(secretKey);
+        new StorageKeyValueManager(context).setApiKey(apiKey);
 
-        String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
+        yesGraph.configureWithClientKey(apiKey);
 
-        assertEquals(secretKey, savedSecretKey);
+        String savedApiKey = new StorageKeyValueManager(context).getApiKey();
+
+        assertEquals(apiKey, savedApiKey);
 
 
     }
@@ -176,7 +175,7 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
 
     public void testUpdateSuggestionsSeen() {
 
-        ArrayList<RankedContact> contacts = new TestUtils().getRankedContacts();
+        ArrayList<RankedContact> contacts = new TestUtils().getRankedContacts(5);
 
         final Handler.Callback handler = new Handler.Callback() {
             @Override
@@ -217,19 +216,25 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
 
     public void testCheckIsTimeToRefresh() {
 
-        String secretKey = "secretKey";
-        yesGraph.configureWithClientKey(secretKey);
+        String key = "secret_key";
+
+        new StorageKeyValueManager(context).setSecretKey(key);
 
         yesGraph.checkIsTimeToRefreshAddressBook();
+
+        String savedKey = new StorageKeyValueManager(context).getSecretKey();
+
+        assertEquals(key, savedKey);
+
     }
 
     public void testLoadOnCreate() {
 
-        String secretKey = "secretKey";
-        yesGraph.onCreate(secretKey);
+        String apiKey = "apiKey";
+        yesGraph.onCreate(apiKey);
 
-        String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
-        assertEquals(secretKey, savedSecretKey);
+        String savedApiKey = new StorageKeyValueManager(context).getApiKey();
+        assertEquals(apiKey, savedApiKey);
 
     }
 
@@ -248,6 +253,58 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
         boolean isNoTimeToRefresh = !yesGraph.timeToRefreshAddressBook();
 
         assertTrue(isNoTimeToRefresh);
+
+    }
+
+    public void testCheckContactsFromCache() throws JSONException {
+
+        JSONArray jsonContacts = new TestUtils().getJsonArray();
+
+        //set contacts to cache
+        new StorageKeyValueManager(context).setContactCache(jsonContacts.toString());
+
+        ArrayList<RankedContact> contacts = yesGraph.getContactsFromCache();
+
+        assertTrue(contacts != null);
+
+        assertTrue(!contacts.isEmpty());
+
+        assertEquals(jsonContacts.length(), contacts.size());
+
+    }
+
+    public void testCheckNoContactsFromCache() throws JSONException {
+
+        //reset contacts in cache
+        new StorageKeyValueManager(context).setContactCache(null);
+
+        ArrayList<RankedContact> contacts = yesGraph.getContactsFromCache();
+
+        assertTrue(contacts == null);
+
+    }
+
+    public void testCheckNumberOfInvitesContacts() throws JSONException {
+
+        Long number = 12L;
+
+        new StorageKeyValueManager(context).setInviteNumber(number);
+
+        Long invitedContacts = yesGraph.getLastInvitedContactsNumber();
+
+        assertEquals(number, invitedContacts);
+
+    }
+
+    public void testCheckConfigureWithUserId() {
+
+        String userId = "user_id";
+
+        yesGraph.configureWithUserId(userId);
+
+        String savedUserId = new StorageKeyValueManager(context).getUserId();
+
+        assertEquals(userId, savedUserId);
 
     }
 
