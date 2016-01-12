@@ -36,23 +36,6 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
     }
 
 
-    public void testUpdateAddressBookWithContactListForUserId() {
-
-        String userID = "1234";
-
-        final Handler.Callback callback = new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                return false;
-            }
-        };
-
-        ContactList contactList = Mockito.mock(ContactList.class);
-
-        new AddressBook().updateAddressBookWithContactListForUserId(mockContext, contactList, userID, callback);
-
-    }
-
     public void testFetchClientKeyWithSecretKey() {
 
         String userID = "1234";

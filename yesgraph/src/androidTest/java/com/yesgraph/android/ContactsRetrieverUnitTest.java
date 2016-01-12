@@ -203,7 +203,93 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
         assertEquals(true, isNotDuplicated);
     }
 
-    /*public void testValidateWebsiteData() {
+    /**
+     * Check if ranked contact already exists in the list of contacts, then update it
+     */
+    public void testCheckDuplicateContactsAndUpdateData() {
+
+        ArrayList<RankedContact> list = getRankedContacts(5);
+
+        RankedContact contact = new RankedContact();
+        contact.setName("John");
+
+        ArrayList<String> emails = new ArrayList<>();
+        emails.add("j@gmail.com");
+        contact.setEmails(emails);
+        ArrayList<String> phones = new ArrayList<>();
+        phones.add("544-323-545");
+        contact.setPhones(phones);
+
+        boolean isDuplicated = ContactRetriever.isDuplicateRankedContact(contact, list);
+
+        assertEquals(true, isDuplicated);
+    }
+
+    /**
+     * Check if websites, ims and address data is updated
+     */
+    public void testCheckDuplicateContactsOtherData() {
+
+        String contactName = "John";
+
+        ArrayList<RankedContact> list = getRankedContacts(5);
+
+        RankedContact contact = new RankedContact();
+        contact.setName(contactName);
+
+        ArrayList<String> emails = new ArrayList<>();
+        emails.add("j@gmail.com");
+        contact.setEmails(emails);
+        ArrayList<String> phones = new ArrayList<>();
+        phones.add("544-323-545");
+        contact.setPhones(phones);
+
+        Ims ims = new TestUtils().getIms();
+        ArrayList<Ims> imsItems = new ArrayList<>();
+        imsItems.add(ims);
+
+        Website website = new TestUtils().getWebsite();
+        ArrayList<Website> websites = new ArrayList<>();
+        websites.add(website);
+
+        Address address = new TestUtils().getAddress();
+        ArrayList<Address> addresses = new ArrayList<>();
+        addresses.add(address);
+
+        contact.setIms(imsItems);
+        contact.setAddresses(addresses);
+        contact.setWebsites(websites);
+
+        boolean isDuplicated = ContactRetriever.isDuplicateRankedContact(contact, list);
+
+        boolean isUpdated = true;
+
+        // check if contact data with name "John" are updated
+        for (int i = 0; i < list.size(); i++) {
+            RankedContact c = list.get(i);
+            if (c.name().equals(contactName)) {
+
+                if (c.getAddresses().isEmpty()) {
+                    isUpdated = false;
+                }
+
+                if (c.getWebsites().isEmpty()) {
+                    isUpdated = false;
+                }
+
+                if (c.getIms().isEmpty()) {
+                    isUpdated = false;
+                }
+            }
+        }
+
+        assertTrue(isDuplicated);
+
+        assertTrue(isUpdated);
+
+    }
+
+    public void testValidateWebsiteData() {
 
         String url = "www.myurl.com";
         Integer homePage = 1;
@@ -341,7 +427,7 @@ public class ContactsRetrieverUnitTest extends ApplicationTestCase<Application> 
 
     }
 
-*/
+
 
     @NonNull
     private ArrayList<RankedContact> getRankedContacts(Integer count) {

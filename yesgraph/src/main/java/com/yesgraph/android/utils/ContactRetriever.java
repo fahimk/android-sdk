@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.yesgraph.android.R;
@@ -409,39 +410,7 @@ public class ContactRetriever {
                         String webUrl = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL));
                         Integer webTypeCode = cur.getInt(cur.getColumnIndex(ContactsContract.CommonDataKinds.Website.TYPE));
 
-                        String webType = "";
-
-                        switch (webTypeCode) {
-                            case 2:
-                                webType = "blog";
-                                break;
-                            case 6:
-                                webType = "ftp";
-                                break;
-                            case 4:
-                                webType = "home";
-                                break;
-                            case 1:
-                                webType = "homepage";
-                                break;
-                            case 7:
-                                webType = "other";
-                                break;
-                            case 3:
-                                webType = "profile";
-                                break;
-                            case 5:
-                                webType = "work";
-                                break;
-                        }
-
-                        Website website = new Website();
-                        if (webUrl != null && webUrl.length() > 0)
-                            website.setUrl(webUrl);
-                        if (webType != null && webType.length() > 0)
-                            website.setType(webType);
-
-                        websites.add(website);
+                        websites.add(getWebsite(webUrl, webTypeCode));
 
                         //Log.i("NAME AND WEBSITE", name + " " + website.toJSONObject());
                     } else if (typeMime.equals(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE)) {
@@ -453,37 +422,7 @@ public class ContactRetriever {
                         String country = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
                         Integer typeCode = cur.getInt(cur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
 
-                        String type = "";
-
-                        switch (typeCode) {
-                            case 1:
-                                type = "home";
-                                break;
-                            case 3:
-                                type = "other";
-                                break;
-                            case 2:
-                                type = "work";
-                                break;
-                        }
-
-                        Address address = new Address();
-                        if (poBox != null && poBox.length() > 0)
-                            address.setPo_box(poBox);
-                        if (city != null && city.length() > 0)
-                            address.setCity(city);
-                        if (country != null && country.length() > 0)
-                            address.setCountry(country);
-                        if (postalCode != null && postalCode.length() > 0)
-                            address.setPostal_code(postalCode);
-                        if (state != null && state.length() > 0)
-                            address.setState(state);
-                        if (street != null && street.length() > 0)
-                            address.setStreet(street);
-                        if (type != null && type.length() > 0)
-                            address.setType(type);
-
-                        addresses.add(address);
+                        addresses.add(getAddress(poBox, street, city, state, postalCode, country, typeCode));
 
                         //Log.i("NAME AND ADDRESS", name + " " + address.toJSONObject().toString());
                     } else if (typeMime.equals(ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE)) {
@@ -491,62 +430,7 @@ public class ContactRetriever {
                         Integer imTypeCode = cur.getInt(cur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
                         Integer imProtocolCode = cur.getInt(cur.getColumnIndex(ContactsContract.CommonDataKinds.Im.PROTOCOL));
 
-                        String imType = "";
-
-                        switch (imTypeCode) {
-                            case 1:
-                                imType = "home";
-                                break;
-                            case 3:
-                                imType = "other";
-                                break;
-                            case 2:
-                                imType = "work";
-                                break;
-                        }
-
-                        String imProtocol = "";
-
-                        switch (imProtocolCode) {
-                            case 0:
-                                imProtocol = "aim";
-                                break;
-                            case -1:
-                                imProtocol = "custom";
-                                break;
-                            case 5:
-                                imProtocol = "googletalk";
-                                break;
-                            case 6:
-                                imProtocol = "icq";
-                                break;
-                            case 7:
-                                imProtocol = "jabber";
-                                break;
-                            case 1:
-                                imProtocol = "msn";
-                                break;
-                            case 8:
-                                imProtocol = "netmeeting";
-                                break;
-                            case 4:
-                                imProtocol = "qq";
-                                break;
-                            case 3:
-                                imProtocol = "skype";
-                                break;
-                            case 2:
-                                imProtocol = "yahoo";
-                                break;
-                        }
-
-                        Ims ims = new Ims();
-                        if (imType != null && imType.length() > 0)
-                            ims.setType(imType);
-                        if (imName != null && imName.length() > 0)
-                            ims.setName(imName);
-                        if (imProtocol != null && imProtocol.length() > 0)
-                            ims.setProtocol(imProtocol);
+                        Ims ims = getIms(imName, imTypeCode, imProtocolCode);
 
                         imses.add(ims);
                         //Log.i("NAME AND IMS", name + " " + ims.toJSONObject());
@@ -561,11 +445,7 @@ public class ContactRetriever {
                         String company = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
                         String title = cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
 
-                        if (company != null && company.length() > 0)
-                            ysgRankedContact.setCompany(company);
-                        if (title != null && title.length() > 0)
-                            ysgRankedContact.setTitle(title);
-
+                        setCompanyAndTitle(ysgRankedContact,company,title);
                         //Log.i("NAME AND COMPANY", name + " " + company);
                     }
 
@@ -609,6 +489,144 @@ public class ContactRetriever {
 
         //Log.i("SIZE 1", list.size() + "");
         return list;
+    }
+
+    @NonNull
+    public static Ims getIms(String imName, Integer imTypeCode, Integer imProtocolCode) {
+        String imType = "";
+
+        switch (imTypeCode) {
+            case 1:
+                imType = "home";
+                break;
+            case 3:
+                imType = "other";
+                break;
+            case 2:
+                imType = "work";
+                break;
+        }
+
+        String imProtocol = "";
+
+        switch (imProtocolCode) {
+            case 0:
+                imProtocol = "aim";
+                break;
+            case -1:
+                imProtocol = "custom";
+                break;
+            case 5:
+                imProtocol = "googletalk";
+                break;
+            case 6:
+                imProtocol = "icq";
+                break;
+            case 7:
+                imProtocol = "jabber";
+                break;
+            case 1:
+                imProtocol = "msn";
+                break;
+            case 8:
+                imProtocol = "netmeeting";
+                break;
+            case 4:
+                imProtocol = "qq";
+                break;
+            case 3:
+                imProtocol = "skype";
+                break;
+            case 2:
+                imProtocol = "yahoo";
+                break;
+        }
+
+        Ims ims = new Ims();
+        if (imType != null && imType.length() > 0)
+            ims.setType(imType);
+        if (imName != null && imName.length() > 0)
+            ims.setName(imName);
+        if (imProtocol != null && imProtocol.length() > 0)
+            ims.setProtocol(imProtocol);
+        return ims;
+    }
+
+    @NonNull
+    public static Address getAddress(String poBox, String street, String city, String state, String postalCode, String country, Integer typeCode) {
+        String type = "";
+
+        switch (typeCode) {
+            case 1:
+                type = "home";
+                break;
+            case 3:
+                type = "other";
+                break;
+            case 2:
+                type = "work";
+                break;
+        }
+
+        Address address = new Address();
+        if (poBox != null && poBox.length() > 0)
+            address.setPo_box(poBox);
+        if (city != null && city.length() > 0)
+            address.setCity(city);
+        if (country != null && country.length() > 0)
+            address.setCountry(country);
+        if (postalCode != null && postalCode.length() > 0)
+            address.setPostal_code(postalCode);
+        if (state != null && state.length() > 0)
+            address.setState(state);
+        if (street != null && street.length() > 0)
+            address.setStreet(street);
+        if (type != null && type.length() > 0)
+            address.setType(type);
+        return address;
+    }
+
+    @NonNull
+    public static Website getWebsite(String webUrl, Integer webTypeCode) {
+        String webType = "";
+
+        switch (webTypeCode) {
+            case 2:
+                webType = "blog";
+                break;
+            case 6:
+                webType = "ftp";
+                break;
+            case 4:
+                webType = "home";
+                break;
+            case 1:
+                webType = "homepage";
+                break;
+            case 7:
+                webType = "other";
+                break;
+            case 3:
+                webType = "profile";
+                break;
+            case 5:
+                webType = "work";
+                break;
+        }
+
+        Website website = new Website();
+        if (webUrl != null && webUrl.length() > 0)
+            website.setUrl(webUrl);
+        if (webType != null && webType.length() > 0)
+            website.setType(webType);
+        return website;
+    }
+
+    public static void setCompanyAndTitle(RankedContact ysgRankedContact, String company, String title) {
+        if (company != null && company.length() > 0)
+            ysgRankedContact.setCompany(company);
+        if (title != null && title.length() > 0)
+            ysgRankedContact.setTitle(title);
     }
 
     /**

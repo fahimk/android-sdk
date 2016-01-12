@@ -1,6 +1,7 @@
 package com.yesgraph.android;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
 import com.yesgraph.android.models.Ims;
@@ -19,11 +20,7 @@ public class ImsUnitTest extends ApplicationTestCase<Application> {
 
     public void testCheckImsData() {
 
-        Ims ims = new Ims();
-
-        ims.setName("ims name");
-        ims.setProtocol("protocol x");
-        ims.setType("ims type");
+        Ims ims = new TestUtils().getIms();
 
         assertEquals("ims name", ims.getName());
         assertEquals("protocol x", ims.getProtocol());
@@ -31,13 +28,10 @@ public class ImsUnitTest extends ApplicationTestCase<Application> {
 
     }
 
+
     public void testConvertImsToJson() throws JSONException {
 
-        Ims ims = new Ims();
-
-        ims.setName("ims name");
-        ims.setProtocol("protocol x");
-        ims.setType("ims type");
+        Ims ims = new TestUtils().getIms();
 
         JSONObject json = ims.toJSONObject();
 

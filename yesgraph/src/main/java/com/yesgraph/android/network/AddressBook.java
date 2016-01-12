@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.yesgraph.android.models.Contact;
@@ -76,17 +77,14 @@ public class AddressBook extends HttpMethod {
         // check if contacts is over 2000
         if (numberOfContacts > LIMIT_CONTACTS) {
 
-            // set first 2000 contacts
-            ContactList firstTwoHundredContacts = new ContactList();
-            firstTwoHundredContacts.setUseSuggestions(contactList.getUseSuggestions());
-            firstTwoHundredContacts.setSource(contactList.getSource());
-            firstTwoHundredContacts.setEntries(new ArrayList<RankedContact>(contactList.getEntries().subList(0, LIMIT_CONTACTS)));
+            // get first 2000 contacts
+            ContactList firstBatchedContacts = getFirstBatchedContacts(LIMIT_CONTACTS, contactList);
 
             // get others contacts splitted into list
             contactLists = getLimitedContactsList(LIMIT_CONTACTS, contactList);
 
             // post first 2000 contacts to web api and set contacts to cache
-            updateAddressBookWithContactListForUserId(context, firstTwoHundredContacts, userID, callback);
+            updateAddressBookWithContactListForUserId(context, firstBatchedContacts, userID, callback);
 
             // post others contacts to web api in async task
             new UpdateAddressBookAsyncTask(context, contactLists, userID).execute();
@@ -96,6 +94,17 @@ public class AddressBook extends HttpMethod {
         }
     }
 
+    @NonNull
+    public ContactList getFirstBatchedContacts(int LIMIT_CONTACTS, ContactList contactList) {
+
+        ContactList list = new ContactList();
+        list.setUseSuggestions(contactList.getUseSuggestions());
+        list.setSource(contactList.getSource());
+        list.setEntries(new ArrayList<RankedContact>(contactList.getEntries().subList(0, LIMIT_CONTACTS)));
+
+        return list;
+    }
+
     /**
      * Split contacts to more limited list size
      *
@@ -103,7 +112,7 @@ public class AddressBook extends HttpMethod {
      * @param contactList    all contacts items
      * @return limited contacts
      */
-    private List<ContactList> getLimitedContactsList(int LIMIT_CONTACTS, ContactList contactList) {
+    public List<ContactList> getLimitedContactsList(int LIMIT_CONTACTS, ContactList contactList) {
 
         List<ContactList> contactLists = new ArrayList<>();
 

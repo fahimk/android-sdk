@@ -1,6 +1,7 @@
 package com.yesgraph.android;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.test.ApplicationTestCase;
 
 import com.yesgraph.android.models.Address;
@@ -18,17 +19,9 @@ public class AddressUnitTest extends ApplicationTestCase<Application> {
     }
 
 
-    public void testCheckAddresModelData() {
+    public void testCheckAddressModelData() {
 
-        Address address = new Address();
-
-        address.setPo_box("po_box");
-        address.setStreet("street");
-        address.setState("state");
-        address.setCity("city");
-        address.setPostal_code("postalCode");
-        address.setCountry("country");
-        address.setType("type");
+        Address address = new TestUtils().getAddress();
 
         assertTrue(!address.getPo_box().isEmpty());
         assertTrue(!address.getStreet().isEmpty());
@@ -40,17 +33,10 @@ public class AddressUnitTest extends ApplicationTestCase<Application> {
 
     }
 
+
     public void testConvertAddressDataToJson() throws JSONException {
 
-        Address address = new Address();
-
-        address.setPo_box("po_box");
-        address.setStreet("street");
-        address.setState("state");
-        address.setPostal_code("postalCode");
-        address.setCountry("country");
-        address.setType("type");
-
+        Address address = new TestUtils().getAddress();
 
         JSONObject json = address.toJSONObject();
 

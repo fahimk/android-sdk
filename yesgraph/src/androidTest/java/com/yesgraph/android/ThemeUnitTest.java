@@ -116,5 +116,45 @@ public class ThemeUnitTest extends ApplicationTestCase<Application> {
 
     }
 
+    public void testCheckShareProperties() {
+
+        int numberOfSuggestedContacts = 3;
+        boolean isFacebookSignedIn = true;
+        boolean isTwitterSignedIn = true;
+
+        String copyButtonText = "copyButtonText";
+        String copyLinkText = "copyLinkText";
+        String smsText = "smsText";
+        String emailText = "emailText";
+        String emailSubject = "emailSubject";
+        String shareText = "shareText";
+
+        CustomTheme theme = new CustomTheme();
+
+        theme.setCopyButtonText(copyButtonText);
+        theme.setCopyLinkText(copyLinkText);
+        theme.setSmsText(smsText);
+        theme.setEmailText(emailText);
+        theme.setEmailSubject(emailSubject);
+        theme.setShareText(shareText);
+        theme.setIsFacebookSignedIn(isFacebookSignedIn);
+        theme.setIsTwitterSignedIn(isTwitterSignedIn);
+        theme.setNumberOfSuggestedContacts(numberOfSuggestedContacts);
+
+        assertEquals(numberOfSuggestedContacts, theme.getNumberOfSuggestedContacts());
+        assertEquals(isFacebookSignedIn, theme.isFacebookSignedIn());
+        assertEquals(isTwitterSignedIn, theme.isTwitterSignedIn());
+
+        assertEquals(copyButtonText, theme.getCopyButtonText(getContext()));
+        assertEquals(copyLinkText, theme.getCopyLinkText(getContext()));
+
+        assertEquals(smsText, theme.getSmsText(getContext()));
+        assertEquals(emailText, theme.getEmailText(getContext()));
+        assertEquals(emailSubject, theme.getEmailSubject(getContext()));
+
+        assertEquals(shareText, theme.getShareText(getContext()));
+
+    }
+
 
 }

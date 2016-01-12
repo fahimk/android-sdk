@@ -21,7 +21,7 @@ public class WebsiteUnitTest extends ApplicationTestCase<Application> {
 
     public void testCheckWebsiteData() {
 
-        Website website = getWebsite();
+        Website website = new TestUtils().getWebsite();
 
         assertEquals("news", website.getType());
         assertEquals("www.newsurl.com", website.getUrl());
@@ -31,7 +31,7 @@ public class WebsiteUnitTest extends ApplicationTestCase<Application> {
 
     public void testConvertWebsiteToJson() throws JSONException {
 
-        Website website = getWebsite();
+        Website website = new TestUtils().getWebsite();
 
         JSONObject json = website.toJSONObject();
 
@@ -42,15 +42,6 @@ public class WebsiteUnitTest extends ApplicationTestCase<Application> {
         assertTrue(hasUrl);
 
 
-    }
-
-    @NonNull
-    private Website getWebsite() {
-        Website website = new Website();
-
-        website.setType("news");
-        website.setUrl("www.newsurl.com");
-        return website;
     }
 
 }

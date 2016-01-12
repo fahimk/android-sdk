@@ -8,6 +8,10 @@ import com.yesgraph.android.models.Ims;
 import com.yesgraph.android.models.RankedContact;
 import com.yesgraph.android.models.Website;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -104,11 +108,11 @@ public class TestUtils {
     }
 
     @NonNull
-    public ArrayList<RankedContact> getRankedContacts() {
+    public ArrayList<RankedContact> getRankedContacts(int size) {
 
         ArrayList<RankedContact> contacts = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < size; i++) {
             contacts.add(getRankedContact());
         }
 
@@ -125,6 +129,91 @@ public class TestUtils {
         }
 
         return contacts;
+    }
+
+    @NonNull
+    public JSONArray getJsonArray() throws JSONException {
+
+        JSONArray jsonContacts = new JSONArray();
+
+        for (int i = 0; i < 5; i++) {
+
+            JSONObject jsonContact = new JSONObject();
+
+            jsonContact.put("name", "John");
+            jsonContact.put("phone", "123-432-533");
+            jsonContact.put("email", "john@poviolabs.com");
+
+            jsonContact.put("rank", 7 + (i + 1));
+            jsonContact.put("score", 12.5);
+
+            JSONArray emails = new JSONArray();
+
+            JSONObject email1 = new JSONObject();
+            email1.put("emails", "john@gmail.com");
+
+            JSONObject email2 = new JSONObject();
+            email2.put("emails", "john@email.com");
+
+            emails.put(email1);
+            emails.put(email2);
+
+            jsonContact.put("emails", emails);
+
+            JSONArray phones = new JSONArray();
+
+            JSONObject phone1 = new JSONObject();
+            email1.put("phones", "124-321-533");
+
+            JSONObject phone2 = new JSONObject();
+            email2.put("phones", "435-235-523");
+
+            phones.put(phone1);
+            phones.put(phone2);
+
+            jsonContact.put("phones", phones);
+
+            jsonContacts.put(jsonContact);
+
+        }
+
+        return jsonContacts;
+    }
+
+
+
+    @NonNull
+    public Website getWebsite() {
+        Website website = new Website();
+
+        website.setType("news");
+        website.setUrl("www.newsurl.com");
+        return website;
+    }
+
+    @NonNull
+    public Address getAddress() {
+
+        Address address = new Address();
+
+        address.setPo_box("po_box");
+        address.setStreet("street");
+        address.setState("state");
+        address.setCity("city");
+        address.setPostal_code("postalCode");
+        address.setCountry("country");
+        address.setType("type");
+        return address;
+    }
+
+    @NonNull
+    public Ims getIms() {
+        Ims ims = new Ims();
+
+        ims.setName("ims name");
+        ims.setProtocol("protocol x");
+        ims.setType("ims type");
+        return ims;
     }
 
 }
