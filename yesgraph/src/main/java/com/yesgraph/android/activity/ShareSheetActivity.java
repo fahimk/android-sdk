@@ -170,6 +170,14 @@ public class ShareSheetActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed()
+    {
+        Intent data = new Intent();
+        setResult(RESULT_OK, data);
+        super.onBackPressed();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 

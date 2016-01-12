@@ -110,6 +110,8 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         setToolbar();
         context = this;
 
+        new StorageKeyValueManager(context).setInviteNumber(0L);
+
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         contactsListContent = (FrameLayout) findViewById(R.id.contactsListContent);
         contactsList = (RecyclerView) LayoutInflater.from(context).inflate(R.layout.content_contact_list, null);
@@ -246,6 +248,15 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      * Send emails and sms to contacts
      */
     private void inviteContacts() {
+        Long invites=0L;
+        for (Object contact : items) {
+            if (contact instanceof RegularContact) {
+                if (((RegularContact) contact).getSelected())
+                    invites++;
+            }
+        }
+        new StorageKeyValueManager(context).setInviteNumber(invites);
+
         new SenderManager(items).inviteContacts(context);
     }
 

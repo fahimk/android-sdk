@@ -17,12 +17,21 @@ public class StorageKeyValueManager {
     private static final String USER_NAME = "user_name";
     private static final String USER_PHONE = "user_phone";
     private static final String USER_EMAIL = "user_email";
+    private static final String INVITE_NUMBER = "invite_number";
 
 
     private Context context;
 
     public StorageKeyValueManager(Context context) {
         this.context = context;
+    }
+
+    public void setInviteNumber(Long inviteNumber) {
+        new SharedPreferencesManager(context).putLong(INVITE_NUMBER, inviteNumber);
+    }
+
+    public Long getInviteNumber() {
+        return new SharedPreferencesManager(context).getLong(INVITE_NUMBER);
     }
 
     public void setUserName(String useruserName) {
