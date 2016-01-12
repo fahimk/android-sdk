@@ -28,8 +28,14 @@ import java.util.List;
  */
 public class AddressBook extends HttpMethod {
 
-
-    /*public void fetchAddressBookForUserId(final Context context, String userId, final Handler.Callback callback) {
+    /**
+     * Get the contacts from the YesGraph API for userId
+     *
+     * @param context
+     * @param userId
+     * @param callback
+     */
+    public void fetchAddressBookForUserId(final Context context, String userId, final Handler.Callback callback) {
         super.httpAsync(new StorageKeyValueManager(context).getSecretKey(), Constants.HTTP_METHOD_GET, "address-book/" + userId, null, null, new Handler.Callback() {
 
             @Override
@@ -47,7 +53,7 @@ public class AddressBook extends HttpMethod {
                 return false;
             }
         });
-    }*/
+    }
 
 
     /**
