@@ -1,5 +1,6 @@
 package com.yesgraph.android.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -60,19 +61,31 @@ public class SenderManager {
     /**
      * Send email with contacts emails
      *
-     * @param context context
+     * @param activity activity
      */
-    public void startSendEmailActivity(Context context) {
+    public void startSendEmailActivity(Activity activity) {
+
+        YesGraph yesGraphApplication = (YesGraph) activity.getApplication();
 
         String[] stringEmails = getEmails();
 
         if (stringEmails != null && stringEmails.length > 0) {
 
-            Intent intent = new Intent(context, SendEmailActivity.class);
-            intent.putExtra("contacts", stringEmails);
-            intent.putExtra("subject", context.getString(R.string.default_share_text));
-            intent.putExtra("message", context.getString(R.string.default_share_text));
-            context.startActivity(intent);
+            //check if developed set custom email intent
+            if (yesGraphApplication.getCustomEmailIntent() != null) {
+                Intent customEmailIntent = yesGraphApplication.getCustomEmailIntent();
+                customEmailIntent.putExtra("contacts", stringEmails);
+                customEmailIntent.putExtra("subject", activity.getString(R.string.default_share_text));
+                customEmailIntent.putExtra("message", activity.getString(R.string.default_share_text));
+                activity.startActivity(customEmailIntent);
+            } else {
+                Intent intent = new Intent(activity, SendEmailActivity.class);
+                intent.putExtra("contacts", stringEmails);
+                intent.putExtra("subject", activity.getString(R.string.default_share_text));
+                intent.putExtra("message", activity.getString(R.string.default_share_text));
+                activity.startActivity(intent);
+
+            }
         }
     }
 
@@ -125,22 +138,32 @@ public class SenderManager {
     /**
      * Send sms to checked contacts
      *
-     * @param context context
+     * @param activity activity
      */
-    public void startSendSmsActivity(Context context) {
+
+    public void startSendSmsActivity(Activity activity) {
+
+        YesGraph yesGraphApplication = (YesGraph) activity.getApplication();
 
         String[] stringPhones = getPhones();
 
         if (stringPhones != null && stringPhones.length > 0) {
 
-            Intent intent = new Intent(context, SendSmsActivity.class);
-            intent.putExtra("contacts", stringPhones);
-            intent.putExtra("message", context.getString(R.string.default_share_text));
-            intent.putExtra("isMarshmallow", YesGraph.isMarshmallow());
-            context.startActivity(intent);
+            //check if developer set custom sms intent
+            if (yesGraphApplication.getCustomSmsIntent() != null) {
+                Intent customSmsIntent = yesGraphApplication.getCustomSmsIntent();
+                customSmsIntent.putExtra("contacts", stringPhones);
+                customSmsIntent.putExtra("message", activity.getString(R.string.default_share_text));
+                activity.startActivity(customSmsIntent);
+            } else {
+                Intent intent = new Intent(activity, SendSmsActivity.class);
+                intent.putExtra("contacts", stringPhones);
+                intent.putExtra("message", activity.getString(R.string.default_share_text));
+                intent.putExtra("isMarshmallow", YesGraph.isMarshmallow());
+                activity.startActivity(intent);
+            }
         }
     }
-
 
     /**
      * Get checked contact
@@ -167,22 +190,22 @@ public class SenderManager {
     /**
      * Invite contacts to YesGraph SDK via sms or email
      *
-     * @param context context
+     * @param activity activity
      */
-    public boolean inviteContacts(Context context) {
+    public boolean inviteContacts(Activity activity) {
 
         boolean invitationsSent = true;
 
         try {
-            startSendEmailActivity(context);
+            startSendEmailActivity(activity);
 
-            startSendSmsActivity(context);
+            startSendSmsActivity(activity);
 
             ArrayList<Contact> ysgContacts = getInvitedContacts();
-            String userId = new SharedPreferencesManager(context).getString("user_id");
+            String userId = new SharedPreferencesManager(activity.getBaseContext()).getString("user_id");
 
             Invite ysgInvite = new Invite();
-            ysgInvite.updateInvitesSentForUser(context, ysgContacts, userId, new Handler.Callback() {
+            ysgInvite.updateInvitesSentForUser(activity.getBaseContext(), ysgContacts, userId, new Handler.Callback() {
                 @Override
                 public boolean handleMessage(Message msg) {
                     return false;
