@@ -2,6 +2,7 @@ package com.yesgraph.android.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.activity.SendSmsActivity;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.models.RankedContact;
@@ -34,6 +36,8 @@ import java.util.ArrayList;
 public class YesGraph extends Application {
 
     private CustomTheme customTheme;
+    private Intent customSmsIntent;
+    private Intent customEmailIntent;
 
     @Override
     public void onCreate() {
@@ -186,4 +190,20 @@ public class YesGraph extends Application {
         }
     }
 
+    public Intent getCustomSmsIntent() {
+        return customSmsIntent;
+    }
+
+
+    public void setCustomSmsIntent(Intent customSmsIntent) {
+        this.customSmsIntent = customSmsIntent;
+    }
+
+    public Intent getCustomEmailIntent() {
+        return customEmailIntent;
+    }
+
+    public void setCustomEmailIntent(Intent customEmailIntent) {
+        this.customEmailIntent = customEmailIntent;
+    }
 }

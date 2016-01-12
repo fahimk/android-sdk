@@ -246,7 +246,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
      * Send emails and sms to contacts
      */
     private void inviteContacts() {
-        new SenderManager(items).inviteContacts(context);
+        new SenderManager(items).inviteContacts(this);
     }
 
     @Override
