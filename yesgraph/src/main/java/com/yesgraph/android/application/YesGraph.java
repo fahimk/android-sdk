@@ -23,6 +23,9 @@ import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.PermissionGrantedManager;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 /**
@@ -94,6 +97,26 @@ public class YesGraph extends Application {
     {
         SuggestionsShown ysgSuggestionsShown = new SuggestionsShown();
         ysgSuggestionsShown.updateSuggestionsSeen(getApplicationContext(), contacts, new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
+    }
+
+    private ArrayList<RankedContact> getContactsFromCache()
+    {
+        Boolean isContactCached = !new StorageKeyValueManager(getApplicationContext()).getContactCache().equals("");
+
+        if(isContactCached)
+        {
+            try {
+                return AddressBook.contactListFromResponse(new JSONArray(new StorageKeyValueManager(getApplicationContext()).getContactCache())).getEntries();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     public void inviteSentForUsers(ArrayList<Contact> contacts, Handler.Callback callback)
