@@ -58,9 +58,11 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
-            android:layout_margin="10dp">
-
+            android:layout_weight="6"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:id="@+id/layoutShareArray">
+<!--
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="0dp"
@@ -163,6 +165,7 @@
                     android:id="@+id/textContacts"
                     android:textSize="@dimen/font_size_normal" />
             </LinearLayout>
+            -->
         </LinearLayout>
 
         <RelativeLayout

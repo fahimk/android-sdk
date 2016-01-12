@@ -97,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         yesGraphApplication = (YesGraph) getApplicationContext();
+
+        ArrayList<Object> shareservices = yesGraphApplication.getShareServices();
+        //MyShareService myShareService=new MyShareService(this);
+        //shareservices.add(myShareService);
+
         yesGraphApplication.configureWithUserId("<USER_ID>");
         yesGraphApplication.configureWithClientKey("live-WzEsMCwic2FtcGxlX2FuZHJvaWRfMyJd.CTO9TA.FNjfXP89EMykC-t20NytFVJv-Zg");
 
@@ -118,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         int rowUnselectedColor=Color.parseColor("#F5F5F5");
         int rowBackgroundColor=Color.parseColor("#F5F5F5");
         int backArrowColor=Color.parseColor("#FFFFFF");
-        int copyButtonColor=Color.parseColor("#F5F5F5");
+        int copyButtonColor=Color.parseColor("#0078BD");
         int referralBannerBackgroundColor=Color.parseColor("#F5F5F5");
 
         customTheme.setThemeColor(
@@ -133,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 copyButtonColor,
                 referralBannerBackgroundColor);
 
-        customTheme.setShareButtonsShape("square");
+        //customTheme.setShareButtonsShape("square");
 
-        customTheme.setFonts("Pacifico.ttf");
+        //customTheme.setFonts("Pacifico.ttf");
 
         yesGraphApplication.setCustomTheme(customTheme);
 

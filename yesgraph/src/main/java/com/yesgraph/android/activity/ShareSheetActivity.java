@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +37,10 @@ import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.network.Authenticate;
+import com.yesgraph.android.services.BasicShareService;
+import com.yesgraph.android.services.ContactShareService;
+import com.yesgraph.android.services.FacebookShareService;
+import com.yesgraph.android.services.TwitterShareService;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
@@ -43,6 +48,9 @@ import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.PermissionGrantedManager;
 import com.yesgraph.android.utils.SharedPreferencesManager;
 import com.yesgraph.android.utils.Visual;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -61,6 +69,7 @@ public class ShareSheetActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private String TWITTER_KEY = "";
     private String TWITTER_SECRET = "";
+    private ArrayList<Object> shareServices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +78,12 @@ public class ShareSheetActivity extends AppCompatActivity {
         init();
 
         checkIsTimeToRefreshAddressBook();
-
     }
 
     private void init() {
 
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setTwitterKeys();
         setContentView(R.layout.activity_share_sheet);
         FacebookSdk.sdkInitialize(this);
@@ -84,6 +93,8 @@ public class ShareSheetActivity extends AppCompatActivity {
         fontManager = FontManager.getInstance();
         setToolbar();
         context = this;
+        new StorageKeyValueManager(context).setInviteNumber(0L);
+        shareServices=application.getShareServices();
     }
 
     private void checkIsTimeToRefreshAddressBook() {
@@ -204,7 +215,83 @@ public class ShareSheetActivity extends AppCompatActivity {
     }
 
     private void setShareIconsAndText() {
-        facebookText = (TextView) findViewById(R.id.textFacebook);
+        LinearLayout layoutShareArray = (LinearLayout)findViewById(R.id.layoutShareArray);
+
+        layoutShareArray.removeAllViews();
+
+        for(Object shareService : shareServices)
+        {
+            if(shareService instanceof BasicShareService)
+            {
+                if(shareService instanceof FacebookShareService)
+                {
+                    shareService = new FacebookShareService(context);
+                }
+                else if(shareService instanceof TwitterShareService)
+                {
+                    shareService = new TwitterShareService(context);
+                }
+                else if(shareService instanceof ContactShareService)
+                {
+                    shareService = new ContactShareService(context);
+                }
+
+
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View inflatedLayout = inflater.inflate(R.layout.item_share_service, null, false);
+
+                LinearLayout ll = (LinearLayout)inflatedLayout;
+                ll.setOrientation(LinearLayout.VERTICAL);
+
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+
+                layoutParams.setMargins(3, 3, 3, 3);
+                ll.setLayoutParams(layoutParams);
+
+                layoutShareArray.addView(ll);
+
+                TextView shareText = (TextView) inflatedLayout.findViewById(R.id.textShare);
+                shareText.setText(((BasicShareService) shareService).getTitle());
+                shareText.setTextColor(application.getCustomTheme().getDarkFontColor());
+                if (!application.getCustomTheme().getFont().isEmpty()) {
+                    fontManager.setFont(shareText, application.getCustomTheme().getFont());
+                }
+
+                LinearLayout shareLayout = (LinearLayout) inflatedLayout.findViewById(R.id.layoutShare);
+                LinearLayout shareCircleLayout = (LinearLayout) inflatedLayout.findViewById(R.id.layoutShareCircle);
+
+                String shareButtonShape = application.getCustomTheme().getShareButtonsShape();
+                if (shareButtonShape.equals("circle")) {
+                    shareCircleLayout.setBackgroundResource(R.drawable.circle);
+                } else if (shareButtonShape.equals("square")) {
+                    shareCircleLayout.setBackgroundResource(R.drawable.square_shape);
+                } else if (shareButtonShape.equals("rounded_square")) {
+                    shareCircleLayout.setBackgroundResource(R.drawable.rounded_square_shape);
+                }
+
+                GradientDrawable drawableC = (GradientDrawable) shareCircleLayout.getBackground();
+                drawableC.setColor(((BasicShareService) shareService).getColor());
+
+                ImageView shareImage = (ImageView) inflatedLayout.findViewById(R.id.imageShare);
+                shareImage.setImageDrawable(((BasicShareService) shareService).getIcon());
+
+                final Runnable runnable=((BasicShareService) shareService).getRunnable();
+
+                shareLayout.setClickable(true);
+                shareLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        runnable.run();
+                    }
+                });
+
+            }
+
+        }
+
+        /*facebookText = (TextView) findViewById(R.id.textFacebook);
         twitterText = (TextView) findViewById(R.id.textTwitter);
         contactsText = (TextView) findViewById(R.id.textContacts);
 
@@ -286,7 +373,7 @@ public class ShareSheetActivity extends AppCompatActivity {
 
         if (!application.getCustomTheme().isTwitterSignedIn()) {
             twitterLayout.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void setCopyLinkText() {
