@@ -147,6 +147,16 @@ public class YesGraph extends Application {
 
     }
 
+    private void getContactsFromApi(Handler.Callback callback)
+    {
+        try {
+            AddressBook addressBook=new AddressBook();
+            addressBook.fetchAddressBookForUserId(getApplicationContext(), new StorageKeyValueManager(getApplicationContext()).getUserId(), callback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void inviteSentForUsers(ArrayList<Contact> contacts, Handler.Callback callback)
     {
         Invite ysgInvite = new Invite();
