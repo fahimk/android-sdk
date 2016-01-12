@@ -1,6 +1,7 @@
 package com.yesgraph.android.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -257,7 +258,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         }
         new StorageKeyValueManager(context).setInviteNumber(invites);
 
-        new SenderManager(items).inviteContacts(context);
+        new SenderManager(items).inviteContacts((Activity)context);
     }
 
     @Override

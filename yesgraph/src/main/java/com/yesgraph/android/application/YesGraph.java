@@ -2,6 +2,7 @@ package com.yesgraph.android.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.yesgraph.android.R;
+import com.yesgraph.android.activity.SendSmsActivity;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.models.RankedContact;
@@ -16,6 +18,9 @@ import com.yesgraph.android.network.AddressBook;
 import com.yesgraph.android.network.Authenticate;
 import com.yesgraph.android.network.Invite;
 import com.yesgraph.android.network.SuggestionsShown;
+import com.yesgraph.android.services.ContactShareService;
+import com.yesgraph.android.services.FacebookShareService;
+import com.yesgraph.android.services.TwitterShareService;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.ContactRetriever;
@@ -34,15 +39,23 @@ import java.util.ArrayList;
 public class YesGraph extends Application {
 
     private CustomTheme customTheme;
+    private Intent customSmsIntent;
+    private Intent customEmailIntent;
+    private ArrayList<Object> shareServices;
 
     @Override
     public void onCreate() {
         super.onCreate();
-    }
 
-    public void onCreate(String secretKey) {
-        super.onCreate();
-        configureWithClientKey(secretKey);
+        shareServices=new ArrayList<>();
+
+        FacebookShareService facebookShareService=new FacebookShareService(getApplicationContext());
+        TwitterShareService twitterShareService=new TwitterShareService(getApplicationContext());
+        ContactShareService contactShareService=new ContactShareService(getApplicationContext());
+
+        shareServices.add(twitterShareService);
+        shareServices.add(facebookShareService);
+        shareServices.add(contactShareService);
     }
 
     public void configureWithUserId(String userId)
@@ -73,6 +86,16 @@ public class YesGraph extends Application {
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
+    public ArrayList<Object> getShareServices()
+    {
+        return shareServices;
+    }
+
+    public void setShareServices(ArrayList<Object> shareServices)
+    {
+        this.shareServices=shareServices;
     }
 
     public Long getLastInvitedContactsNumber()
@@ -191,4 +214,20 @@ public class YesGraph extends Application {
         }
     }
 
+    public Intent getCustomSmsIntent() {
+        return customSmsIntent;
+    }
+
+
+    public void setCustomSmsIntent(Intent customSmsIntent) {
+        this.customSmsIntent = customSmsIntent;
+    }
+
+    public Intent getCustomEmailIntent() {
+        return customEmailIntent;
+    }
+
+    public void setCustomEmailIntent(Intent customEmailIntent) {
+        this.customEmailIntent = customEmailIntent;
+    }
 }
