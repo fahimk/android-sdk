@@ -1,5 +1,7 @@
 package com.yesgraph.android;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
@@ -9,6 +11,7 @@ import android.view.WindowManager;
 
 import com.yesgraph.android.activity.ContactsActivity;
 import com.yesgraph.android.application.YesGraph;
+import com.yesgraph.android.services.ContactShareService;
 import com.yesgraph.android.utils.CustomTheme;
 
 import org.junit.Before;
@@ -24,6 +27,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 /**
  * Created by Klemen on 21.12.2015.
@@ -32,7 +36,6 @@ import static junit.framework.Assert.assertEquals;
 public class ContactsActivityEspressoTests {
 
     private  YesGraph yesGraph;
-    private static final String FONT_TYPE_FACE = "Pacifico.ttf";
 
     @Rule
     public ActivityTestRule<ContactsActivity> activityTestRule =
@@ -41,13 +44,7 @@ public class ContactsActivityEspressoTests {
 
     @Before
     public void setUp() throws Exception {
-
         yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
-
-        //set custom text font
-        CustomTheme customTheme = new CustomTheme();
-        customTheme.setFonts(FONT_TYPE_FACE);
-        yesGraph.setCustomTheme(customTheme);
 
     }
 
@@ -132,12 +129,6 @@ public class ContactsActivityEspressoTests {
         }
     }
 
-    @Test
-    public void testCheckCustomFontType() {
-
-        String customTypeFace = yesGraph.getCustomTheme().getFont();
-        assertEquals(customTypeFace, FONT_TYPE_FACE);
-    }
 
     @Test
     public void testEnterTextToSearchBox() {
@@ -146,6 +137,26 @@ public class ContactsActivityEspressoTests {
         delay(500);
         onView(withId(R.id.search)).perform(typeText("a"));
         delay(500);
+
+    }
+
+    public void testCheckContactShareService() {
+
+        int color = Color.parseColor("#0078BD");
+        Drawable icon = activityTestRule.getActivity().getResources().getDrawable(R.drawable.phone);
+        String title = "Contacts";
+
+        ContactShareService contactShareService = new ContactShareService(activityTestRule.getActivity());
+
+        contactShareService.setColor(color);
+        contactShareService.setTitle(title);
+        contactShareService.setIcon(icon);
+        contactShareService.setContext(activityTestRule.getActivity());
+
+        assertEquals(color, contactShareService.getColor());
+        assertEquals(icon, contactShareService.getIcon());
+        assertEquals(title, contactShareService.getTitle());
+        assertNotNull(contactShareService.getContext());
 
     }
 

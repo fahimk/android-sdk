@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -38,8 +39,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
 
     private YesGraph yesGraph;
     private Context context;
-    private static final String FONT_TYPE_FACE = "Pacifico.ttf";
-
     public ShareSheetActivityTest() {
         super(ShareSheetActivity.class);
     }
@@ -56,11 +55,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
         context = yesGraph.getBaseContext();
 
-        //set custom text font
-        CustomTheme customTheme = new CustomTheme();
-        customTheme.setFonts(FONT_TYPE_FACE);
-        yesGraph.setCustomTheme(customTheme);
-
     }
 
     @Test
@@ -68,12 +62,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
 
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
         onView(withId(R.id.layoutMaster)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutFacebook)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutTwitter)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutContacts)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutFacebookCircle)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutTwitterCircle)).check(matches(isDisplayed()));
-        onView(withId(R.id.layoutContactsCircle)).check(matches(isDisplayed()));
         onView(withId(R.id.copyLinkLayout)).check(matches(isDisplayed()));
     }
 
@@ -82,29 +70,16 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
 
         onView(withId(R.id.toolbarTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.shareText)).check(matches(isDisplayed()));
-        onView(withId(R.id.textFacebook)).check(matches(isDisplayed()));
-        onView(withId(R.id.textTwitter)).check(matches(isDisplayed()));
-        onView(withId(R.id.textContacts)).check(matches(isDisplayed()));
         onView(withId(R.id.textCopyLink)).check(matches(isDisplayed()));
         onView(withId(R.id.textCopyButton)).check(matches(isDisplayed()));
     }
 
-    @Test
-    public void validateImageViewsAreShown() {
-
-        onView(withId(R.id.imageFacebook)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageTwitter)).check(matches(isDisplayed()));
-        onView(withId(R.id.imageContacts)).check(matches(isDisplayed()));
-    }
 
     @Test
     public void checkTextViewHaveRightStrings() {
         YesGraph application = (YesGraph) activityTestRule.getActivity().getApplication();
         onView(withId(R.id.toolbarTitle)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.share_sheet))));
         onView(withId(R.id.shareText)).check(matches(withText(application.getCustomTheme().getShareText(context))));
-        onView(withId(R.id.textFacebook)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.facebook))));
-        onView(withId(R.id.textTwitter)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.twitter))));
-        onView(withId(R.id.textContacts)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.contacts))));
         onView(withId(R.id.textCopyLink)).check(matches(withText(application.getCustomTheme().getCopyLinkText(context))));
         onView(withId(R.id.textCopyButton)).check(matches(withText(application.getCustomTheme().getCopyButtonText(context))));
     }
@@ -112,7 +87,7 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     @Test
     public void checkCopyButtonTextChange() {
 
-        onView(withId(R.id.textCopyButton)).perform(ViewActions.click());
+        onView(withId(R.id.textCopyButton)).perform(click());
         //check is button text set to copied
         onView(withId(R.id.textCopyButton)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.button_copied_text))));
 
@@ -121,7 +96,7 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     @Test
     public void checkCopyToClickBoard() {
 
-        onView(withId(R.id.copyLinkLayout)).perform(ViewActions.click());
+        onView(withId(R.id.copyLinkLayout)).perform(click());
 
         //check is toast with text is shown
         onView(withText(R.string.copy_to_clipboard)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
@@ -150,21 +125,5 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         customTheme.setShareButtonsShape("rounded_square");
         yesGraph.setCustomTheme(customTheme);
         assertEquals("rounded_square", yesGraph.getCustomTheme().getShareButtonsShape());
-    }
-
-    @Test
-    public void testClickOnContactsButton() {
-
-        onView(withId(R.id.layoutContacts)).perform(ViewActions.click());
-
-        onView(withId(R.id.toolbarTitle)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testCheckCustomFontType() {
-
-        String customTypeFace = yesGraph.getCustomTheme().getFont();
-
-        assertEquals(customTypeFace, FONT_TYPE_FACE);
     }
 }

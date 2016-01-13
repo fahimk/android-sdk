@@ -1,16 +1,21 @@
 package com.yesgraph.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.TextUtils;
 
+import com.yesgraph.android.activity.SendSmsActivity;
 import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.services.ContactShareService;
+import com.yesgraph.android.services.FacebookShareService;
+import com.yesgraph.android.services.TwitterShareService;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.StorageKeyValueManager;
@@ -228,16 +233,6 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
 
     }
 
-    public void testLoadOnCreate() {
-
-        String apiKey = "apiKey";
-        yesGraph.onCreate(apiKey);
-
-        String savedApiKey = new StorageKeyValueManager(context).getApiKey();
-        assertEquals(apiKey, savedApiKey);
-
-    }
-
     public void testValidateTimeToRefreshMilliseconds() {
 
         //47 hours
@@ -305,6 +300,55 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
         String savedUserId = new StorageKeyValueManager(context).getUserId();
 
         assertEquals(userId, savedUserId);
+
+    }
+
+    public void testCheckCustomSmsIntent() {
+
+        Intent intent = new Intent(context, SendSmsActivity.class);
+        yesGraph.setCustomSmsIntent(intent);
+
+        Intent savedSmsIntent = yesGraph.getCustomSmsIntent();
+
+        assertNotNull(savedSmsIntent);
+    }
+
+    public void testCheckCustomEmailIntent() {
+
+        Intent intent = new Intent(context, SendSmsActivity.class);
+        yesGraph.setCustomEmailIntent(intent);
+
+        Intent savedEmailIntent = yesGraph.getCustomEmailIntent();
+
+        assertNotNull(savedEmailIntent);
+    }
+
+    public void testCheckShareServices() {
+
+        ArrayList<Object> shareServices = yesGraph.getShareServices();
+
+        assertNotNull(shareServices);
+    }
+
+    public void testSetShareServices() {
+
+        ArrayList<Object> shareServices = new ArrayList<>();
+
+        FacebookShareService facebookShareService = new FacebookShareService(context);
+        TwitterShareService twitterShareService = new TwitterShareService(context);
+        ContactShareService contactShareService = new ContactShareService(context);
+
+        shareServices.add(facebookShareService);
+        shareServices.add(twitterShareService);
+        shareServices.add(contactShareService);
+
+        yesGraph.setShareServices(shareServices);
+
+        int shareServicesSize = yesGraph.getShareServices().size();
+
+        assertEquals(3,shareServicesSize);
+
+        assertNotNull(yesGraph.getShareServices());
 
     }
 

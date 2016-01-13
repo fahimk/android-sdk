@@ -49,23 +49,7 @@ public class MockUnitTest {
 
     }
 
-    /**
-     * Validate if invites sent to contacts
-     *
-     * @throws Exception
-     */
     @Test
-    public void testValidateInvitesSend() throws Exception {
-
-        SenderManager manager = Mockito.mock(SenderManager.class);
-
-        when(manager.inviteContacts(context)).thenReturn(true);
-
-        assertEquals(manager.inviteContacts(context), true);
-
-    }
-
-   /* @Test
     public void testFetchAddressBookForUser() {
 
         String userID = "1234";
@@ -82,7 +66,7 @@ public class MockUnitTest {
         mock.fetchAddressBookForUserId(context, userID, callback);
         verify(mock, atLeastOnce()).fetchAddressBookForUserId(context, userID, callback);
         doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
-    }*/
+    }
 
 
     @Test

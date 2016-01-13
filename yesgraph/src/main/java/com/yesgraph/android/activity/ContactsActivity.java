@@ -500,7 +500,5 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Log.i("Type",String.valueOf(contactsFilterType));
     }
 }
