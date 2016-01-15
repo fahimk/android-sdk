@@ -1,5 +1,6 @@
 package com.yesgraph.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -59,9 +60,9 @@ public class MockUnitTest {
 
         SenderManager manager = Mockito.mock(SenderManager.class);
 
-        when(manager.inviteContacts(context)).thenReturn(true);
+        when(manager.inviteContacts((Activity)context)).thenReturn(true);
 
-        assertEquals(manager.inviteContacts(context), true);
+        assertEquals(manager.inviteContacts((Activity)context), true);
 
     }
 
@@ -100,10 +101,10 @@ public class MockUnitTest {
 
         ContactList contactList = Mockito.mock(ContactList.class);
 
-        mock.updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
+        mock.updateAddressBookWithLimitedContacts(context, callback);
 
-        verify(mock, atLeastOnce()).updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
-        doNothing().when(mock).updateAddressBookWithContactListForUserId(context, contactList, userID, callback);
+        verify(mock, atLeastOnce()).updateAddressBookWithLimitedContacts(context, callback);
+        doNothing().when(mock).updateAddressBookWithLimitedContacts(context, callback);
     }
 
     @Test

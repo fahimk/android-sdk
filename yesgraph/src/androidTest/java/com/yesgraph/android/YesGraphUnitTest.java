@@ -7,7 +7,7 @@ import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.TextUtils;
 
-import com.yesgraph.android.activity.MainActivity;
+import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
@@ -23,9 +23,9 @@ import java.util.ArrayList;
 /**
  * Created by Klemen on 23.12.2015.
  */
-public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareSheetActivity> {
 
-    private MainActivity mainActivity;
+    private ShareSheetActivity mainActivity;
     private YesGraph yesGraph;
 
     @Mock
@@ -34,7 +34,7 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
     private Context context;
 
     public YesGraphUnitTest() {
-        super(MainActivity.class);
+        super(ShareSheetActivity.class);
     }
 
     @Before
@@ -226,7 +226,8 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<MainActiv
     public void testLoadOnCreate() {
 
         String secretKey = "secretKey";
-        yesGraph.onCreate(secretKey);
+        yesGraph.onCreate();
+        yesGraph.configureWithClientKey(secretKey);
 
         String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
         assertEquals(secretKey, savedSecretKey);

@@ -26,7 +26,12 @@ ext {
     developerId = 'yesgraph'
     developerName = 'YesGraph'
     developerEmail = 'kendall@yesgraph.com'
+
+    licenseName = 'MIT'
+    licenseUrl = 'http://opensource.org/licenses/mit-license.php'
+    allLicenses = ["MIT"]
 }
+
 
 apply plugin: 'io.fabric'
 
@@ -90,4 +95,6 @@ dependencies {
 
 }
 
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 
