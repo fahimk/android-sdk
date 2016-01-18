@@ -49,7 +49,7 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
 
         ContactList contactList = Mockito.mock(ContactList.class);
 
-        new AddressBook().updateAddressBookWithContactListForUserId(mockContext, contactList, userID, callback);
+        new AddressBook().updateAddressBookWithLimitedContacts(mockContext, callback);
 
     }
 
