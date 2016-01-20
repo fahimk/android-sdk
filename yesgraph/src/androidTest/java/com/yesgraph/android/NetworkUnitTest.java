@@ -35,6 +35,22 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
         mockContext = new MockDelegatedContext(getContext());
     }
 
+    public void testUpdateAddressBookWithContactListForUserId() {
+
+        String userID = "1234";
+
+        final Handler.Callback callback = new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                return false;
+            }
+        };
+
+        ContactList contactList = Mockito.mock(ContactList.class);
+
+        new AddressBook().updateAddressBookWithLimitedContacts(mockContext, callback);
+
+    }
 
     public void testFetchClientKeyWithSecretKey() {
 
@@ -85,8 +101,4 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
         new SuggestionsShown().updateSuggestionsSeen(mockContext, invites, userID, callback);
 
     }
-
-
-
-
 }

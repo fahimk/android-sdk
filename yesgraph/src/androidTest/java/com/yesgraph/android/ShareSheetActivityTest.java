@@ -74,7 +74,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         onView(withId(R.id.textCopyButton)).check(matches(isDisplayed()));
     }
 
-
     @Test
     public void checkTextViewHaveRightStrings() {
         YesGraph application = (YesGraph) activityTestRule.getActivity().getApplication();
@@ -125,5 +124,11 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
         customTheme.setShareButtonsShape("rounded_square");
         yesGraph.setCustomTheme(customTheme);
         assertEquals("rounded_square", yesGraph.getCustomTheme().getShareButtonsShape());
+    }
+
+    @Test
+    public void testClickOnContactsButton() {
+
+        onView(withId(R.id.toolbarTitle)).check(matches(isDisplayed()));
     }
 }

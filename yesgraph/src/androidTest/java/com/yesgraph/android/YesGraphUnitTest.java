@@ -229,6 +229,10 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
 
         String savedKey = new StorageKeyValueManager(context).getSecretKey();
 
+        String secretKey = "secretKey";
+        yesGraph.onCreate();
+        yesGraph.configureWithClientKey(secretKey);
+
         assertEquals(key, savedKey);
 
     }

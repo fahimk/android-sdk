@@ -1,5 +1,6 @@
 package com.yesgraph.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -50,7 +51,18 @@ public class MockUnitTest {
     }
 
     @Test
-    public void testFetchAddressBookForUser() {
+    public void testValidateInvitesSend() throws Exception {
+
+        SenderManager manager = Mockito.mock(SenderManager.class);
+
+        when(manager.inviteContacts((Activity)context)).thenReturn(true);
+
+        assertEquals(manager.inviteContacts((Activity)context), true);
+
+    }
+
+    @Test
+    public void testUpdateAddressBookWithContactListForUserId() {
 
         String userID = "1234";
 
@@ -63,9 +75,12 @@ public class MockUnitTest {
             }
         };
 
-        mock.fetchAddressBookForUserId(context, userID, callback);
-        verify(mock, atLeastOnce()).fetchAddressBookForUserId(context, userID, callback);
-        doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
+        ContactList contactList = Mockito.mock(ContactList.class);
+
+        mock.updateAddressBookWithLimitedContacts(context, callback);
+
+        verify(mock, atLeastOnce()).updateAddressBookWithLimitedContacts(context, callback);
+        doNothing().when(mock).updateAddressBookWithLimitedContacts(context, callback);
     }
 
 
