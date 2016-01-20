@@ -22,10 +22,10 @@ dependencies {
 
 An alternate way to integrate is installing as Static Library
 
--Compile and build the project
--Copy the 'aar' file from the [module_home_directory]/build/outputs/yesgraph-[debug/release].aar
--Put the 'aar' file into your 'libs' folder
--Add these lines to your build.gradle file:
+1. Compile and build the project
+2. Copy the 'aar' file from the [module_home_directory]/build/outputs/yesgraph-[debug/release].aar
+3. Put the 'aar' file into your 'libs' folder
+4. Add these lines to your build.gradle file:
 
 ```
 repositories {
