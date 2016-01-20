@@ -89,4 +89,4 @@ YesGraph Android SDK contains unit tests that can be executed in AndroidStudio.
 License
 ======
 
-YesGraph iOS SDK is released under **MIT** license.
+YesGraph Android SDK is released under **MIT** license.
