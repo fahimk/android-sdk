@@ -1,6 +1,14 @@
-YesGraph Android SDK is a sharing Android SDK that integrates with YesGraph. It presents user with a share sheet that can be used to share a message to user's friends to multiple sources, such as: Facebook, Twitter or user's contact book. [Read more about that on our blog.](http://blog.yesgraph.com/perfect-share-flow/)
+## About YesGraph 
 
-Find detailed documentation about YesGraph on [yesgraph.com](https://docs.yesgraph.com)
+YesGraph helps apps grow by providing incredible social invite flows and recommending which friends a user should invite. Under the the hood is deep social graph analysis and machine learning to make these recommendations.
+
+YesGraph Android SDK is a sharing Android SDK that integrates with YesGraph. It presents user with a share sheet that can be used to share a message to user's friends to multiple sources, such as: Facebook, Twitter, or the user's mobile address book. [Read more about that on our blog.](http://blog.yesgraph.com/android-sdk/)
+
+
+![android demo](https://www.filepicker.io/api/file/9YNRzQMuSImWbyxoD0Jf)
+
+
+Find detailed documentation about YesGraph on [docs.yesgraph.com](https://docs.yesgraph.com)
 
 ## Requirements
 
