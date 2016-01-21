@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,30 +26,24 @@ import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.yesgraph.android.R;
 import com.yesgraph.android.application.YesGraph;
-import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.network.AddressBook;
-import com.yesgraph.android.network.Authenticate;
 import com.yesgraph.android.services.BasicShareService;
 import com.yesgraph.android.services.ContactShareService;
 import com.yesgraph.android.services.FacebookShareService;
 import com.yesgraph.android.services.TwitterShareService;
-import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Constants;
-import com.yesgraph.android.utils.ContactManager;
 import com.yesgraph.android.utils.FontManager;
 import com.yesgraph.android.utils.PermissionGrantedManager;
-import com.yesgraph.android.utils.SharedPreferencesManager;
+import com.yesgraph.android.utils.StorageKeyValueManager;
 import com.yesgraph.android.utils.Visual;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -430,22 +423,6 @@ public class ShareSheetActivity extends AppCompatActivity {
         masterLayout.setBackgroundColor(application.getCustomTheme().getMainBackgroundColor());
     }
 
-    private void shareToFacebook() {
-        try {
-            if (ShareDialog.canShow(ShareLinkContent.class)) {
-                ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                        //.setContentTitle("Content Title")
-                        //.setContentDescription("Content Description")
-                        .setContentUrl(Uri.parse(application.getCustomTheme().getCopyLinkText(context)))
-                        .build();
-
-                shareDialog.show(linkContent);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(context, context.getResources().getString(R.string.initialize_facebook_sdk), Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {

@@ -50,11 +50,6 @@ public class MockUnitTest {
 
     }
 
-    /**
-     * Validate if invites sent to contacts
-     *
-     * @throws Exception
-     */
     @Test
     public void testValidateInvitesSend() throws Exception {
 
@@ -65,25 +60,6 @@ public class MockUnitTest {
         assertEquals(manager.inviteContacts((Activity)context), true);
 
     }
-
-   /* @Test
-    public void testFetchAddressBookForUser() {
-
-        String userID = "1234";
-
-        AddressBook mock = Mockito.mock(AddressBook.class);
-
-        final Handler.Callback callback = new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                return false;
-            }
-        };
-
-        mock.fetchAddressBookForUserId(context, userID, callback);
-        verify(mock, atLeastOnce()).fetchAddressBookForUserId(context, userID, callback);
-        doNothing().when(mock).fetchAddressBookForUserId(context, userID, callback);
-    }*/
 
     @Test
     public void testUpdateAddressBookWithContactListForUserId() {
@@ -106,6 +82,7 @@ public class MockUnitTest {
         verify(mock, atLeastOnce()).updateAddressBookWithLimitedContacts(context, callback);
         doNothing().when(mock).updateAddressBookWithLimitedContacts(context, callback);
     }
+
 
     @Test
     public void testFetchClientKeyWithSecretKey() {

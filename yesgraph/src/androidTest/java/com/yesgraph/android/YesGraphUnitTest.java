@@ -1,20 +1,27 @@
 package com.yesgraph.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.test.InstrumentationRegistry;
 import android.test.ActivityInstrumentationTestCase2;
 import android.text.TextUtils;
 
+import com.yesgraph.android.activity.SendSmsActivity;
 import com.yesgraph.android.activity.ShareSheetActivity;
 import com.yesgraph.android.application.YesGraph;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.services.ContactShareService;
+import com.yesgraph.android.services.FacebookShareService;
+import com.yesgraph.android.services.TwitterShareService;
 import com.yesgraph.android.utils.Constants;
 import com.yesgraph.android.utils.CustomTheme;
 import com.yesgraph.android.utils.StorageKeyValueManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.Before;
 import org.mockito.Mock;
 
@@ -28,9 +35,6 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
     private ShareSheetActivity mainActivity;
     private YesGraph yesGraph;
 
-    @Mock
-    private Context mockContext;
-
     private Context context;
 
     public YesGraphUnitTest() {
@@ -43,8 +47,6 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         mainActivity = getActivity();
         yesGraph = (YesGraph) mainActivity.getApplication();
-        mockContext = new MockDelegatedContext(mainActivity.getBaseContext());
-
         context = mainActivity.getApplicationContext();
     }
 
@@ -100,15 +102,17 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
         assertTrue(isOnline);
     }
 
-    public void testCheckSetSecretKey() {
+    public void testCheckConfigureClientKey() {
 
-        String secretKey = "secretKey";
+        String apiKey = "apiKey";
 
-        yesGraph.configureWithClientKey(secretKey);
+        new StorageKeyValueManager(context).setApiKey(apiKey);
 
-        String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
+        yesGraph.configureWithClientKey(apiKey);
 
-        assertEquals(secretKey, savedSecretKey);
+        String savedApiKey = new StorageKeyValueManager(context).getApiKey();
+
+        assertEquals(apiKey, savedApiKey);
 
 
     }
@@ -176,7 +180,7 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
 
     public void testUpdateSuggestionsSeen() {
 
-        ArrayList<RankedContact> contacts = new TestUtils().getRankedContacts();
+        ArrayList<RankedContact> contacts = new TestUtils().getRankedContacts(5);
 
         final Handler.Callback handler = new Handler.Callback() {
             @Override
@@ -217,20 +221,19 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
 
     public void testCheckIsTimeToRefresh() {
 
-        String secretKey = "secretKey";
-        yesGraph.configureWithClientKey(secretKey);
+        String key = "secret_key";
+
+        new StorageKeyValueManager(context).setSecretKey(key);
 
         yesGraph.checkIsTimeToRefreshAddressBook();
-    }
 
-    public void testLoadOnCreate() {
+        String savedKey = new StorageKeyValueManager(context).getSecretKey();
 
         String secretKey = "secretKey";
         yesGraph.onCreate();
         yesGraph.configureWithClientKey(secretKey);
 
-        String savedSecretKey = new StorageKeyValueManager(context).getSecretKey();
-        assertEquals(secretKey, savedSecretKey);
+        assertEquals(key, savedKey);
 
     }
 
@@ -249,6 +252,107 @@ public class YesGraphUnitTest extends ActivityInstrumentationTestCase2<ShareShee
         boolean isNoTimeToRefresh = !yesGraph.timeToRefreshAddressBook();
 
         assertTrue(isNoTimeToRefresh);
+
+    }
+
+    public void testCheckContactsFromCache() throws JSONException {
+
+        JSONArray jsonContacts = new TestUtils().getJsonArray();
+
+        //set contacts to cache
+        new StorageKeyValueManager(context).setContactCache(jsonContacts.toString());
+
+        ArrayList<RankedContact> contacts = yesGraph.getContactsFromCache();
+
+        assertTrue(contacts != null);
+
+        assertTrue(!contacts.isEmpty());
+
+        assertEquals(jsonContacts.length(), contacts.size());
+
+    }
+
+    public void testCheckNoContactsFromCache() throws JSONException {
+
+        //reset contacts in cache
+        new StorageKeyValueManager(context).setContactCache(null);
+
+        ArrayList<RankedContact> contacts = yesGraph.getContactsFromCache();
+
+        assertTrue(contacts == null);
+
+    }
+
+    public void testCheckNumberOfInvitesContacts() throws JSONException {
+
+        Long number = 12L;
+
+        new StorageKeyValueManager(context).setInviteNumber(number);
+
+        Long invitedContacts = yesGraph.getLastInvitedContactsNumber();
+
+        assertEquals(number, invitedContacts);
+
+    }
+
+    public void testCheckConfigureWithUserId() {
+
+        String userId = "user_id";
+
+        yesGraph.configureWithUserId(userId);
+
+        String savedUserId = new StorageKeyValueManager(context).getUserId();
+
+        assertEquals(userId, savedUserId);
+
+    }
+
+    public void testCheckCustomSmsIntent() {
+
+        Intent intent = new Intent(context, SendSmsActivity.class);
+        yesGraph.setCustomSmsIntent(intent);
+
+        Intent savedSmsIntent = yesGraph.getCustomSmsIntent();
+
+        assertNotNull(savedSmsIntent);
+    }
+
+    public void testCheckCustomEmailIntent() {
+
+        Intent intent = new Intent(context, SendSmsActivity.class);
+        yesGraph.setCustomEmailIntent(intent);
+
+        Intent savedEmailIntent = yesGraph.getCustomEmailIntent();
+
+        assertNotNull(savedEmailIntent);
+    }
+
+    public void testCheckShareServices() {
+
+        ArrayList<Object> shareServices = yesGraph.getShareServices();
+
+        assertNotNull(shareServices);
+    }
+
+    public void testSetShareServices() {
+
+        ArrayList<Object> shareServices = new ArrayList<>();
+
+        FacebookShareService facebookShareService = new FacebookShareService(context);
+        TwitterShareService twitterShareService = new TwitterShareService(context);
+        ContactShareService contactShareService = new ContactShareService(context);
+
+        shareServices.add(facebookShareService);
+        shareServices.add(twitterShareService);
+        shareServices.add(contactShareService);
+
+        yesGraph.setShareServices(shareServices);
+
+        int shareServicesSize = yesGraph.getShareServices().size();
+
+        assertEquals(3,shareServicesSize);
+
+        assertNotNull(yesGraph.getShareServices());
 
     }
 

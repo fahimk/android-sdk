@@ -35,7 +35,6 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
         mockContext = new MockDelegatedContext(getContext());
     }
 
-
     public void testUpdateAddressBookWithContactListForUserId() {
 
         String userID = "1234";
@@ -102,8 +101,4 @@ public class NetworkUnitTest extends ApplicationTestCase<Application> {
         new SuggestionsShown().updateSuggestionsSeen(mockContext, invites, userID, callback);
 
     }
-
-
-
-
 }

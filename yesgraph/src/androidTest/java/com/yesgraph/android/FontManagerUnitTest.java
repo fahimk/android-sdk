@@ -30,7 +30,7 @@ public class FontManagerUnitTest extends ApplicationTestCase<Application> {
 
     }
 
-    public void testCheckSetTextViewTypeFace() {
+    /*public void testCheckSetTextViewTypeFace() {
 
         FontManager fontManager = FontManager.getInstance();
 
@@ -70,7 +70,7 @@ public class FontManagerUnitTest extends ApplicationTestCase<Application> {
 
         assertEquals(true,typeFaceNotNull);
 
-    }
+    }*/
 
 
 

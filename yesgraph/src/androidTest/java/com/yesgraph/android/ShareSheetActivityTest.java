@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -38,8 +39,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
 
     private YesGraph yesGraph;
     private Context context;
-    private static final String FONT_TYPE_FACE = "Pacifico.ttf";
-
     public ShareSheetActivityTest() {
         super(ShareSheetActivity.class);
     }
@@ -55,11 +54,6 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
 
         yesGraph = (YesGraph) activityTestRule.getActivity().getApplication();
         context = yesGraph.getBaseContext();
-
-        //set custom text font
-        CustomTheme customTheme = new CustomTheme();
-        customTheme.setFonts(FONT_TYPE_FACE);
-        yesGraph.setCustomTheme(customTheme);
 
     }
 
@@ -92,7 +86,7 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     @Test
     public void checkCopyButtonTextChange() {
 
-        onView(withId(R.id.textCopyButton)).perform(ViewActions.click());
+        onView(withId(R.id.textCopyButton)).perform(click());
         //check is button text set to copied
         onView(withId(R.id.textCopyButton)).check(matches(withText(activityTestRule.getActivity().getResources().getString(R.string.button_copied_text))));
 
@@ -101,7 +95,7 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     @Test
     public void checkCopyToClickBoard() {
 
-        onView(withId(R.id.copyLinkLayout)).perform(ViewActions.click());
+        onView(withId(R.id.copyLinkLayout)).perform(click());
 
         //check is toast with text is shown
         onView(withText(R.string.copy_to_clipboard)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
@@ -136,13 +130,5 @@ public class ShareSheetActivityTest extends ActivityInstrumentationTestCase2<Sha
     public void testClickOnContactsButton() {
 
         onView(withId(R.id.toolbarTitle)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testCheckCustomFontType() {
-
-        String customTypeFace = yesGraph.getCustomTheme().getFont();
-
-        assertEquals(customTypeFace, FONT_TYPE_FACE);
     }
 }

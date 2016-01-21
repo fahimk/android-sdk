@@ -9,6 +9,7 @@ import android.test.ApplicationTestCase;
 import com.yesgraph.android.models.Contact;
 import com.yesgraph.android.models.ContactList;
 import com.yesgraph.android.models.RankedContact;
+import com.yesgraph.android.models.Source;
 import com.yesgraph.android.network.AddressBook;
 
 import org.json.JSONArray;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 import org.mockito.Mock;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Klemen on 9.12.2015.
@@ -78,7 +80,7 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
      */
     public void testValidateContactsListOrderedAsc() throws JSONException {
 
-        JSONArray jsonContacts = getJsonArray();
+        JSONArray jsonContacts = new TestUtils().getJsonArray();
 
         ContactList ysgContactList = new AddressBook().contactListFromResponse(jsonContacts);
 
@@ -177,55 +179,6 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
     }
 
 
-    @NonNull
-    private JSONArray getJsonArray() throws JSONException {
-
-        JSONArray jsonContacts = new JSONArray();
-
-        for (int i = 0; i < 5; i++) {
-
-            JSONObject jsonContact = new JSONObject();
-
-            jsonContact.put("name", "John");
-            jsonContact.put("phone", "123-432-533");
-            jsonContact.put("email", "john@poviolabs.com");
-
-            jsonContact.put("rank", 7 + (i + 1));
-            jsonContact.put("score", 12.5);
-
-            JSONArray emails = new JSONArray();
-
-            JSONObject email1 = new JSONObject();
-            email1.put("emails", "john@gmail.com");
-
-            JSONObject email2 = new JSONObject();
-            email2.put("emails", "john@email.com");
-
-            emails.put(email1);
-            emails.put(email2);
-
-            jsonContact.put("emails", emails);
-
-            JSONArray phones = new JSONArray();
-
-            JSONObject phone1 = new JSONObject();
-            email1.put("phones", "124-321-533");
-
-            JSONObject phone2 = new JSONObject();
-            email2.put("phones", "435-235-523");
-
-            phones.put(phone1);
-            phones.put(phone2);
-
-            jsonContact.put("phones", phones);
-
-            jsonContacts.put(jsonContact);
-
-        }
-
-        return jsonContacts;
-    }
-
     /**
      * Check ascending ordered
      *
@@ -282,6 +235,7 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
 
     /**
      * Validate contact list from json object (server response)
+     *
      * @throws JSONException
      */
     public void testGetContactListFromJSONArray() throws JSONException {
@@ -291,9 +245,9 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
         JSONObject jsonContactThree = getContactJsonObject();
 
         JSONArray jsonArray = new JSONArray();
-        jsonArray.put(0,jsonContactOne);
-        jsonArray.put(1,jsonContactTwo);
-        jsonArray.put(2,jsonContactThree);
+        jsonArray.put(0, jsonContactOne);
+        jsonArray.put(1, jsonContactTwo);
+        jsonArray.put(2, jsonContactThree);
 
         JSONObject data = new JSONObject();
         data.put("data", jsonArray);
@@ -303,7 +257,55 @@ public class AddressBookUnitTest extends ApplicationTestCase<Application> {
 
         ContactList contactList = new AddressBook().getContactList(mockContext, message);
 
-        assertTrue(contactList!=null);
+        assertTrue(contactList != null);
+
+    }
+
+    public void testCheckSplittedContactsItems() {
+
+        int limitedSize = 3;
+
+        ContactList contactList = new ContactList();
+        ArrayList<RankedContact> entries = new TestUtils().getRankedContacts(10);
+        contactList.setEntries(entries);
+        contactList.setSource(new Source());
+        contactList.setUseSuggestions(true);
+
+        List<ContactList> batchedContacts = new AddressBook().getLimitedContactsList(limitedSize, contactList);
+
+        boolean isSplitted = true;
+
+        // check size of each list
+        for (int i = 0; i < batchedContacts.size(); i++) {
+
+            ContactList list = batchedContacts.get(i);
+
+            int entriesSize = list.getEntries().size();
+
+            if (entriesSize > limitedSize) {
+                isSplitted = false;
+                break;
+            }
+        }
+
+        assertTrue(isSplitted);
+    }
+
+    public void testCheckSplitFirstContactList() {
+
+        int limitedSize = 2;
+
+        ContactList contactList = new ContactList();
+        ArrayList<RankedContact> entries = new TestUtils().getRankedContacts(5);
+        contactList.setEntries(entries);
+        contactList.setSource(new Source());
+        contactList.setUseSuggestions(true);
+
+        ContactList firstBatchedContacts = new AddressBook().getFirstBatchedContacts(limitedSize, contactList);
+
+        int actualSize = firstBatchedContacts.getEntries().size();
+
+        assertEquals(limitedSize, actualSize);
 
     }
 }
