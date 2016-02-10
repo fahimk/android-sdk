@@ -74,8 +74,8 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:23.0.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4.1'
-    compile 'com.android.support:appcompat-v7:23.1.0'
-    compile 'com.android.support:design:23.1.0'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile('com.twitter.sdk.android:tweet-composer:1.0.1@aar') {
